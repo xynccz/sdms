@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.honest.sdms.system.dao.RolesMapper">
+  <resultMap id="BaseResultMap" type="com.honest.sdms.system.entity.RolesVO">
+    <id column="role_id" jdbcType="BIGINT" property="roleId" />
+    <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+    <result column="role_code" jdbcType="VARCHAR" property="roleCode" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="organization_id" jdbcType="BIGINT" property="organizationId" />
+    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+    <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    role_id, role_name, role_code, description, organization_id, created_by, 
+    created_date
+  </sql>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from roles
+    where role_id = #{roleId,jdbcType=BIGINT}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from roles
+    where role_id = #{roleId,jdbcType=BIGINT}
+  </delete>
+  
+  <insert id="insert" parameterType="com.honest.sdms.system.entity.RolesVO">
+    insert into roles (role_id, role_name, role_code, 
+      description, organization_id, 
+      created_by, created_date)
+    values (#{roleId,jdbcType=BIGINT}, #{roleName,jdbcType=VARCHAR}, #{roleCode,jdbcType=VARCHAR}, 
+      #{description,jdbcType=VARCHAR}, #{organizationId,jdbcType=BIGINT}, 
+      #{createdBy,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.honest.sdms.system.entity.RolesVO">
+    insert into roles
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="roleId != null">
+        role_id,
+      </if>
+      <if test="roleName != null">
+        role_name,
+      </if>
+      <if test="roleCode != null">
+        role_code,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+      <if test="organizationId != null">
+        organization_id,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdDate != null">
+        created_date,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="roleId != null">
+        #{roleId,jdbcType=BIGINT},
+      </if>
+      <if test="roleName != null">
+        #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="roleCode != null">
+        #{roleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="organizationId != null">
+        #{organizationId,jdbcType=BIGINT},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdDate != null">
+        #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.honest.sdms.system.entity.RolesVO">
+    update roles
+    <set>
+      <if test="roleName != null">
+        role_name = #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="roleCode != null">
+        role_code = #{roleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="organizationId != null">
+        organization_id = #{organizationId,jdbcType=BIGINT},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdDate != null">
+        created_date = #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where role_id = #{roleId,jdbcType=BIGINT}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="com.honest.sdms.system.entity.RolesVO">
+    update roles
+    set role_name = #{roleName,jdbcType=VARCHAR},
+      role_code = #{roleCode,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      organization_id = #{organizationId,jdbcType=BIGINT},
+      created_by = #{createdBy,jdbcType=VARCHAR},
+      created_date = #{createdDate,jdbcType=TIMESTAMP}
+    where role_id = #{roleId,jdbcType=BIGINT}
+  </update>
+</mapper>
