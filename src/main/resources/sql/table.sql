@@ -43,7 +43,7 @@ create table if not exists resources(
 	title varchar(100) not null COMMENT '资源名称',
 	url varchar(100) not null COMMENT '资源链接',
 	parent_id bigint COMMENT '父项id',
-	code varchar(100) COMMENT '权限标识',
+	code varchar(100) COMMENT '权限标识,比如a:b:c',
 	type int COMMENT '菜单级别:1模块；2菜单；3按钮',
 	organization_id bigint not null COMMENT '组织号'
 )DEFAULT CHARSET=utf8 COMMENT='权限表';

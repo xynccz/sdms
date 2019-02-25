@@ -19,8 +19,16 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from roles
+    from roles 
     where role_id = #{roleId,jdbcType=BIGINT}
+  </select>
+  
+  <select id="findRolesByUserId" resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />
+    from roles 
+    where exists (select 1 from user_role ur where ur.role_id = role_id and ur.organization_id = organization_id 
+    and ur.organization_id = #{organizationId，jdbcType=BIGINT} and ur.user_id = #{userId，jdbcType=BIGINT}) 
   </select>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">

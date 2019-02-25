@@ -7,9 +7,9 @@ import com.honest.sdms.system.entity.SysUserVO;
 
 public class Constants {
 	 
-	public static final String BUTTON = "button";
-	public static final String MENU = "menu";
-	public static final String MODEL = "model";
+	public static final Integer BUTTON = 3;//按钮
+	public static final Integer MENU = 2;//菜单
+	public static final Integer MODEL = 1;//模块
 	
 	public static final int DEFAULT_PAGE_SIZE = 20;
 	 

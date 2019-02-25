@@ -11,9 +11,7 @@ public class UserRoleVO extends BaseVO{
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
-
     private Long userId;
-
     private Long roleId;
 
     public Long getId() {

@@ -10,4 +10,11 @@ public interface IRolesService {
 	
 	abstract void saveListRoles(List<RolesVO> list);
 	
+	/**
+	 * 根据用户id查询对应的角色
+	 * @param userId
+	 * @return
+	 */
+	abstract List<RolesVO> findRolesByUserId(Long userId, Long organizationId);
+	
 }

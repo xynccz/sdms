@@ -28,9 +28,12 @@ public class RolesServiceImp implements IRolesService{
 				saveRoles(vo);
 			}
 		}
-		
 	}
 
+	@Override
+	public List<RolesVO> findRolesByUserId(Long userId, Long organizationId) {
+		return roleMapper.findRolesByUserId(userId, organizationId);
+	}
 	
 
 }

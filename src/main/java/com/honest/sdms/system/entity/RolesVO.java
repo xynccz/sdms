@@ -12,11 +12,9 @@ public class RolesVO extends BaseVO {
 	private static final long serialVersionUID = 1L;
 
 	private Long roleId;
-
+	private Long[] roleIdIn;
 	private String roleName;
-
-	private String roleCode;
-
+	private String roleCode;//角色编码
 	private String description;
 
 	public Long getRoleId() {
@@ -25,6 +23,14 @@ public class RolesVO extends BaseVO {
 
 	public void setRoleId(Long roleId) {
 		this.roleId = roleId;
+	}
+	
+	public Long[] getRoleIdIn() {
+		return roleIdIn;
+	}
+
+	public void setRoleIdIn(Long[] roleIdIn) {
+		this.roleIdIn = roleIdIn;
 	}
 
 	public String getRoleName() {
