@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.honest.sdms.system.dao.ResourcesMapper">
+  <resultMap id="BaseResultMap" type="com.honest.sdms.system.entity.ResourcesVO">
+    <id column="resource_id" jdbcType="BIGINT" property="resourceId" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="organization_id" jdbcType="BIGINT" property="organizationId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    resource_id, title, url, parent_id, code, type, organization_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from resources
+    where resource_id = #{resourceId,jdbcType=BIGINT}
+  </select>
+  
+  <select id="findResourcesByRoleIds" resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />
+    from resources
+    where exists (select 1 from role_resource ur where ur.resource_id = resource_id and ur.organization_id = organization_id
+     and ur.role_id in 
+     	<foreach collection="roleIds" item="roleId" index="index" open="(" separator="," close=")">
+            #{roleId}
+        </foreach> 
+     and ur.organization_id = #{organizationId，jdbcType=BIGINT})
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from resources
+    where resource_id = #{resourceId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.honest.sdms.system.entity.ResourcesVO">
+    insert into resources (resource_id, title, url, 
+      parent_id, code, type, 
+      organization_id)
+    values (#{resourceId,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, 
+      #{parentId,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, 
+      #{organizationId,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.honest.sdms.system.entity.ResourcesVO">
+    insert into resources
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="resourceId != null">
+        resource_id,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="organizationId != null">
+        organization_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="resourceId != null">
+        #{resourceId,jdbcType=BIGINT},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="organizationId != null">
+        #{organizationId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.honest.sdms.system.entity.ResourcesVO">
+    update resources
+    <set>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="organizationId != null">
+        organization_id = #{organizationId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where resource_id = #{resourceId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.honest.sdms.system.entity.ResourcesVO">
+    update resources
+    set title = #{title,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=BIGINT},
+      code = #{code,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER},
+      organization_id = #{organizationId,jdbcType=BIGINT}
+    where resource_id = #{resourceId,jdbcType=BIGINT}
+  </update>
+</mapper>
