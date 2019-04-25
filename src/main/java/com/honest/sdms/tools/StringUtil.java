@@ -3,6 +3,8 @@ package com.honest.sdms.tools;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.math.BigInteger;
+import java.util.Random;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
@@ -272,8 +274,13 @@ public class StringUtil {
         return buf.toString();   
     }  
     
+    public static String generateGUID(){
+    	Random RANDOM = new Random();
+        return new BigInteger(165, RANDOM).toString(36);
+    }
+    
     public static void main(String[] args){   
-//      System.out.println(StringUtil.base64Encode("DRP", "GBK"));   
+    	System.out.println(StringUtil.generateGUID()); 
     	
         String pwd = "123456";    
         System.out.println("pwd is :" + pwd);   
@@ -281,11 +288,11 @@ public class StringUtil {
         String aa = StringUtil.encrypt(pwd);   
         System.out.println("decrypt pwd is :" + StringUtil.decrypt(aa));   
            
-      /*String title = "<bean:message key=\"sysuser.title\"/>";   
-      String[] strSrc = {"<",">","\"","\\"};   
-      String[] strDist = {"&lt;","&gt;","&quot;","&#39;"};   
-      System.out.println("source :" + title);   
-      System.out.println("new:" + StringUtil.replace(title,strSrc,strDist));*/   
+        String title = "<bean:message key=\"sysuser.title\"/>";   
+        String[] strSrc = {"<",">","\"","\\"};   
+        String[] strDist = {"&lt;","&gt;","&quot;","&#39;"};   
+        System.out.println("source :" + title);   
+        System.out.println("new:" + StringUtil.replace(title,strSrc,strDist));  
     }   
   
   

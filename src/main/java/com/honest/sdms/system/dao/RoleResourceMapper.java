@@ -1,8 +1,7 @@
 package com.honest.sdms.system.dao;
 
-import com.honest.sdms.basedata.dao.IBaseDao;
-import com.honest.sdms.system.entity.RoleResourceVO;
+import com.honest.sdms.system.entity.RoleResource;
 
-public interface RoleResourceMapper extends IBaseDao<RoleResourceVO, Long>{
+public interface RoleResourceMapper extends IBaseMapper<RoleResource, Long>{
    
 }

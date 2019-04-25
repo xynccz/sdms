@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.honest.sdms.basedata.dao.IBaseDao;
-import com.honest.sdms.system.entity.ResourcesVO;
+import com.honest.sdms.system.entity.Resources;
 
-public interface ResourcesMapper extends IBaseDao<ResourcesVO, Long> {
+public interface ResourcesMapper extends IBaseMapper<Resources, Long> {
 	
-	abstract List<ResourcesVO> findResourcesByRoleIds(@Param("roleIds") Long[] roleIds, @Param("organizationId") Long organizationId);
+	abstract List<Resources> findResourcesByRoleIds(@Param("roleIds") Long[] roleIds, @Param("organizationId") Long organizationId);
+
 }

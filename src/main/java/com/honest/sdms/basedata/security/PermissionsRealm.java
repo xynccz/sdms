@@ -17,8 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.honest.sdms.Constants;
 import com.honest.sdms.basedata.exceptions.HSException;
-import com.honest.sdms.system.entity.RolesVO;
-import com.honest.sdms.system.entity.SysUserVO;
+import com.honest.sdms.system.entity.Roles;
+import com.honest.sdms.system.entity.SysUser;
 import com.honest.sdms.system.service.IBusinessManagerService;
 import com.honest.sdms.tools.StringUtil;
 
@@ -40,7 +40,7 @@ public class PermissionsRealm extends AuthorizingRealm{
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authcToken) throws AuthenticationException {
 		logger.info("******doGetAuthenticationInfo*******");
-		SysUserVO sysUser = null;
+		SysUser sysUser = null;
 		try {
 			sysUser = businessManagerService.queryPermissions((CaptchaUsernamePasswordToken) authcToken);
 		} catch (HSException e) {
@@ -65,7 +65,7 @@ public class PermissionsRealm extends AuthorizingRealm{
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection PrincipalCollection) {
 		logger.info("******doGetAuthorizationInfo*******");
-		SysUserVO user = Constants.getCurrentSysUser();
+		SysUser user = Constants.getCurrentSysUser();
         SimpleAuthorizationInfo simpleAuthorInfo = new SimpleAuthorizationInfo();  
         simpleAuthorInfo.addRoles(getRoles(user));
         simpleAuthorInfo.addStringPermissions(user.getButtonGroups());
@@ -77,10 +77,10 @@ public class PermissionsRealm extends AuthorizingRealm{
      * @param user
      * @return
      */    
-	private List<String> getRoles(SysUserVO user) {
+	private List<String> getRoles(SysUser user) {
         List<String> roles = new ArrayList<String>();
         if(user.getRoles() != null){
-        	for (RolesVO role : user.getRoles()) {
+        	for (Roles role : user.getRoles()) {
                 roles.add(role.getRoleCode());
             }
         }

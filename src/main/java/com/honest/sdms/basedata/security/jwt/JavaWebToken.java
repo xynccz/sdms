@@ -44,31 +44,9 @@ public class JavaWebToken {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS512;
         byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(Secret);
         Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
-//      Key key = MacProvider.generateKey();
         return signingKey;
     }
     
-    /**
-     * 使用HS512签名算法和生成的signingKey最终的Token
-     * @param claims 有效载荷 数据声明,其实就是一个Map，比如我们想放入用户名，可以简单的创建一个Map然后put进去就可以了,比如：
-     * 			Map<String, Object> claims = new HashMap<>(); 
-     * 			claims.put("username", username());
-     * @param outTimeMillis超时时间(单位毫秒)
-     * @return
-     */
-    public static String generateToken(Map<String, Object> claims, Long outTimeMillis) {
-    	JwtBuilder builder = Jwts.builder().setClaims(claims)
-    			.signWith(SignatureAlgorithm.HS512, getKeyInstance());
-    	
-    	//如果知道超时时间的话，就设置token超时时间
-    	if (outTimeMillis != null && outTimeMillis >= 0) {
-    		long expMillis = System.currentTimeMillis() + outTimeMillis;
-    		Date exp = new Date(expMillis);
-    		builder.setExpiration(exp);
-    	}
-        return builder.compact();
-    }
-
     /**
      * 验证JWT
      * @param jwtStr
@@ -105,6 +83,28 @@ public class JavaWebToken {
     }
     
     /**
+     * 使用HS512签名算法和生成的signingKey最终的Token
+     * @param claims 有效载荷 数据声明,其实就是一个Map，比如我们想放入用户名，可以简单的创建一个Map然后put进去就可以了,比如：
+     * 			Map<String, Object> claims = new HashMap<>(); 
+     * 			claims.put("username", username());
+     * @param outTimeMillis超时时间(单位毫秒)
+     * @return
+     */
+    public static String generateToken(Map<String, Object> claims) {
+    	JwtBuilder builder = Jwts.builder().setClaims(claims)
+    			.signWith(SignatureAlgorithm.HS512, getKeyInstance());
+    	
+    	//如果知道超时时间的话，就设置token超时时间
+    	Object outTimeMillis = claims.get("tokenExpiration");
+    	if (outTimeMillis != null && Long.parseLong(outTimeMillis.toString()) >= 0) {
+    		long expMillis = System.currentTimeMillis() + Long.parseLong(outTimeMillis.toString());
+    		Date exp = new Date(expMillis);
+    		builder.setExpiration(exp);
+    	}
+        return builder.compact();
+    }
+    
+    /**
 	 * 生成带主题信息的token码
 	 * @param id 设置token码id
 	 * @param issuer发布者
@@ -132,33 +132,35 @@ public class JavaWebToken {
 		//Builds the JWT and serializes it to a compact, URL-safe string
 		return builder.compact();
 	}
+	
+	/**
+	 * token校验结果类
+	 * @author beisi
+	 *
+	 */
+	public static class TokenCheckResult {
+		private String errorCode;
+		private Boolean isSucess;
+		private Claims claims;
+		public String getErrorCode() {
+			return errorCode;
+		}
+		public void setErrorCode(String errorCode) {
+			this.errorCode = errorCode;
+		}
+		public Boolean getIsSucess() {
+			return isSucess;
+		}
+		public void setIsSucess(Boolean isSucess) {
+			this.isSucess = isSucess;
+		}
+		public Claims getClaims() {
+			return claims;
+		}
+		public void setClaims(Claims claims) {
+			this.claims = claims;
+		}
+	}
 }
 
-/**
- * token校验结果类
- * @author beisi
- *
- */
-class TokenCheckResult {
-	private String errorCode;
-	private Boolean isSucess;
-	private Claims claims;
-	public String getErrorCode() {
-		return errorCode;
-	}
-	public void setErrorCode(String errorCode) {
-		this.errorCode = errorCode;
-	}
-	public Boolean getIsSucess() {
-		return isSucess;
-	}
-	public void setIsSucess(Boolean isSucess) {
-		this.isSucess = isSucess;
-	}
-	public Claims getClaims() {
-		return claims;
-	}
-	public void setClaims(Claims claims) {
-		this.claims = claims;
-	}
-}
+

@@ -2,7 +2,7 @@ package com.honest.sdms.system.entity;
 
 import com.honest.sdms.basedata.entity.BaseVO;
 
-public class RoleResourceVO extends BaseVO{
+public class RoleResource extends BaseVO{
 	
 	private static final long serialVersionUID = 1L;
 	private Long id;

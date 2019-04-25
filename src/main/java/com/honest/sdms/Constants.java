@@ -1,9 +1,13 @@
 package com.honest.sdms;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 
-import com.honest.sdms.system.entity.SysUserVO;
+import com.honest.sdms.system.entity.SysUser;
 
 public class Constants {
 	 
@@ -18,8 +22,8 @@ public class Constants {
 	 
 	 public static final String KAPTCHA_SESSION_KEY = "KAPTCHA_SESSION_KEY";//验证码id
 	 
-	 public static final String TOKEN_NAME = "token.name";
-	 public static final String TOKEN = "token";
+	 public static final String TOKEN_NAME = "token";
+	 public static final String TOKEN_HEAD = "X-Token";
 	 public static final String SYS_USER = "sysuser";
 	 
 	 public static final String ORGANIZATIONID = "organizationId";
@@ -53,11 +57,30 @@ public class Constants {
 		 public static final String UPDATE = "update";
 	 }
 	 
-	 public static SysUserVO getCurrentSysUser(){
+	 public static SysUser getCurrentSysUser(){
 		 Subject subject = SecurityUtils.getSubject();//第一步:获取我们的主体
-	     SysUserVO user = (SysUserVO) subject.getPrincipal();
+	     SysUser user = (SysUser) subject.getPrincipal();
 	     return user;
 	 }
 	 
-
+	 /**
+	  * 生成token载体
+	  * @param tokenExpiration 超时时间，单位毫秒
+	  * @return
+	  */
+	 public static Map<String, Object> getClaims(Long tokenExpiration){
+		 SysUser user =  getCurrentSysUser();
+		 Map<String, Object> claims = new HashMap<>(); 
+		 claims.put("loginName", user.getLoginName());
+		 claims.put("passWord", user.getLoginPassword());
+		 claims.put("uuid", UUID.randomUUID());
+		 if(tokenExpiration != null)
+			 claims.put("tokenExpiration", tokenExpiration);
+		 return claims;
+	 }
+	 
+	 public static Map<String, Object> getClaims(){
+		 return getClaims(null);
+	 }
+	 
 }

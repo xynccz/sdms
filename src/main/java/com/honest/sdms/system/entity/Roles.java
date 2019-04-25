@@ -7,7 +7,7 @@ import com.honest.sdms.basedata.entity.BaseVO;
  * @author beisi
  *
  */
-public class RolesVO extends BaseVO {
+public class Roles extends BaseVO {
 	
 	private static final long serialVersionUID = 1L;
 

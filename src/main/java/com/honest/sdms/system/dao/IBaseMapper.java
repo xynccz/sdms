@@ -1,6 +1,7 @@
-package com.honest.sdms.basedata.dao;
+package com.honest.sdms.system.dao;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.honest.sdms.basedata.entity.BaseVO;
 
@@ -11,7 +12,7 @@ import com.honest.sdms.basedata.entity.BaseVO;
  * @param <T>
  * @param <PK>
  */
-public interface IBaseDao<T extends BaseVO, PK extends Serializable>{
+public interface IBaseMapper<T extends BaseVO, PK extends Serializable>{
 
     int insert(T model);
 
@@ -24,5 +25,9 @@ public interface IBaseDao<T extends BaseVO, PK extends Serializable>{
     T selectByPrimaryKey(PK id);
     
     int deleteByPrimaryKey(PK id);
+    
+    int count(T cond);
+    
+    List<T> findByCond(T cond);
 
 }

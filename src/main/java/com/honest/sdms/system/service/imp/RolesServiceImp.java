@@ -2,38 +2,47 @@ package com.honest.sdms.system.service.imp;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.honest.sdms.system.dao.IBaseMapper;
 import com.honest.sdms.system.dao.RolesMapper;
-import com.honest.sdms.system.entity.RolesVO;
+import com.honest.sdms.system.entity.Roles;
 import com.honest.sdms.system.service.IRolesService;
 
 @Service("rolesService")
-public class RolesServiceImp implements IRolesService{
+public class RolesServiceImp extends BaseServiceImp<Roles, Long> implements IRolesService{
 
-	@Autowired
-	private RolesMapper roleMapper;
+	private RolesMapper rolesMapper;
 
+	@Resource
+	@Qualifier("rolesMapper")
 	@Override
-	public int saveRoles(RolesVO role) {
-		return roleMapper.insert(role);
+	public void setBaseDao(IBaseMapper<Roles, Long> baseMapper) {
+		this.baseMapper = baseMapper;
+		rolesMapper = (RolesMapper)baseMapper;
+	}
+	
+	@Override
+	public int saveRoles(Roles role) {
+		return rolesMapper.insert(role);
 	}
 
 	@Override
-	public void saveListRoles(List<RolesVO> list) {
+	public void saveListRoles(List<Roles> list) {
 		if(list != null && list.size() > 0)
 		{
-			for(RolesVO vo : list) {
+			for(Roles vo : list) {
 				saveRoles(vo);
 			}
 		}
 	}
 
 	@Override
-	public List<RolesVO> findRolesByUserId(Long userId, Long organizationId) {
-		return roleMapper.findRolesByUserId(userId, organizationId);
+	public List<Roles> findRolesByUserId(Long userId, Long organizationId) {
+		return rolesMapper.findRolesByUserId(userId, organizationId);
 	}
-	
 
 }

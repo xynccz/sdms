@@ -2,12 +2,12 @@ package com.honest.sdms.system.service;
 
 import java.util.List;
 
-import com.honest.sdms.system.entity.SysUserVO;
+import com.honest.sdms.system.entity.SysUser;
 
-public interface ISysUserService {
+public interface ISysUserService extends IBaseService<SysUser, Long>{
 	
-	abstract List<SysUserVO> findSysUsersByCond(SysUserVO cond);
+	abstract List<SysUser> findSysUsersByCond(SysUser cond);
 	
-	abstract int saveSysUser(SysUserVO sysUser);
+	abstract int saveSysUser(SysUser sysUser);
 
 }

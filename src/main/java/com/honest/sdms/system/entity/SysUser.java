@@ -4,34 +4,29 @@ import java.util.List;
 
 import com.honest.sdms.basedata.entity.BaseVO;
 
-public class SysUserVO extends BaseVO{
+public class SysUser extends BaseVO{
 
 	private static final long serialVersionUID = 1L;
-
 	private Long userId;
-
     private String loginName;
-
     private String loginPassword;
-
     private String userName;
-
     private String sex;
-
     private String phoneNumber;
-
     private String telephone;
-
     private String email;
-
     private String isValid;
+    protected Long organizationId;
     
     private List<String> buttonGroups;//按钮组权限
-	private List<String> menusGroups;//菜单组权限
+	private String menus;//当前用户左侧菜单列表
 	private Long[] roleIds;
-	private List<RolesVO> roles;
+	private List<Roles> roles;
 
-	public SysUserVO(String loginName, String passWord, Long organizationId, String isValid) {
+	public SysUser() {
+	}
+	
+	public SysUser(String loginName, String passWord, Long organizationId, String isValid) {
 		this.loginName = loginName;
 		this.loginPassword = passWord;
 		this.organizationId = organizationId;
@@ -118,12 +113,12 @@ public class SysUserVO extends BaseVO{
 		this.buttonGroups = buttonGroups;
 	}
 
-	public List<String> getMenusGroups() {
-		return menusGroups;
+	public String getMenus() {
+		return menus;
 	}
 
-	public void setMenusGroups(List<String> menusGroups) {
-		this.menusGroups = menusGroups;
+	public void setMenus(String menus) {
+		this.menus = menus;
 	}
 
 	public Long[] getRoleIds() {
@@ -134,11 +129,11 @@ public class SysUserVO extends BaseVO{
 		this.roleIds = roleIds;
 	}
 
-	public List<RolesVO> getRoles() {
+	public List<Roles> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(List<RolesVO> roles) {
+	public void setRoles(List<Roles> roles) {
 		this.roles = roles;
 	}
     

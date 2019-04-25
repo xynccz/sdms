@@ -23,6 +23,5 @@ public class WebAppConfig implements WebMvcConfigurer {
         .excludePathPatterns("/emp/toLogin","/emp/login","/js/**","/css/**","/images/**");
     }
     
-    
 
 }

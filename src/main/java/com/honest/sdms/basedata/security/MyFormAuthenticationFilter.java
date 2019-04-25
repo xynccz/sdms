@@ -3,6 +3,7 @@ package com.honest.sdms.basedata.security;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.shiro.authc.AuthenticationException;
@@ -11,9 +12,10 @@ import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.honest.sdms.Constants;
-import com.honest.sdms.system.entity.SysUserVO;
 import com.honest.sdms.tools.StringUtil;
 
 /**
@@ -25,6 +27,7 @@ import com.honest.sdms.tools.StringUtil;
  */
 public class MyFormAuthenticationFilter extends FormAuthenticationFilter{
 	private static Logger logger = LoggerFactory.getLogger(MyFormAuthenticationFilter.class);
+	
 	/**
 	 * 获取验证码值
 	 * @param request
@@ -40,45 +43,44 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter{
 	 * @return
 	 */
 	protected Long getOrganizationId(ServletRequest request) { 
-		
 		String organization =  WebUtils.getCleanParam(request, Constants.ORGANIZATIONID); 
-		
 		if(!StringUtil.isNullOrEmpty(organization) && StringUtil.isDigit(organization))
 		{
 			return Long.parseLong(organization);
 		}
-		
 		return 360L;//设置个默认值，为以后多账套系统保留功能
 	}
 	
+	
+	/**
+	  * 最先执行的方法,对跨域提供支持
+	  */
+	@Override
+	protected boolean preHandle(ServletRequest request, ServletResponse response) throws Exception {
+		  
+		HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+		
+		httpServletResponse.setHeader("Access-control-Allow-Origin", httpServletRequest.getHeader("Origin"));
+		httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
+		httpServletResponse.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS,PUT,DELETE");
+		httpServletResponse.setHeader("Access-Control-Allow-Headers", httpServletRequest.getHeader("Access-Control-Request-Headers"));
+		
+		// 跨域时会首先发送一个option请求，这里我们给option请求直接返回正常状态
+		 if (httpServletRequest.getMethod().equals(RequestMethod.OPTIONS.name())) {
+			 httpServletResponse.setStatus(HttpStatus.OK.value()); return false; 
+		 }
+		return super.preHandle(request, response);
+	}
 	
 	/**
      * 每次被authc拦截的url都会到这里来，这里用来处理 不注销之前已登录用户下，再次登录
      */
 	@Override
 	protected boolean isAccessAllowed(ServletRequest request,ServletResponse response, Object mappedValue) {
-		logger.info("*************isAccessAllowed***************");
-		
-		if(isLoginRequest(request, response)){
-			
-			if(isLoginSubmission(request, response)){
-				//本次用户登陆账号
-                String account = this.getUsername(request);
-                
-                //之前登陆的用户
-                Subject subject = this.getSubject(request, response);
-                SysUserVO user = (SysUserVO) subject.getPrincipal();
-                
-                //如果两次登陆的用户一样，则先退出之前登陆的用户
-                if (account != null && user != null && !account.equals(user.getLoginName())){
-                    //注销之前登录用户
-                    subject.logout();
-                }
-			}
-		}
 		return super.isAccessAllowed(request, response, mappedValue);
 	}
-
+	
 	/**
      * 用户自定义验证方法，这里用来做验证码及账套的验证
      * 此方法第一次登录会进来，执行executeLogin方法前执行，验证通过返回false，验证不通过返回true

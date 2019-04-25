@@ -4,11 +4,10 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.honest.sdms.basedata.dao.IBaseDao;
-import com.honest.sdms.system.entity.RolesVO;
+import com.honest.sdms.system.entity.Roles;
 
-public interface RolesMapper extends IBaseDao<RolesVO, Long> {
+public interface RolesMapper extends IBaseMapper<Roles, Long> {
 	
-	abstract List<RolesVO> findRolesByUserId(@Param("userId") Long userId, @Param("organizationId") Long organizationId);
+	abstract List<Roles> findRolesByUserId(@Param("userId") Long userId, @Param("organizationId") Long organizationId);
 	
 }
