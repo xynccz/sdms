@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.honest.sdms.system.dao.RoleResourceMapper">
-  <resultMap id="BaseResultMap" type="com.honest.sdms.system.entity.RoleResourceVO">
+  <resultMap id="BaseResultMap" type="com.honest.sdms.system.entity.RoleResource">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="role_id" jdbcType="BIGINT" property="roleId" />
     <result column="resource_id" jdbcType="BIGINT" property="resourceId" />
@@ -20,13 +20,13 @@
     delete from role_resource
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.honest.sdms.system.entity.RoleResourceVO">
+  <insert id="insert" parameterType="com.honest.sdms.system.entity.RoleResource">
     insert into role_resource (id, role_id, resource_id, 
       organization_id)
     values (#{id,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}, #{resourceId,jdbcType=BIGINT}, 
       #{organizationId,jdbcType=BIGINT})
   </insert>
-  <insert id="insertSelective" parameterType="com.honest.sdms.system.entity.RoleResourceVO">
+  <insert id="insertSelective" parameterType="com.honest.sdms.system.entity.RoleResource">
     insert into role_resource
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -57,7 +57,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.honest.sdms.system.entity.RoleResourceVO">
+  <update id="updateByPrimaryKeySelective" parameterType="com.honest.sdms.system.entity.RoleResource">
     update role_resource
     <set>
       <if test="roleId != null">
@@ -72,7 +72,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.honest.sdms.system.entity.RoleResourceVO">
+  <update id="updateByPrimaryKey" parameterType="com.honest.sdms.system.entity.RoleResource">
     update role_resource
     set role_id = #{roleId,jdbcType=BIGINT},
       resource_id = #{resourceId,jdbcType=BIGINT},
