@@ -45,7 +45,7 @@ public class SysUserController extends BaseController{
 		JSONObject result = new JSONObject();
 		PageInfo<SysUser> pageInfo = sysUserService.findByCondWithPage(cond, sortName, sortOrder, pageNum, pageSize);
 		result.put("total", pageInfo.getTotal());
-		result.put("rows", JsonUtil.formatObjectWithDate(pageInfo.getList()));
+		result.put("rows", JsonUtil.formatListWithDate(pageInfo.getList()));
 		result.put("pageNum", pageInfo.getPageNum());
 		return result.toString();
 	}
