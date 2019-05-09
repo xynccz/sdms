@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.github.pagehelper.PageInfo;
+import com.honest.sdms.basedata.APIResponse;
+import com.honest.sdms.basedata.ResultStatus;
+import com.honest.sdms.basedata.exceptions.HSException;
 import com.honest.sdms.system.entity.Roles;
 import com.honest.sdms.system.entity.SysUser;
 import com.honest.sdms.system.service.IRolesService;
@@ -37,24 +40,39 @@ public class SysUserController extends BaseController{
 	 * @param sortOrder
 	 * @return
 	 */
-	@RequestMapping(value = "/search", method = RequestMethod.POST, produces={"text/html;charset=UTF-8;"})
+	@RequestMapping(value = "/search", method = RequestMethod.POST, produces={"application/json;charset=UTF-8;"})
 	public @ResponseBody String searchUsers(SysUser cond,int pageNum,int pageSize,String sortName, String sortOrder){
 		JSONObject result = new JSONObject();
 		PageInfo<SysUser> pageInfo = sysUserService.findByCondWithPage(cond, sortName, sortOrder, pageNum, pageSize);
 		result.put("total", pageInfo.getTotal());
-		result.put("rows", JsonUtil.formatListWithDate(pageInfo.getList()));
+		result.put("rows", JsonUtil.formatObjectWithDate(pageInfo.getList()));
 		result.put("pageNum", pageInfo.getPageNum());
 		return result.toString();
 	}
 	
-	@RequestMapping(value = "/getUserRoles", method = RequestMethod.GET, produces={"text/html;charset=UTF-8;"})
-	public String getUserRoles(@RequestParam("userId") Long userId) {
+	/**
+	 * 新增和更新用户
+	 * @throws HSException 
+	 * @throws CustomException 
+	 */
+	@RequestMapping(value="/saveUser",method={RequestMethod.POST})
+	public @ResponseBody APIResponse<String> saveUser(SysUser user) throws HSException{
+		sysUserService.saveOrUpdateSysUser(user);
+		return new APIResponse<String>(ResultStatus.OK);
+	}
+	
+	@RequestMapping(value = "/getUserRoles", method = RequestMethod.GET, produces={"application/json;charset=UTF-8;"})
+	public @ResponseBody APIResponse<JSONObject> getUserRoles(@RequestParam(value = "userId",required = false) Long userId) {
 		JSONObject obj = new JSONObject();
+		Long[] roleIds = null;
 		//获取用户所包含的角色
-		List<Roles> currentRoles = rolesService.findRolesByUserId(userId, getOrganizationId());
-		Long[] roleIds = new Long[currentRoles.size()];
-		for(int i = 0,len = currentRoles.size();i < len;i++) {
-			roleIds[i] = currentRoles.get(i).getRoleId();
+		if(userId != null)
+		{
+			List<Roles> currentRoles = rolesService.findRolesByUserId(userId, getOrganizationId());
+			roleIds = new Long[currentRoles.size()];
+			for(int i = 0,len = currentRoles.size();i < len;i++) {
+				roleIds[i] = currentRoles.get(i).getRoleId();
+			}
 		}
 		
 		//获取系统角色列表
@@ -64,13 +82,12 @@ public class SysUserController extends BaseController{
 			JSONObject json = new JSONObject();
 			json.put("value", role.getRoleId());
 			json.put("label", role.getRoleName());
-			
 			array.add(json);
 		}
 		
-		obj.put("value", roleIds);
+		obj.put("roleIds", roleIds == null?new Long[0]:roleIds);
 		obj.put("options", array);
-		return obj.toString();
+		return new APIResponse<JSONObject>(obj);
 	}
 	
 }
