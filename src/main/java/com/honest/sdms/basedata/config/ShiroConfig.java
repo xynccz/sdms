@@ -1,4 +1,4 @@
-package com.honest.sdms.basedata;
+package com.honest.sdms.basedata.config;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -43,7 +43,7 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setLoginUrl("/login");
         shiroFilterFactoryBean.setSuccessUrl("/index");
         // 设置无权限时跳转的 url;
-        shiroFilterFactoryBean.setUnauthorizedUrl("/jsp/error22/error22.jsp");
+        shiroFilterFactoryBean.setUnauthorizedUrl("/jsp/error/error.jsp");
         
         //获取filters
         Map<String, Filter> filters = shiroFilterFactoryBean.getFilters();
