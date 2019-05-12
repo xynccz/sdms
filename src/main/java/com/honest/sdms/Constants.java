@@ -14,6 +14,8 @@ public class Constants {
 	public static final Integer BUTTON = 3;//按钮
 	public static final Integer MENU = 2;//菜单
 	public static final Integer MODEL = 1;//模块
+	public static final String DEFAULT_PASSWORD = "123456";
+	public static final Long DEFAULT_ORGANIZATIONID = 360L;
 	
 	public static final int DEFAULT_PAGE_SIZE = 20;
 	 

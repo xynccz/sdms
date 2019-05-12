@@ -14,6 +14,7 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 
 import com.honest.sdms.Constants;
 import com.honest.sdms.basedata.exceptions.HSException;
@@ -30,8 +31,10 @@ import com.honest.sdms.tools.StringUtil;
  */
 public class PermissionsRealm extends AuthorizingRealm{
 	private Logger logger = LoggerFactory.getLogger(PermissionsRealm.class);
+	
 	// 用于获取用户信息及用户权限信息的业务接口
 	@Autowired
+	@Lazy
 	private IBusinessManagerService businessManagerService; 
 
 	/**

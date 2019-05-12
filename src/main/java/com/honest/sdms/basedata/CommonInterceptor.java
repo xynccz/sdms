@@ -3,7 +3,6 @@ package com.honest.sdms.basedata;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,65 +40,41 @@ public class CommonInterceptor extends HandlerInterceptorAdapter{
 	@Override
 	public boolean preHandle(HttpServletRequest request,HttpServletResponse response, Object handler) 
 			throws Exception {
-		logger.info(request.getMethod()+"==============执行顺序: 1、preHandle================"+request.getRequestURI());
+		
+		logger.info("*****url:{}; methodType:{}*****",request.getRequestURI(), request.getMethod());
 		
 		//XSS攻击：跨站脚本攻击,设置https的cookie可以预防xss攻击
 		response.addHeader("Set-Cookie", "uid=112; Path=/; Secure; HttpOnly");
 		
 		/*
-		 * 
 		 * 校验token
 		 */
-		String requestUrl = request.getRequestURI();
-		if(!"/login".equals(requestUrl) 
-				&& !"/index".equals(requestUrl)
-				&& !"/verifyCode".equals(requestUrl)
-				&& !"/getout".equals(requestUrl))
+		String token = request.getHeader(Constants.TOKEN_HEAD);
+		JavaWebToken.TokenCheckResult tokenRst = JavaWebToken.validateJWT(token);
+		if (tokenRst == null || !tokenRst.getIsSucess()) 
 		{
-			boolean isPass = true;
-			String token = request.getHeader(Constants.TOKEN_HEAD);
-            if (StringUtils.isNotEmpty(token)) 
-            {
-            	JavaWebToken.TokenCheckResult tokenRst = JavaWebToken.validateJWT(token);
-                if (!tokenRst.getIsSucess()) 
-                {
-                	isPass = false;
-                }
-            }else 
-            {
-            	isPass = false;
-            }
-            
-            if(!isPass) 
-            {
-            	logger.info("*********token校验不通过**********");
-            	SecurityUtils.getSubject().logout();
-            	response.setStatus(HttpStatus.GATEWAY_TIMEOUT.value());
-            	return false;
-            }
+			logger.error("*****token校验不通过,token:{}*****",token);
+			SecurityUtils.getSubject().logout();
+			response.setStatus(HttpStatus.GATEWAY_TIMEOUT.value());
+			return false;
 		}
+
 		return true;
 	}
 	
 	/** 
      * 在业务处理器处理请求执行完成后,生成视图之前执行的动作    
-     * 可在modelAndView中加入数据，比如当前时间 
      */
 	@Override
 	public void postHandle(HttpServletRequest request,HttpServletResponse response, Object handler,ModelAndView modelAndView) 
 			throws Exception {
-		System.out.println(request.getRequestURI());
 		/*
 		 * 数据正常请求返回结果，更新token传到前台
+		 * 更新思路：重新生成token，指定失效时间（前台可配置）
 		 */
-		String requestUrl = request.getRequestURI();
-		if(!"/login".equals(requestUrl) 
-				&& !"/verifyCode".equals(requestUrl)
-				&& !"/getout".equals(requestUrl))
-		{
-			String updateToken = JavaWebToken.generateToken(Constants.getClaims(tokenExpiration));
-			response.addHeader(Constants.TOKEN_NAME, updateToken);
-		}
+		String updateToken = JavaWebToken.generateToken(Constants.getClaims(tokenExpiration));
+		response.addHeader(Constants.TOKEN_NAME, updateToken);
+		
 		response.setStatus(HttpStatus.OK.value());
 	}
 	
@@ -110,6 +85,7 @@ public class CommonInterceptor extends HandlerInterceptorAdapter{
 	@Override
 	public void afterCompletion(HttpServletRequest request,HttpServletResponse response, Object handler, Exception ex)
 			throws Exception{
+		super.afterCompletion(request, response, handler, ex);
 	}
 
 }

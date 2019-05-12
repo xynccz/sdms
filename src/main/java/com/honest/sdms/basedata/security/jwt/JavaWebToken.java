@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.honest.sdms.Constants;
+import com.honest.sdms.tools.StringUtil;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -53,7 +54,7 @@ public class JavaWebToken {
      * @return
      */
     public static TokenCheckResult validateJWT(String token) {
-    	if(token == null)
+    	if(StringUtil.isNullOrEmpty(token))
     		return null;
     	
     	TokenCheckResult checkResult = new TokenCheckResult();
