@@ -2,8 +2,6 @@ package com.honest.sdms.system.entity;
 
 import java.util.List;
 
-import com.honest.sdms.basedata.entity.BaseVO;
-
 public class SysUser extends BaseVO{
 
 	private static final long serialVersionUID = 1L;
@@ -17,7 +15,7 @@ public class SysUser extends BaseVO{
     private String email;
     private String isValid;
     protected Long organizationId;
-    
+    private String selectRoleIds;
     private List<String> buttonGroups;//按钮组权限
 	private String menus;//当前用户左侧菜单列表
 	private Long[] roleIds;
@@ -49,7 +47,15 @@ public class SysUser extends BaseVO{
         this.loginName = loginName == null ? null : loginName.trim();
     }
 
-    public String getLoginPassword() {
+    public String getSelectRoleIds() {
+		return selectRoleIds;
+	}
+
+	public void setSelectRoleIds(String selectRoleIds) {
+		this.selectRoleIds = selectRoleIds;
+	}
+
+	public String getLoginPassword() {
         return loginPassword;
     }
 

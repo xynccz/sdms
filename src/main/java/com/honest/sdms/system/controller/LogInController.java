@@ -1,7 +1,5 @@
 package com.honest.sdms.system.controller;
 
-
-
 import java.io.UnsupportedEncodingException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,7 +9,6 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,8 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.honest.sdms.Constants;
 import com.honest.sdms.basedata.security.jwt.JavaWebToken;
 import com.honest.sdms.system.entity.SysUser;
-import com.honest.sdms.system.service.IRolesService;
-import com.honest.sdms.system.service.ISysUserService;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -35,10 +30,6 @@ public class LogInController extends BaseController{
 	@Value("${jwt.token-expiration}")
     private Long tokenExpiration;
 	
-	@Autowired
-	private IRolesService rolesService;
-	
-
 	@RequestMapping(value = "/login", method = {RequestMethod.POST},produces={"application/json;charset=UTF-8;","application/json;"})
 	@ResponseBody
 	public String login(HttpServletRequest request) {
@@ -82,6 +73,7 @@ public class LogInController extends BaseController{
 	
 	@RequestMapping(value = "/getout", method = {RequestMethod.GET})
     public void getout() {
+		logger.info("*****退出当前登录，{}*****",Constants.getCurrentSysUser().getUserName());
         SecurityUtils.getSubject().logout();
     }
 	

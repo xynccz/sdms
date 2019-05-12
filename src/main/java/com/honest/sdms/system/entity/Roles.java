@@ -1,7 +1,5 @@
 package com.honest.sdms.system.entity;
 
-import com.honest.sdms.basedata.entity.BaseVO;
-
 /**
  * 角色表
  * @author beisi

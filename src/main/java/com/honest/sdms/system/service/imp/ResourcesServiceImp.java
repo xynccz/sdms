@@ -12,7 +12,7 @@ import com.honest.sdms.system.dao.ResourcesMapper;
 import com.honest.sdms.system.entity.Resources;
 import com.honest.sdms.system.service.IResourcesService;
 
-@Service("resourcesService")
+@Service
 public class ResourcesServiceImp extends BaseServiceImp<Resources, Long> implements IResourcesService{
 	
 	private ResourcesMapper resourcesMapper; 

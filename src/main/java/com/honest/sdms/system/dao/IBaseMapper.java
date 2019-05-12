@@ -3,7 +3,7 @@ package com.honest.sdms.system.dao;
 import java.io.Serializable;
 import java.util.List;
 
-import com.honest.sdms.basedata.entity.BaseVO;
+import com.honest.sdms.system.entity.BaseVO;
 
 /**
  * DAO基础类

@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.github.pagehelper.PageInfo;
-import com.honest.sdms.basedata.entity.BaseVO;
+import com.honest.sdms.system.entity.BaseVO;
 
 public interface IBaseService<T extends BaseVO, PK extends Serializable> {
 	

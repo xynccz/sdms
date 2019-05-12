@@ -1,7 +1,5 @@
 package com.honest.sdms.system.entity;
 
-import com.honest.sdms.basedata.entity.BaseVO;
-
 /**
  * 用户与角色关系
  * @author beisi
@@ -14,6 +12,11 @@ public class UserRole extends BaseVO{
     private Long userId;
     private Long roleId;
 
+    public UserRole(Long userId, Long roleId) {
+    	this.userId = userId;
+    	this.roleId = roleId;
+    }
+    
     public Long getId() {
         return id;
     }

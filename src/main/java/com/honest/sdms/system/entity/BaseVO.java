@@ -1,4 +1,4 @@
-package com.honest.sdms.basedata.entity;
+package com.honest.sdms.system.entity;
 
 import java.util.Date;
 

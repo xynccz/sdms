@@ -12,7 +12,7 @@ import com.honest.sdms.system.dao.RolesMapper;
 import com.honest.sdms.system.entity.Roles;
 import com.honest.sdms.system.service.IRolesService;
 
-@Service("rolesService")
+@Service
 public class RolesServiceImp extends BaseServiceImp<Roles, Long> implements IRolesService{
 
 	private RolesMapper rolesMapper;

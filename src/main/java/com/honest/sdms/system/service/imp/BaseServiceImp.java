@@ -5,8 +5,8 @@ import java.util.List;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.honest.sdms.basedata.entity.BaseVO;
 import com.honest.sdms.system.dao.IBaseMapper;
+import com.honest.sdms.system.entity.BaseVO;
 import com.honest.sdms.system.service.IBaseService;
 
 public abstract class BaseServiceImp<T extends BaseVO, PK extends Serializable> implements IBaseService<T, PK> {
