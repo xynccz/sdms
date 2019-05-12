@@ -91,7 +91,7 @@
 		#{organizationId,jdbcType=BIGINT})
 	</insert>
 	<insert id="insertSelective"
-		parameterType="com.honest.sdms.system.entity.SysUser">
+		parameterType="com.honest.sdms.system.entity.SysUser" useGeneratedKeys="true" keyProperty="userId">
 		insert into sys_user
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="userId != null">

@@ -21,8 +21,7 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.honest.sdms.system.entity.RoleResource">
-    insert into role_resource (id, role_id, resource_id, 
-      organization_id)
+    insert into role_resource (id, role_id, resource_id, organization_id)
     values (#{id,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}, #{resourceId,jdbcType=BIGINT}, 
       #{organizationId,jdbcType=BIGINT})
   </insert>

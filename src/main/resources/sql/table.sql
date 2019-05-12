@@ -40,12 +40,19 @@ create table if not exists user_role(
 --权限表
 create table if not exists resources(
 	resource_id bigint primary key AUTO_INCREMENT,
-	title varchar(100) not null COMMENT '资源名称',
-	url varchar(100) not null COMMENT '资源链接',
 	parent_id bigint COMMENT '父项id',
+	title varchar(100) not null COMMENT '资源名称',
+	path varchar(100) COMMENT '地址索引',
+	icon varchar(100) COMMENT '图标',
+	url varchar(100) not null COMMENT '资源链接',
 	code varchar(100) COMMENT '权限标识,比如a:b:c',
 	type int COMMENT '菜单级别:1模块；2菜单；3按钮',
-	organization_id bigint not null COMMENT '组织号'
+	sort_order int not null unique COMMENT '菜单显示顺序',
+	organization_id bigint not null COMMENT '组织号',
+	created_by varchar(50),
+    created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    last_updated_by varchar(50),
+	last_updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间'
 )DEFAULT CHARSET=utf8 COMMENT='权限表';
 
 --角色与权限关系表
@@ -64,8 +71,8 @@ CREATE TABLE sys_dict_type(
 	status char(1) DEFAULT '0' NOT NULL COMMENT '状态（0正常 1停用）',
 	created_by varchar(64) NOT NULL COMMENT '创建者',
 	created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-	updated_by varchar(64) NOT NULL COMMENT '更新者',
-	updated_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+	last_updated_by varchar(64) NOT NULL COMMENT '更新者',
+	last_updated_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
 	remarks varchar(500) COMMENT '备注信息',
 	organization_id bigint not null COMMENT '组织号',
 	UNIQUE (dict_type,organization_id)
@@ -80,8 +87,8 @@ CREATE TABLE sys_dict_datas(
 	dict_id bigint NOT NULL COMMENT '字典类型',
 	created_by varchar(64) NOT NULL COMMENT '创建者',
 	created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-	updated_by varchar(64) NOT NULL COMMENT '更新者',
-	updated_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+	last_updated_by varchar(64) NOT NULL COMMENT '更新者',
+	last_updated_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
 	remarks varchar(500) COMMENT '备注信息',
 	organization_id bigint not null COMMENT '组织号',
 	foreign key (dict_id) references sys_dict_type(dict_id) on delete cascade on update cascade
