@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.honest.sdms.system.entity.Roles;
+import com.honest.sdms.system.entity.Role;
 
-public interface RolesMapper extends IBaseMapper<Roles, Long> {
+public interface RoleMapper extends IBaseMapper<Role, Long> {
 	
-	abstract List<Roles> findRolesByUserId(@Param("userId") Long userId, @Param("organizationId") Long organizationId);
+	abstract List<Role> findRolesByUserId(@Param("userId") Long userId, @Param("organizationId") Long organizationId);
 	
 }

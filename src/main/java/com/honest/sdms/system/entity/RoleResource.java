@@ -6,9 +6,18 @@ public class RoleResource extends BaseVO{
 	private Long id;
     private Long roleId;
     private Long resourceId;
+    private Integer type;//'菜单级别:1模块；2菜单；3按钮'
     private Long[] roleIdIn;
 
-    public Long getId() {
+    public Integer getType() {
+		return type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
+	}
+
+	public Long getId() {
         return id;
     }
 

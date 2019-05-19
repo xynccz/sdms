@@ -10,6 +10,12 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 
+import net.sourceforge.pinyin4j.PinyinHelper;
+import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
+import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
+import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
+import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
+
 @SuppressWarnings("restriction")
 public class StringUtil {   
     /**  
@@ -31,6 +37,8 @@ public class StringUtil {
      * @return the replaced String  
      */  
     public static String replace(String source, String[] s1, String[] s2){   
+    	if(source == null)
+    		return null;
         for(int i = 0;i < s1.length;i++){   
             source = StringUtil.replace(source, s1[i], s2[i]);   
         }   
@@ -108,6 +116,30 @@ public class StringUtil {
         return format;   
     }   
     
+    /**
+     * 汉字转为拼音
+     * @param chinese
+     * @return
+     */
+    public static String ToPinyin(String chinese){          
+        String pinyinStr = "";  
+        char[] newChar = chinese.toCharArray();  
+        HanyuPinyinOutputFormat defaultFormat = new HanyuPinyinOutputFormat();  
+        defaultFormat.setCaseType(HanyuPinyinCaseType.LOWERCASE);  
+        defaultFormat.setToneType(HanyuPinyinToneType.WITHOUT_TONE);  
+        for (int i = 0; i < newChar.length; i++) {  
+            if (newChar[i] > 128) {  
+                try {  
+                    pinyinStr += PinyinHelper.toHanyuPinyinStringArray(newChar[i], defaultFormat)[0];  
+                } catch (BadHanyuPinyinOutputFormatCombination e) {  
+                    e.printStackTrace();  
+                }  
+            }else{  
+                pinyinStr += newChar[i];  
+            }  
+        }  
+        return pinyinStr;  
+    }
     
     /**  
      * when given String is blank or blank after trim(), return null  
@@ -293,6 +325,8 @@ public class StringUtil {
         String[] strDist = {"&lt;","&gt;","&quot;","&#39;"};   
         System.out.println("source :" + title);   
         System.out.println("new:" + StringUtil.replace(title,strSrc,strDist));  
+        
+        System.out.println(StringUtil.ToPinyin("曹成志"));
     }   
   
   

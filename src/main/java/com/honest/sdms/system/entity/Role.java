@@ -5,7 +5,7 @@ package com.honest.sdms.system.entity;
  * @author beisi
  *
  */
-public class Roles extends BaseVO {
+public class Role extends BaseVO {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -14,6 +14,25 @@ public class Roles extends BaseVO {
 	private String roleName;
 	private String roleCode;//角色编码
 	private String description;
+	
+	private String checkedUserId;
+	private String reosurceIds;
+
+	public String getCheckedUserId() {
+		return checkedUserId;
+	}
+
+	public void setCheckedUserId(String checkedUserId) {
+		this.checkedUserId = checkedUserId;
+	}
+
+	public String getReosurceIds() {
+		return reosurceIds;
+	}
+
+	public void setReosurceIds(String reosurceIds) {
+		this.reosurceIds = reosurceIds;
+	}
 
 	public Long getRoleId() {
 		return roleId;

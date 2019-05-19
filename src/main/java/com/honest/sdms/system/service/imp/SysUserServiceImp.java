@@ -2,7 +2,6 @@ package com.honest.sdms.system.service.imp;
 
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
@@ -24,7 +23,6 @@ import com.honest.sdms.tools.StringUtil;
 public class SysUserServiceImp extends BaseServiceImp<SysUser, Long> implements ISysUserService{
 	
 	private SysUserMapper sysUserMapper;
-	private static Pattern SPLIT = Pattern.compile(",");
 	
 	@Autowired
 	private IUserRoleService userRoleService;
@@ -46,6 +44,11 @@ public class SysUserServiceImp extends BaseServiceImp<SysUser, Long> implements 
 	public int saveSysUser(SysUser sysUser) {
 		return sysUserMapper.insertSelective(sysUser);
 	}
+	
+	@Override
+	public List<SysUser> getUsersByRoleId(Long roleId, Long organizationId) {
+		return sysUserMapper.getUsersByRoleId(roleId,organizationId);
+	}
 
 	/**
 	 * 保存或新增用户信息
@@ -53,14 +56,12 @@ public class SysUserServiceImp extends BaseServiceImp<SysUser, Long> implements 
 	@Override
 	public void saveOrUpdateSysUser(SysUser user) throws HSException {
 
-		/*
-		 * 是保存新用户的操作
-		 */
+		//说明是新用户
 		if (user.getUserId() == null) {
 			user.setCreatedBy(Constants.getCurrentSysUser().getLoginName());
 			user.setCreatedDate(new Date());
 			user.setLoginPassword(StringUtil.encrypt(Constants.DEFAULT_PASSWORD));
-			user.setOrganizationId(Constants.DEFAULT_ORGANIZATIONID);
+			user.setOrganizationId(Constants.getCurrentSysUser().getOrganizationId());
 		}
 
 		user.setLastUpdatedBy(Constants.getCurrentSysUser().getLoginName());
@@ -73,22 +74,17 @@ public class SysUserServiceImp extends BaseServiceImp<SysUser, Long> implements 
 		}
 		
 		//更新角色信息
-		userRoleService.deleteRolesByUserId(user.getUserId(), user.getOrganizationId());
+		userRoleService.deleteRolesByUserId(user.getUserId());
 		String newRoleIds = StringUtil.replace(user.getSelectRoleIds(), new String[] {"[","]"}, new String[] {"",""});
 		if(!StringUtil.isNullOrEmpty(newRoleIds))
 		{
-			for(String roleId : SPLIT.split(newRoleIds)){
+			for(String roleId : Constants.SPLIT.split(newRoleIds)){
 				UserRole ur = new UserRole(user.getUserId(),Long.parseLong(roleId));
 				ur.setCreatedBy(Constants.getCurrentSysUser().getLoginName());
 				ur.setOrganizationId(user.getOrganizationId());
 				userRoleService.insertSelective(ur);
 			}
 		}
-	}
-	
-	public static void main(String[] args) {
-		String str = "[]";
-		System.out.println(StringUtil.replace(str, new String[] {"[","]"}, new String[] {"",""}));
 	}
 	
 }

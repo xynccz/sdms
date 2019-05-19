@@ -12,5 +12,7 @@ public interface ISysUserService extends IBaseService<SysUser, Long>{
 	abstract int saveSysUser(SysUser sysUser);
 	
 	abstract void saveOrUpdateSysUser(SysUser user) throws HSException;
+	
+	abstract List<SysUser> getUsersByRoleId(Long roleId,Long organizationId);
 
 }

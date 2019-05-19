@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.honest.sdms.Constants;
 import com.honest.sdms.system.dao.IBaseMapper;
 import com.honest.sdms.system.dao.UserRoleMapper;
 import com.honest.sdms.system.entity.UserRole;
@@ -23,11 +24,13 @@ public class UserRoleServiceImp extends BaseServiceImp<UserRole, Long> implement
 	}
 
 	@Override
-	public void deleteRolesByUserId(Long userId, Long organizationId) {
-		userRoleMapper.deleteRolesByUserId(userId, organizationId);
+	public void deleteRolesByUserId(Long userId) {
+		userRoleMapper.deleteRolesByUserId(userId, Constants.getCurrentSysUser().getOrganizationId());
 	}
 
-	
-
+	@Override
+	public void deleteUsersByRoleId(Long roleId) {
+		userRoleMapper.deleteUsersByRoleId(roleId, Constants.getCurrentSysUser().getOrganizationId());
+	}
 	
 }

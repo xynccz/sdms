@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Lazy;
 
 import com.honest.sdms.Constants;
 import com.honest.sdms.basedata.exceptions.HSException;
-import com.honest.sdms.system.entity.Roles;
+import com.honest.sdms.system.entity.Role;
 import com.honest.sdms.system.entity.SysUser;
 import com.honest.sdms.system.service.IBusinessManagerService;
 import com.honest.sdms.tools.StringUtil;
@@ -83,7 +83,7 @@ public class PermissionsRealm extends AuthorizingRealm{
 	private List<String> getRoles(SysUser user) {
         List<String> roles = new ArrayList<String>();
         if(user.getRoles() != null){
-        	for (Roles role : user.getRoles()) {
+        	for (Role role : user.getRoles()) {
                 roles.add(role.getRoleCode());
             }
         }

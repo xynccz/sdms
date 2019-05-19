@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.honest.sdms.system.entity.Resources;
 
+import net.sf.json.JSONArray;
+
 public interface IResourcesService extends IBaseService<Resources, Long> {
 
 	/**
@@ -12,5 +14,11 @@ public interface IResourcesService extends IBaseService<Resources, Long> {
 	 * @param organizationId 组织账套
 	 * @return
 	 */
-	public List<Resources> findResourcesByRoleIds(Long[] roleIds, Long organizationId);
+	abstract List<Resources> findResourcesByRoleIds(Long[] roleIds, Long organizationId);
+	
+	/**
+	 * 获取系统资源列表
+	 * @return
+	 */
+	abstract JSONArray getResourcesTree();
 }

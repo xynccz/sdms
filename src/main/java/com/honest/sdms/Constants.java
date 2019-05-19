@@ -3,6 +3,7 @@ package com.honest.sdms;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -11,6 +12,7 @@ import com.honest.sdms.system.entity.SysUser;
 
 public class Constants {
 	 
+	public static Pattern SPLIT = Pattern.compile(",");
 	public static final Integer BUTTON = 3;//按钮
 	public static final Integer MENU = 2;//菜单
 	public static final Integer MODEL = 1;//模块

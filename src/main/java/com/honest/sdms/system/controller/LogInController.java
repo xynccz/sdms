@@ -24,7 +24,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 @RestController
-public class LogInController extends BaseController{
+public class LogInController{
 	private static final Logger logger = LoggerFactory.getLogger(LogInController.class);
 	
 	@Value("${jwt.token-expiration}")
@@ -64,11 +64,9 @@ public class LogInController extends BaseController{
     }
 	
 	@RequestMapping(value="/user/info", method = {RequestMethod.GET},produces={"application/json;charset=UTF-8;","application/json;"})
-	@ResponseBody
-	public String info(HttpServletRequest request) { 
+	public @ResponseBody JSONObject info(HttpServletRequest request) { 
 		SysUser sysUser = Constants.getCurrentSysUser();
-		System.out.println(sysUser.getMenus());
-		return sysUser.getMenus();//getPromise();
+		return sysUser.getPromise();
 	}
 	
 	@RequestMapping(value = "/getout", method = {RequestMethod.GET})

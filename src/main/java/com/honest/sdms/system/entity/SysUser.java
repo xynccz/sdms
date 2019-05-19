@@ -2,6 +2,8 @@ package com.honest.sdms.system.entity;
 
 import java.util.List;
 
+import net.sf.json.JSONObject;
+
 public class SysUser extends BaseVO{
 
 	private static final long serialVersionUID = 1L;
@@ -17,9 +19,9 @@ public class SysUser extends BaseVO{
     protected Long organizationId;
     private String selectRoleIds;
     private List<String> buttonGroups;//按钮组权限
-	private String menus;//当前用户左侧菜单列表
+	private JSONObject promise;//权限相关信息
 	private Long[] roleIds;
-	private List<Roles> roles;
+	private List<Role> roles;
 
 	public SysUser() {
 	}
@@ -119,12 +121,12 @@ public class SysUser extends BaseVO{
 		this.buttonGroups = buttonGroups;
 	}
 
-	public String getMenus() {
-		return menus;
+	public JSONObject getPromise() {
+		return promise;
 	}
 
-	public void setMenus(String menus) {
-		this.menus = menus;
+	public void setPromise(JSONObject promise) {
+		this.promise = promise;
 	}
 
 	public Long[] getRoleIds() {
@@ -135,11 +137,11 @@ public class SysUser extends BaseVO{
 		this.roleIds = roleIds;
 	}
 
-	public List<Roles> getRoles() {
+	public List<Role> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(List<Roles> roles) {
+	public void setRoles(List<Role> roles) {
 		this.roles = roles;
 	}
     
