@@ -226,8 +226,8 @@
   <select id="findResourcesByRoleIds" resultMap="BaseResultMap">
   	select 
     <include refid="Base_Column_List" />
-    from resources
-    where exists (select 1 from role_resource ur where ur.resource_id = resource_id and ur.organization_id = organization_id
+    from resources s
+    where exists (select 1 from role_resource ur where ur.resource_id = s.resource_id and ur.organization_id = s.organization_id
      and ur.role_id in 
      	<foreach collection="roleIds" item="roleId" index="index" open="(" separator="," close=")">
             #{roleId}
