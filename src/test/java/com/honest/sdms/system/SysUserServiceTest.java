@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.pagehelper.PageInfo;
 import com.honest.sdms.ApplicationTests;
 import com.honest.sdms.basedata.exceptions.HSException;
-import com.honest.sdms.system.entity.Roles;
+import com.honest.sdms.system.entity.Role;
 import com.honest.sdms.system.entity.SysUser;
 import com.honest.sdms.system.service.IRolesService;
 import com.honest.sdms.system.service.ISysUserService;
@@ -41,7 +41,7 @@ public class SysUserServiceTest extends ApplicationTests{
 	
 //	@Test
 	public void testFindRolesByCond() {
-		List<Roles> currentRoles = rolesService.findRolesByUserId(1L, 360L);
+		List<Role> currentRoles = rolesService.findRolesByUserId(1L, 360L);
 		System.out.println(currentRoles.size());
 	}
 

@@ -6,6 +6,8 @@
     <result column="role_id" jdbcType="BIGINT" property="roleId" />
     <result column="resource_id" jdbcType="BIGINT" property="resourceId" />
     <result column="organization_id" jdbcType="BIGINT" property="organizationId" />
+    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+    <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
   </resultMap>
   <sql id="Base_Column_List">
     id, role_id, resource_id, organization_id
@@ -16,14 +18,25 @@
     from role_resource
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="getRoleResourcesByRoleId" resultMap="BaseResultMap">
+  select 
+    <include refid="Base_Column_List" />
+    ,(select type from resources rs where rs.resource_id = r.resource_id and rs.organization_id = r.organization_id ) type
+    from role_resource r
+    where organization_id = #{organizationId,jdbcType=BIGINT} and role_id = #{roleId,jdbcType=BIGINT}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from role_resource
     where id = #{id,jdbcType=BIGINT}
   </delete>
+  <delete id="deleteResourceByRoleId">
+  	delete from role_resource
+    where organization_id = #{organizationId,jdbcType=BIGINT} and role_id = #{roleId,jdbcType=BIGINT}
+  </delete>
   <insert id="insert" parameterType="com.honest.sdms.system.entity.RoleResource">
     insert into role_resource (id, role_id, resource_id, organization_id)
     values (#{id,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}, #{resourceId,jdbcType=BIGINT}, 
-      #{organizationId,jdbcType=BIGINT})
+      #{organizationId,jdbcType=BIGINT},#{createdBy,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.honest.sdms.system.entity.RoleResource">
     insert into role_resource
@@ -40,6 +53,12 @@
       <if test="organizationId != null">
         organization_id,
       </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdDate != null">
+        created_date,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -53,6 +72,12 @@
       </if>
       <if test="organizationId != null">
         #{organizationId,jdbcType=BIGINT},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdDate != null">
+        #{createdDate,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -68,6 +93,12 @@
       <if test="organizationId != null">
         organization_id = #{organizationId,jdbcType=BIGINT},
       </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdDate != null">
+        created_date = #{createdDate,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -75,7 +106,9 @@
     update role_resource
     set role_id = #{roleId,jdbcType=BIGINT},
       resource_id = #{resourceId,jdbcType=BIGINT},
-      organization_id = #{organizationId,jdbcType=BIGINT}
+      organization_id = #{organizationId,jdbcType=BIGINT},
+      created_by = #{createdBy,jdbcType=VARCHAR},
+      created_date = #{createdDate,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -60,7 +60,9 @@ create table if not exists role_resource (
    id bigint primary key AUTO_INCREMENT,
    role_id bigint DEFAULT NULL COMMENT '角色id',
    resource_id bigint DEFAULT NULL COMMENT '资源id',
-   organization_id bigint not null COMMENT '组织号'
+   organization_id bigint not null COMMENT '组织号',
+   created_by varchar(50),
+   created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'
  ) DEFAULT CHARSET=utf8 COMMENT '角色权限关系表';
 
 -- 字典类型表

@@ -26,6 +26,10 @@
     delete from user_role
     where user_id = #{userId} and organization_id = #{organizationId}
   </delete>
+  <delete id="deleteUsersByRoleId">
+  	delete from user_role
+    where role_id = #{roleId} and organization_id = #{organizationId}
+  </delete>
   <insert id="insert" parameterType="com.honest.sdms.system.entity.UserRole">
     insert into user_role (id, user_id, role_id, 
       organization_id, created_by, created_date

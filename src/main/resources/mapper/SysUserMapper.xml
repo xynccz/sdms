@@ -62,6 +62,13 @@
 		from sys_user
 		<include refid="Base_Where"/>
 	</select>
+	<select id="getUsersByRoleId" resultMap="BaseResultMap">
+	select
+		<include refid="Base_Column_List" />
+		from sys_user r
+		where exists (select 1 from user_role ur where ur.user_id = r.user_id and ur.organization_id = r.organization_id 
+    and ur.organization_id = #{organizationId,jdbcType=BIGINT} and ur.role_id = #{roleId,jdbcType=BIGINT}) 
+	</select>
 
 	<select id="selectByPrimaryKey" parameterType="java.lang.Long"
 		resultMap="BaseResultMap">
