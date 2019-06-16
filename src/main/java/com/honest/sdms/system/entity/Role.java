@@ -15,23 +15,23 @@ public class Role extends BaseVO {
 	private String roleCode;//角色编码
 	private String description;
 	
-	private String checkedUserId;
-	private String reosurceIds;
+	private String userIds;
+	private String resourceIds;
 
-	public String getCheckedUserId() {
-		return checkedUserId;
+	public String getUserIds() {
+		return userIds;
 	}
 
-	public void setCheckedUserId(String checkedUserId) {
-		this.checkedUserId = checkedUserId;
+	public void setUserIds(String userIds) {
+		this.userIds = userIds;
 	}
 
-	public String getReosurceIds() {
-		return reosurceIds;
+	public String getResourceIds() {
+		return resourceIds;
 	}
 
-	public void setReosurceIds(String reosurceIds) {
-		this.reosurceIds = reosurceIds;
+	public void setResourceIds(String resourceIds) {
+		this.resourceIds = resourceIds;
 	}
 
 	public Long getRoleId() {

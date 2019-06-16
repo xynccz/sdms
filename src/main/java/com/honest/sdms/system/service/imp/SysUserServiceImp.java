@@ -1,6 +1,5 @@
 package com.honest.sdms.system.service.imp;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -23,7 +22,6 @@ import com.honest.sdms.tools.StringUtil;
 public class SysUserServiceImp extends BaseServiceImp<SysUser, Long> implements ISysUserService{
 	
 	private SysUserMapper sysUserMapper;
-	
 	@Autowired
 	private IUserRoleService userRoleService;
 	
@@ -42,12 +40,12 @@ public class SysUserServiceImp extends BaseServiceImp<SysUser, Long> implements 
 
 	@Override
 	public int saveSysUser(SysUser sysUser) {
-		return sysUserMapper.insertSelective(sysUser);
+		return insertSelective(sysUser);
 	}
 	
 	@Override
-	public List<SysUser> getUsersByRoleId(Long roleId, Long organizationId) {
-		return sysUserMapper.getUsersByRoleId(roleId,organizationId);
+	public List<SysUser> getUsersByRoleId(Long roleId) {
+		return sysUserMapper.getUsersByRoleId(roleId,Constants.getCurrentOrganizationId());
 	}
 
 	/**
@@ -57,20 +55,13 @@ public class SysUserServiceImp extends BaseServiceImp<SysUser, Long> implements 
 	public void saveOrUpdateSysUser(SysUser user) throws HSException {
 
 		//说明是新用户
-		if (user.getUserId() == null) {
-			user.setCreatedBy(Constants.getCurrentSysUser().getLoginName());
-			user.setCreatedDate(new Date());
+		if(user.getUserId() == null)
+		{
 			user.setLoginPassword(StringUtil.encrypt(Constants.DEFAULT_PASSWORD));
-			user.setOrganizationId(Constants.getCurrentSysUser().getOrganizationId());
-		}
-
-		user.setLastUpdatedBy(Constants.getCurrentSysUser().getLoginName());
-		user.setLastUpdatedDate(new Date());
-
-		if (user.getUserId() == null) {
-			sysUserMapper.insertSelective(user);
-		} else {
-			sysUserMapper.updateByPrimaryKeySelective(user);
+			insertSelective(user);
+		}else
+		{
+			updateByPrimaryKeySelective(user);
 		}
 		
 		//更新角色信息
@@ -80,8 +71,6 @@ public class SysUserServiceImp extends BaseServiceImp<SysUser, Long> implements 
 		{
 			for(String roleId : Constants.SPLIT.split(newRoleIds)){
 				UserRole ur = new UserRole(user.getUserId(),Long.parseLong(roleId));
-				ur.setCreatedBy(Constants.getCurrentSysUser().getLoginName());
-				ur.setOrganizationId(user.getOrganizationId());
 				userRoleService.insertSelective(ur);
 			}
 		}

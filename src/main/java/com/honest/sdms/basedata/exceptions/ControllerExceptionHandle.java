@@ -1,4 +1,4 @@
-package com.honest.sdms.basedata;
+package com.honest.sdms.basedata.exceptions;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.honest.sdms.basedata.exceptions.HSException;
+import com.honest.sdms.basedata.APIResponse;
 import com.honest.sdms.tools.StringUtil;
 
 /**

@@ -71,7 +71,7 @@ public class LogInController{
 	
 	@RequestMapping(value = "/getout", method = {RequestMethod.GET})
     public void getout() {
-		logger.info("*****退出当前登录，{}*****",Constants.getCurrentSysUser().getUserName());
+		logger.info("*****退出当前登录*****");
         SecurityUtils.getSubject().logout();
     }
 	

@@ -12,12 +12,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.honest.sdms.Constants;
 import com.honest.sdms.basedata.APIResponse;
+import com.honest.sdms.basedata.ResultStatus;
 import com.honest.sdms.system.entity.RoleResource;
+import com.honest.sdms.system.entity.SysDictDatas;
 import com.honest.sdms.system.entity.Role;
 import com.honest.sdms.system.entity.SysUser;
 import com.honest.sdms.system.service.IResourcesService;
 import com.honest.sdms.system.service.IRoleResourcesService;
 import com.honest.sdms.system.service.IRolesService;
+import com.honest.sdms.system.service.ISysDictDatasService;
 import com.honest.sdms.system.service.ISysUserService;
 import com.honest.sdms.tools.StringUtil;
 
@@ -36,7 +39,33 @@ public class BaseSearchController {
 	private IRoleResourcesService roleResourcesService;
 	@Autowired
 	private IResourcesService resourcesService;
+	@Autowired
+	private ISysDictDatasService sysDictDatasService;
 	
+	/**
+	 * 获取指定字典的键值对
+	 * @param dictId 字典类型
+	 * @return
+	 */
+	@RequestMapping(value="/getDictDatasByDictId", method = RequestMethod.GET,produces= {"application/json;charset=UTF-8;"})
+	public @ResponseBody List<SysDictDatas> getDictDatasByDictId(@RequestParam("dictId") Long dictId) {
+		return sysDictDatasService.getDictDatasByDictId(dictId);
+	}
+	
+	/**
+	 * 获取当前账套的用户列表
+	 * @return
+	 */
+	@RequestMapping(value="/getUserList", method = RequestMethod.GET,produces= {"application/json;charset=UTF-8;"})
+	public @ResponseBody List<SysUser> getUserList(){
+		return sysUserService.findByCond(new SysUser());
+	}
+	
+	/**
+	 * 获取指定角色所拥有的资源权限
+	 * @param roleId 角色id
+	 * @return
+	 */
 	@RequestMapping(value = "/getResourcesByRoleId", method = RequestMethod.GET, produces={"application/json;charset=UTF-8;"})
 	public @ResponseBody APIResponse<JSONObject> getResourcesByRoleId(@RequestParam(value = "roleId",required = false) Long roleId) {
 		JSONObject result = new JSONObject();
@@ -44,18 +73,28 @@ public class BaseSearchController {
 		{
 			List<RoleResource> list = roleResourcesService.getRoleResourcesByRoleId(roleId);
 			List<Long> checkResouceIds = new ArrayList<Long>();
+			StringBuilder resourceIds = new StringBuilder();
 			for(RoleResource resource : list) {
 				Integer type = resource.getType();
-				if(Constants.MODEL.compareTo(type) != 0)
+				Long resourceId = resource.getResourceId();
+				
+				if(resourceIds.length() > 0)
+					resourceIds.append(",");
+				
+				resourceIds.append(resourceId);
+				
+				//后端返回前端树节点时，不可以包含父节点，不然会把所有子节点全默认选中
+				if(Constants.BUTTON.compareTo(type) == 0)
 				{
-					checkResouceIds.add(resource.getResourceId());
+					checkResouceIds.add(resourceId);
 				}
 			}
-			result.put("checkIds", checkResouceIds);
+			result.put("checkResourceIds", checkResouceIds);
+			result.put("resourceIds",resourceIds.toString() );
 		}
 		
 		result.put("resourceTree", resourcesService.getResourcesTree());
-		return new APIResponse<JSONObject>(result);
+		return new APIResponse<JSONObject>(ResultStatus.OK,result);
 	}
 	
 	/**
@@ -70,7 +109,7 @@ public class BaseSearchController {
 		//获取用户所包含的角色
 		if(roleId != null)
 		{
-			List<SysUser> userList = sysUserService.getUsersByRoleId(roleId, Constants.getCurrentSysUser().getOrganizationId());
+			List<SysUser> userList = sysUserService.getUsersByRoleId(roleId);
 			userIds = new Long[userList.size()];
 			for(int i = 0,len = userList.size();i < len;i++) {
 				userIds[i] = userList.get(i).getUserId();
@@ -88,9 +127,9 @@ public class BaseSearchController {
 			array.add(json);
 		}
 		
-		obj.put("userIds", userIds == null?new Long[0]:userIds);
+		obj.put("checkUserIds", userIds == null?new Long[0]:userIds);
 		obj.put("userList", array);
-		return new APIResponse<JSONObject>(obj);
+		return new APIResponse<JSONObject>(ResultStatus.OK, obj);
 	} 
 	
 	/**
@@ -124,6 +163,6 @@ public class BaseSearchController {
 		
 		obj.put("roleIds", roleIds == null?new Long[0]:roleIds);
 		obj.put("roleList", array);
-		return new APIResponse<JSONObject>(obj);
+		return new APIResponse<JSONObject>(ResultStatus.OK,obj);
 	}
 }

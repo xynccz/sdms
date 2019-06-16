@@ -17,10 +17,10 @@
   </sql>
   <sql id="Base_Where">
 	  <trim prefix="WHERE" prefixOverrides="AND |OR ">
-	  <if test="roleName != null">
+	  <if test="roleName != null and roleName != ''">
         and role_name = #{roleName,jdbcType=VARCHAR}
       </if>
-      <if test="roleCode != null">
+      <if test="roleCode != null and roleCode !=''">
         and role_code = #{roleCode,jdbcType=VARCHAR}
       </if>
       <if test="description != null">

@@ -51,13 +51,11 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter{
 		return 360L;//设置个默认值，为以后多账套系统保留功能
 	}
 	
-	
 	/**
 	  * 最先执行的方法,对跨域提供支持
 	  */
 	@Override
 	protected boolean preHandle(ServletRequest request, ServletResponse response) throws Exception {
-		  
 		HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 		
@@ -67,7 +65,8 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter{
 		httpServletResponse.setHeader("Access-Control-Allow-Headers", httpServletRequest.getHeader("Access-Control-Request-Headers"));
 		
 		// 跨域时会首先发送一个option请求，这里我们给option请求直接返回正常状态
-		 if (httpServletRequest.getMethod().equals(RequestMethod.OPTIONS.name())) {
+		 if (httpServletRequest.getMethod().equals(RequestMethod.OPTIONS.name())) 
+		 {
 			 httpServletResponse.setStatus(HttpStatus.OK.value()); return false; 
 		 }
 		return super.preHandle(request, response);
@@ -98,7 +97,8 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter{
         
         //获取输入的验证码,验证失败，设置错误信息
         String myValidate = getCaptcha(request); 
-        if (validate == null || myValidate == null || !validate.equalsIgnoreCase(myValidate)) {
+        if (validate == null || myValidate == null || !validate.equalsIgnoreCase(myValidate)) 
+        {
             httpServletRequest.setAttribute(FormAuthenticationFilter.DEFAULT_ERROR_KEY_ATTRIBUTE_NAME, "IncorrectCaptchaException");
             //拒绝访问
             return true;
@@ -106,7 +106,8 @@ public class MyFormAuthenticationFilter extends FormAuthenticationFilter{
         
         //组织号为空，验证失败，设置错误信息
         Long organizationId = getOrganizationId(request);
-        if(organizationId == null){
+        if(organizationId == null)
+        {
         	httpServletRequest.setAttribute(FormAuthenticationFilter.DEFAULT_ERROR_KEY_ATTRIBUTE_NAME, "OrganizationException");
             //拒绝访问
             return true;

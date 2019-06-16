@@ -67,6 +67,10 @@ public class Constants {
 	     return user;
 	 }
 	 
+	 public static Long getCurrentOrganizationId() {
+		 return Constants.getCurrentSysUser().getOrganizationId();
+	 }
+	 
 	 /**
 	  * 生成token载体
 	  * @param tokenExpiration 超时时间，单位毫秒

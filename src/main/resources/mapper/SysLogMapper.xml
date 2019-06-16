@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.honest.sdms.system.dao.SysLogMapper">
+  <resultMap id="BaseResultMap" type="com.honest.sdms.system.entity.SysLog">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="login_name" jdbcType="VARCHAR" property="loginName" />
+    <result column="ip" jdbcType="VARCHAR" property="ip" />
+    <result column="operate_type" jdbcType="VARCHAR" property="operateType" />
+    <result column="operate_url" jdbcType="VARCHAR" property="operateUrl" />
+    <result column="execute_time" jdbcType="BIGINT" property="executeTime"/>
+    <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="organization_id" jdbcType="BIGINT" property="organizationId" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.honest.sdms.system.entity.SysLog">
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, login_name, ip, operate_type, operate_url, execute_time, created_date, remarks, organization_id
+  </sql>
+  <sql id="Blob_Column_List">
+    content
+  </sql>
+  <sql id="Base_Where">
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">
+			<if test="loginName != null and loginName != ''">
+	        	and login_name = #{loginName,jdbcType=VARCHAR}
+	      	</if>
+	      	<if test="ip != null and ip !=''">
+	        	and ip = #{ip,jdbcType=VARCHAR}
+	      	</if>
+	      	<if test="operateType != null and operateType != ''">
+	        	and operate_type = #{operateType,jdbcType=VARCHAR}
+	      	</if>
+	      	<if test="operateUrl != null and operateUrl != ''">
+	        	and operate_url = #{operateUrl,jdbcType=VARCHAR}
+	      	</if>
+	      	<if test="executeTime != null and executeTime != ''">
+	        	and execute_time = #{executeTime,jdbcType=BIGINT}
+	      	</if>
+	      	<if test="createdDate != null">
+	        	and created_date = #{createdDate,jdbcType=TIMESTAMP}
+	      	</if>
+	      	
+	      	<if test="createdDateStart != null">
+	        	and created_date &gt;= #{createdDateStart,jdbcType=TIMESTAMP}
+	      	</if>
+	      	<if test="createdDateEnd != null">
+	        	and created_date &lt;= #{createdDateEnd,jdbcType=TIMESTAMP}
+	      	</if>
+	      	
+			<if test="organizationId != null">
+				and organization_id = #{organizationId,jdbcType=BIGINT}
+			</if>
+		</trim>
+	</sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from sys_log
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from sys_log
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.honest.sdms.system.entity.SysLog">
+    insert into sys_log (id, login_name, ip, 
+      operate_type, operate_url, execute_time, created_date, 
+      remarks, organization_id, content
+      )
+    values (#{id,jdbcType=BIGINT}, #{loginName,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, 
+      #{operateType,jdbcType=VARCHAR}, #{operateUrl,jdbcType=VARCHAR},#{executeTime,jdbcType=BIGINT}, #{createdDate,jdbcType=TIMESTAMP}, 
+      #{remarks,jdbcType=VARCHAR}, #{organizationId,jdbcType=BIGINT}, #{content,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <select id="findByCond" parameterType="com.honest.sdms.system.entity.SysLog" resultMap="BaseResultMap">
+		select 
+	    <include refid="Base_Column_List" />
+	    ,
+	    <include refid="Blob_Column_List" />
+	    from sys_log
+		<include refid="Base_Where"/>
+	</select>
+  <insert id="insertSelective" parameterType="com.honest.sdms.system.entity.SysLog">
+    insert into sys_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="loginName != null">
+        login_name,
+      </if>
+      <if test="ip != null">
+        ip,
+      </if>
+      <if test="operateType != null">
+        operate_type,
+      </if>
+      <if test="operateUrl != null">
+        operate_url,
+      </if>
+      <if test="executeTime != null">
+        execute_time,
+      </if>
+      <if test="createdDate != null">
+        created_date,
+      </if>
+      <if test="remarks != null">
+        remarks,
+      </if>
+      <if test="organizationId != null">
+        organization_id,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="loginName != null">
+        #{loginName,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null">
+        #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="operateType != null">
+        #{operateType,jdbcType=VARCHAR},
+      </if>
+      <if test="operateUrl != null">
+        #{operateUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="executeTime != null">
+        #{executeTime,jdbcType=BIGINT},
+      </if>
+      <if test="createdDate != null">
+        #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null">
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="organizationId != null">
+        #{organizationId,jdbcType=BIGINT},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.honest.sdms.system.entity.SysLog">
+    update sys_log
+    <set>
+      <if test="loginName != null">
+        login_name = #{loginName,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null">
+        ip = #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="operateType != null">
+        operate_type = #{operateType,jdbcType=VARCHAR},
+      </if>
+      <if test="operateUrl != null">
+        operate_url = #{operateUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="createdDate != null">
+        created_date = #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null">
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="organizationId != null">
+        organization_id = #{organizationId,jdbcType=BIGINT},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.honest.sdms.system.entity.SysLog">
+    update sys_log
+    set login_name = #{loginName,jdbcType=VARCHAR},
+      ip = #{ip,jdbcType=VARCHAR},
+      operate_type = #{operateType,jdbcType=VARCHAR},
+      operate_url = #{operateUrl,jdbcType=VARCHAR},
+      created_date = #{createdDate,jdbcType=TIMESTAMP},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      organization_id = #{organizationId,jdbcType=BIGINT},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.honest.sdms.system.entity.SysLog">
+    update sys_log
+    set login_name = #{loginName,jdbcType=VARCHAR},
+      ip = #{ip,jdbcType=VARCHAR},
+      operate_type = #{operateType,jdbcType=VARCHAR},
+      operate_url = #{operateUrl,jdbcType=VARCHAR},
+      created_date = #{createdDate,jdbcType=TIMESTAMP},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      organization_id = #{organizationId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

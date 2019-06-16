@@ -1,3 +1,10 @@
+
+--Mysql数据库显示时间与应用程序获取到的不一致的问题
+show VARIABLES like '%time_zone%';
+set global time_zone = '+08:00';
+set time_zone = '+08:00';
+flush privileges;
+
 --创建用户表
 create table if not exists sys_users(
 	user_id bigint primary key AUTO_INCREMENT,
@@ -20,11 +27,12 @@ create table if not exists sys_users(
 create table if not exists roles(
 	role_id bigint primary key AUTO_INCREMENT,
 	role_name varchar(100) not null COMMENT '角色名称',
-	role_code varchar(100) COMMENT '角色编码',
+	role_code varchar(100) not null COMMENT '角色编码',
 	description varchar(200) COMMENT '角色描述',
 	organization_id bigint not null COMMENT '组织号',
 	created_by varchar(50),
-    created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间'
+    created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    UNIQUE (role_name,role_code,organization_id)
 )DEFAULT CHARSET=utf8 COMMENT='角色表';
 
 --用户与角色关系表
@@ -69,15 +77,15 @@ create table if not exists role_resource (
 CREATE TABLE sys_dict_type(
 	dict_id bigint primary key AUTO_INCREMENT,
 	dict_name varchar(100) NOT NULL COMMENT '字典名称',
-	dict_type varchar(100) NOT NULL COMMENT '字典类型',
-	status char(1) DEFAULT '0' NOT NULL COMMENT '状态（0正常 1停用）',
+	dict_code varchar(100) NOT NULL COMMENT '字典类型',
+	is_valid char(1) DEFAULT 'Y' NOT NULL COMMENT '状态是否有效',
 	created_by varchar(64) NOT NULL COMMENT '创建者',
 	created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
 	last_updated_by varchar(64) NOT NULL COMMENT '更新者',
 	last_updated_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
 	remarks varchar(500) COMMENT '备注信息',
 	organization_id bigint not null COMMENT '组织号',
-	UNIQUE (dict_type,organization_id)
+	UNIQUE (dict_code,organization_id)
 ) COMMENT = '字典类型表';
 
  -- 字典参数配置表
@@ -85,7 +93,7 @@ CREATE TABLE sys_dict_datas(
 	id bigint primary key AUTO_INCREMENT,
 	dict_data_code varchar(50) NOT NULL ,
 	dict_data_name varchar(100) NOT NULL COMMENT '名称',
-	status char(1) DEFAULT '0' NOT NULL COMMENT '状态（0正常 1停用）',
+	is_valid char(1) DEFAULT 'Y' NOT NULL COMMENT '状态是否有效',
 	dict_id bigint NOT NULL COMMENT '字典类型',
 	created_by varchar(64) NOT NULL COMMENT '创建者',
 	created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -93,5 +101,21 @@ CREATE TABLE sys_dict_datas(
 	last_updated_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
 	remarks varchar(500) COMMENT '备注信息',
 	organization_id bigint not null COMMENT '组织号',
+	UNIQUE (dict_data_code,organization_id)
 	foreign key (dict_id) references sys_dict_type(dict_id) on delete cascade on update cascade
 ) COMMENT = '字典参数配置表';
+
+-- 系统操作日志表
+CREATE TABLE sys_log (
+  id bigint(20) NOT NULL AUTO_INCREMENT,
+  login_name varchar(100) NOT NULL DEFAULT '' COMMENT '登录人',
+  ip varchar(100) DEFAULT NULL COMMENT '登录IP',
+  operate_type varchar(100) DEFAULT NULL COMMENT '操作类型',
+  operate_url varchar(500) DEFAULT NULL COMMENT '操作模块',
+  content text COMMENT '操作明细内容',
+  operate_time timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '操作时间',
+  remarks varchar(800) DEFAULT NULL COMMENT '备注',
+  execute_time bigint COMMENT '请求花费时间',
+  organization_id bigint(20) NOT NULL COMMENT '组织号',
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

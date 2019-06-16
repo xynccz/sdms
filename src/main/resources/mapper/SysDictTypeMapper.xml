@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.honest.sdms.system.dao.SysDictTypeMapper">
+  <resultMap id="BaseResultMap" type="com.honest.sdms.system.entity.SysDictType">
+    <id column="dict_id" jdbcType="BIGINT" property="dictId" />
+    <result column="dict_name" jdbcType="VARCHAR" property="dictName" />
+    <result column="dict_code" jdbcType="VARCHAR" property="dictCode" />
+    <result column="is_valid" jdbcType="CHAR" property="isValid" />
+    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+    <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+    <result column="last_updated_by" jdbcType="VARCHAR" property="lastUpdatedBy" />
+    <result column="last_updated_date" jdbcType="TIMESTAMP" property="lastUpdatedDate" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="organization_id" jdbcType="BIGINT" property="organizationId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    dict_id, dict_name, dict_code, is_valid, created_by, created_date, last_updated_by, 
+    last_updated_date, remarks, organization_id
+  </sql>
+  <sql id="Base_Where">
+	  <trim prefix="WHERE" prefixOverrides="AND |OR ">
+	  	  <if test="dictName != null and dictName != ''">
+	        and dict_name = #{dictName,jdbcType=VARCHAR}
+	      </if>
+	      <if test="dictCode != null and dictCode != ''">
+	        and dict_code = #{dictCode,jdbcType=VARCHAR}
+	      </if>
+	      <if test="isValid != null and isValid != ''">
+	        and is_valid = #{isValid,jdbcType=CHAR}
+	      </if>
+	      <if test="createdBy != null">
+	        and created_by = #{createdBy,jdbcType=VARCHAR}
+	      </if>
+	      <if test="createdDate != null">
+	        and created_date = #{createdDate,jdbcType=TIMESTAMP}
+	      </if>
+	      <if test="lastUpdatedBy != null">
+	        and last_updated_by = #{lastUpdatedBy,jdbcType=VARCHAR}
+	      </if>
+	      <if test="lastUpdatedDate != null">
+	        and last_updated_date = #{lastUpdatedDate,jdbcType=TIMESTAMP}
+	      </if>
+	      <if test="remarks != null">
+	        and remarks = #{remarks,jdbcType=VARCHAR}
+	      </if>
+	      <if test="organizationId != null">
+	        and organization_id = #{organizationId,jdbcType=BIGINT}
+	      </if>
+	  </trim>
+  </sql>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_dict_type
+    where dict_id = #{dictId,jdbcType=BIGINT}
+  </select>
+  <select id="count" parameterType="com.honest.sdms.system.entity.SysDictType" resultType="java.lang.Integer">
+		select count(1) from from sys_dict_type
+		<include refid="Base_Where"/>
+	</select>
+	<select id="findByCond" parameterType="com.honest.sdms.system.entity.SysDictType" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from sys_dict_type
+		<include refid="Base_Where"/>
+	</select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from sys_dict_type
+    where dict_id = #{dictId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.honest.sdms.system.entity.SysDictType">
+    insert into sys_dict_type (dict_id, dict_name, dict_code, 
+      is_valid, created_by, created_date, 
+      last_updated_by, last_updated_date, remarks, 
+      organization_id)
+    values (#{dictId,jdbcType=BIGINT}, #{dictName,jdbcType=VARCHAR}, #{dictCode,jdbcType=VARCHAR}, 
+      #{isValid,jdbcType=CHAR}, #{createdBy,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP}, 
+      #{lastUpdatedBy,jdbcType=VARCHAR}, #{lastUpdatedDate,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR}, 
+      #{organizationId,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.honest.sdms.system.entity.SysDictType">
+    insert into sys_dict_type
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="dictId != null">
+        dict_id,
+      </if>
+      <if test="dictName != null">
+        dict_name,
+      </if>
+      <if test="dictCode != null">
+        dict_code,
+      </if>
+      <if test="isValid != null">
+        is_valid,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdDate != null">
+        created_date,
+      </if>
+      <if test="lastUpdatedBy != null">
+        last_updated_by,
+      </if>
+      <if test="lastUpdatedDate != null">
+        last_updated_date,
+      </if>
+      <if test="remarks != null">
+        remarks,
+      </if>
+      <if test="organizationId != null">
+        organization_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="dictId != null">
+        #{dictId,jdbcType=BIGINT},
+      </if>
+      <if test="dictName != null and dictName != ''">
+        #{dictName,jdbcType=VARCHAR},
+      </if>
+      <if test="dictCode != null and dictCode != ''">
+        #{dictCode,jdbcType=VARCHAR},
+      </if>
+      <if test="isValid != null and isValid != ''">
+        #{isValid,jdbcType=CHAR},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdDate != null">
+        #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedBy != null">
+        #{lastUpdatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdatedDate != null">
+        #{lastUpdatedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null and remarks != ''">
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="organizationId != null">
+        #{organizationId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.honest.sdms.system.entity.SysDictType">
+    update sys_dict_type
+    <set>
+      <if test="dictName != null">
+        dict_name = #{dictName,jdbcType=VARCHAR},
+      </if>
+      <if test="dictCode != null">
+        dict_code = #{dictCode,jdbcType=VARCHAR},
+      </if>
+      <if test="isValid != null">
+        is_valid = #{isValid,jdbcType=CHAR},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdDate != null">
+        created_date = #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedBy != null">
+        last_updated_by = #{lastUpdatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdatedDate != null">
+        last_updated_date = #{lastUpdatedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null">
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="organizationId != null">
+        organization_id = #{organizationId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where dict_id = #{dictId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.honest.sdms.system.entity.SysDictType">
+    update sys_dict_type
+    set dict_name = #{dictName,jdbcType=VARCHAR},
+      dict_code = #{dictCode,jdbcType=VARCHAR},
+      is_valid = #{isValid,jdbcType=CHAR},
+      created_by = #{createdBy,jdbcType=VARCHAR},
+      created_date = #{createdDate,jdbcType=TIMESTAMP},
+      last_updated_by = #{lastUpdatedBy,jdbcType=VARCHAR},
+      last_updated_date = #{lastUpdatedDate,jdbcType=TIMESTAMP},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      organization_id = #{organizationId,jdbcType=BIGINT}
+    where dict_id = #{dictId,jdbcType=BIGINT}
+  </update>
+</mapper>

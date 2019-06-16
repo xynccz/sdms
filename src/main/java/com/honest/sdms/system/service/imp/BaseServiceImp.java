@@ -5,9 +5,11 @@ import java.util.List;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.honest.sdms.Constants;
 import com.honest.sdms.system.dao.IBaseMapper;
 import com.honest.sdms.system.entity.BaseVO;
 import com.honest.sdms.system.service.IBaseService;
+import com.honest.sdms.tools.DateTimeUtil;
 
 public abstract class BaseServiceImp<T extends BaseVO, PK extends Serializable> implements IBaseService<T, PK> {
 
@@ -17,21 +19,35 @@ public abstract class BaseServiceImp<T extends BaseVO, PK extends Serializable> 
     
 	@Override
 	public int insert(T model) {
+		if(model.getOrganizationId() == null)
+			model.setOrganizationId(Constants.getCurrentOrganizationId());
+		model.setCreatedBy(Constants.getCurrentSysUser().getLoginName());
+		model.setLastUpdatedBy(model.getCreatedBy());
 		return baseMapper.insert(model);
 	}
 
 	@Override
 	public int insertSelective(T model) {
+		if(model.getOrganizationId() == null)
+			model.setOrganizationId(Constants.getCurrentOrganizationId());
+		model.setCreatedBy(Constants.getCurrentSysUser().getLoginName());
+		model.setLastUpdatedBy(model.getCreatedBy());
+		model.setCreatedDate(new DateTimeUtil().toTimestamp());
+		model.setLastUpdatedDate(new DateTimeUtil().toTimestamp());
 		return baseMapper.insertSelective(model);
 	}
 
 	@Override
 	public int updateByPrimaryKeySelective(T model) {
+		model.setLastUpdatedBy(model.getCreatedBy());
+		model.setLastUpdatedDate(new DateTimeUtil().toTimestamp());
 		return baseMapper.updateByPrimaryKeySelective(model);
 	}
 
 	@Override
 	public int updateByPrimaryKey(T model) {
+		model.setLastUpdatedBy(model.getCreatedBy());
+		model.setLastUpdatedDate(new DateTimeUtil().toTimestamp());
 		return baseMapper.updateByPrimaryKey(model);
 	}
 
@@ -47,11 +63,17 @@ public abstract class BaseServiceImp<T extends BaseVO, PK extends Serializable> 
 
 	@Override
 	public List<T> findByCond(T cond) {
+		if(cond.getOrganizationId() == null)
+			cond.setOrganizationId(Constants.getCurrentOrganizationId());
+		
 		return baseMapper.findByCond(cond);
 	}
 
 	@Override
 	public int count(T cond) {
+		if(cond.getOrganizationId() == null)
+			cond.setOrganizationId(Constants.getCurrentOrganizationId());
+		
 		return baseMapper.count(cond);
 	}
 
@@ -66,9 +88,13 @@ public abstract class BaseServiceImp<T extends BaseVO, PK extends Serializable> 
      */
 	@Override
 	public PageInfo<T> findByCondWithPage(T cond, String sortName, String sortOrder, int pageNum, int pageSize) {
+		if(cond.getOrganizationId() == null)
+			cond.setOrganizationId(Constants.getCurrentOrganizationId());
+		
 		PageHelper.startPage(pageNum, pageSize);
-		if(sortName != null)
-			PageHelper.orderBy(sortName+" "+sortOrder == null?"asc":sortOrder);
+		if(sortName != null) {
+			PageHelper.orderBy(sortName+" "+(sortOrder == null?"asc":sortOrder));
+		}
 		
         List<T> list = baseMapper.findByCond(cond);
         PageInfo<T> pageInfo = new PageInfo<T>(list);

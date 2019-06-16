@@ -13,6 +13,6 @@ public interface ISysUserService extends IBaseService<SysUser, Long>{
 	
 	abstract void saveOrUpdateSysUser(SysUser user) throws HSException;
 	
-	abstract List<SysUser> getUsersByRoleId(Long roleId,Long organizationId);
+	abstract List<SysUser> getUsersByRoleId(Long roleId);
 
 }

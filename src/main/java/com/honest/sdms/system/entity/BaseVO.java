@@ -1,6 +1,6 @@
 package com.honest.sdms.system.entity;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 /**
  * 公共父类VO表
@@ -11,9 +11,9 @@ public class BaseVO implements java.io.Serializable{
 	private static final long serialVersionUID = 1L;
 
 	private String createdBy;
-    private Date createdDate;
+    private Timestamp createdDate;
     private String lastUpdatedBy;
-    private Date lastUpdatedDate;
+    private Timestamp lastUpdatedDate;
     protected Long organizationId;
 
 	public Long getOrganizationId() {
@@ -32,11 +32,11 @@ public class BaseVO implements java.io.Serializable{
 		this.createdBy = createdBy;
 	}
 
-	public Date getCreatedDate() {
+	public Timestamp getCreatedDate() {
 		return createdDate;
 	}
-
-	public void setCreatedDate(Date createdDate) {
+	
+	public void setCreatedDate(Timestamp createdDate) {
 		this.createdDate = createdDate;
 	}
 
@@ -48,12 +48,12 @@ public class BaseVO implements java.io.Serializable{
 		this.lastUpdatedBy = lastUpdatedBy;
 	}
 
-	public Date getLastUpdatedDate() {
+	public Timestamp getLastUpdatedDate() {
 		return lastUpdatedDate;
 	}
-
-	public void setLastUpdatedDate(Date lastUpdatedDate) {
+	
+	public void setLastUpdatedDate(Timestamp lastUpdatedDate) {
 		this.lastUpdatedDate = lastUpdatedDate;
 	}
-    
+
 }

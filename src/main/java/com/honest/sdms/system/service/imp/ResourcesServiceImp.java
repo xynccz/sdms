@@ -12,7 +12,6 @@ import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.honest.sdms.Constants;
 import com.honest.sdms.system.dao.IBaseMapper;
 import com.honest.sdms.system.dao.ResourcesMapper;
 import com.honest.sdms.system.entity.Resources;
@@ -50,7 +49,6 @@ public class ResourcesServiceImp extends BaseServiceImp<Resources, Long> impleme
 		JSONArray result = new JSONArray();
 		
 		Resources cond = new Resources();
-		cond.setOrganizationId(Constants.getCurrentSysUser().getOrganizationId());
 		List<Resources> resourcesList = this.findByCond(cond); 
 		
 		if (resourcesList != null && resourcesList.size() > 0) 
@@ -65,12 +63,11 @@ public class ResourcesServiceImp extends BaseServiceImp<Resources, Long> impleme
 			}
 			result = getResourceTree(sourceMap);
 		}
-		
 		return result;
 	}
 	
 	/**
-	 * 获取角色对应的资源树
+	 * 获取角色对应的资源树     
 	 * @param sourceMap
 	 * @return
 	 */
@@ -85,7 +82,6 @@ public class ResourcesServiceImp extends BaseServiceImp<Resources, Long> impleme
 			Resources resource = entry.getValue();
 			Long parentId = resource.getParentId();
 			int order = resource.getSortOrder();//菜单排列顺序
-			
 			if(parentId == null)//说明是根节点
 			{
 				rootMap.put(order,resource);
@@ -107,7 +103,6 @@ public class ResourcesServiceImp extends BaseServiceImp<Resources, Long> impleme
 		for(Iterator<Resources> rit = rootMap.values().iterator();rit.hasNext();) {
 			Resources rs = rit.next();
 			JSONObject rootNode = setResouece(rs);
-			
 			Long resourceId = rs.getResourceId();
 			setTreeNodes(childMap, resourceId, rootNode);
 			
@@ -124,10 +119,11 @@ public class ResourcesServiceImp extends BaseServiceImp<Resources, Long> impleme
 			for(Iterator<Resources> sit = map.values().iterator();sit.hasNext();) {
 				Resources srs = sit.next();
 				JSONObject subObj = setResouece(srs);
-				subArray.add(subObj);
 				
 				Long rid = srs.getResourceId();
 				setTreeNodes(childMap, rid, subObj);
+				
+				subArray.add(subObj);
 			}
 			rootNode.put(CHILDREN, subArray);
 		}

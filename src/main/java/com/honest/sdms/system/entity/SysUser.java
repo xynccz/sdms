@@ -16,7 +16,6 @@ public class SysUser extends BaseVO{
     private String telephone;
     private String email;
     private String isValid;
-    protected Long organizationId;
     private String selectRoleIds;
     private List<String> buttonGroups;//按钮组权限
 	private JSONObject promise;//权限相关信息

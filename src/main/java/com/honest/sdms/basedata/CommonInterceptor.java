@@ -45,20 +45,34 @@ public class CommonInterceptor extends HandlerInterceptorAdapter{
 		
 		//XSS攻击：跨站脚本攻击,设置https的cookie可以预防xss攻击
 		response.addHeader("Set-Cookie", "uid=112; Path=/; Secure; HttpOnly");
-		
-		/*
-		 * 校验token
-		 */
-		String token = request.getHeader(Constants.TOKEN_HEAD);
-		JavaWebToken.TokenCheckResult tokenRst = JavaWebToken.validateJWT(token);
-		if (tokenRst == null || !tokenRst.getIsSucess()) 
+		Object obj = SecurityUtils.getSubject().getPrincipal();
+		if(obj == null)
 		{
-			logger.error("*****token校验不通过,token:{}*****",token);
-			SecurityUtils.getSubject().logout();
-			response.setStatus(HttpStatus.GATEWAY_TIMEOUT.value());
+			response.sendError(HttpStatus.SERVICE_UNAVAILABLE.value(), HttpStatus.SERVICE_UNAVAILABLE.getReasonPhrase());
 			return false;
+		}else
+		{
+			/*
+			 * 校验token，校验不通过判定为非法请求
+			 */
+			String token = request.getHeader(Constants.TOKEN_HEAD);
+			JavaWebToken.TokenCheckResult tokenRst = JavaWebToken.validateJWT(token);
+			if (tokenRst == null || !tokenRst.getIsSucess()) 
+			{
+				logger.error("*****token校验不通过,token:{}*****",token);
+				SecurityUtils.getSubject().logout();
+				if(Constants.JWT_ERRCODE_EXPIRE.equals(tokenRst.getErrorCode()))
+				{
+					response.sendError(HttpStatus.GATEWAY_TIMEOUT.value());
+				}else 
+				{
+					response.sendError(HttpStatus.UNAUTHORIZED.value());
+				}
+				return false;
+			}
 		}
-
+		
+		setHeaderWithToken(response);
 		return true;
 	}
 	
@@ -68,14 +82,7 @@ public class CommonInterceptor extends HandlerInterceptorAdapter{
 	@Override
 	public void postHandle(HttpServletRequest request,HttpServletResponse response, Object handler,ModelAndView modelAndView) 
 			throws Exception {
-		/*
-		 * 数据正常请求返回结果，更新token传到前台
-		 * 更新思路：重新生成token，指定失效时间（前台可配置）
-		 */
-		String updateToken = JavaWebToken.generateToken(Constants.getClaims(tokenExpiration));
-		response.addHeader(Constants.TOKEN_NAME, updateToken);
-		
-		response.setStatus(HttpStatus.OK.value());
+		super.postHandle(request, response, handler, modelAndView);
 	}
 	
 	/**  
@@ -88,4 +95,17 @@ public class CommonInterceptor extends HandlerInterceptorAdapter{
 		super.afterCompletion(request, response, handler, ex);
 	}
 
+	/**  
+	 * 数据正常请求返回结果，更新token传到前台
+	 * 更新思路：重新生成token，指定失效时间
+	 * 
+     * 在DispatcherServlet完全处理完请求后被调用,可用于清理资源等，servlet部分已经结束所以不可以在这个方法做页面跳转的动作   
+     * 当有拦截器抛出异常时,会从当前拦截器往回执行所有的拦截器的afterCompletion()  
+     */
+	public void setHeaderWithToken( HttpServletResponse response){
+		String updateToken = JavaWebToken.generateToken(Constants.getClaims(tokenExpiration));
+		response.addHeader(Constants.TOKEN_NAME, updateToken);
+		// 跨域的情况下，能够拿到token
+        response.addHeader("Access-Control-Expose-Headers", Constants.TOKEN_NAME);
+	}
 }
