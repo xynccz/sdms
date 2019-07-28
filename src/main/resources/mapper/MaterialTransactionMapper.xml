@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.honest.sdms.transaction.dao.MaterialTransactionMapper">
+  <resultMap id="BaseResultMap" type="com.honest.sdms.transaction.entity.MaterialTransaction">
+    <id column="transaction_id" jdbcType="BIGINT" property="transactionId" />
+    <result column="transaction_summary_id" jdbcType="BIGINT" property="transactionSummaryId" />
+    <result column="item_id" jdbcType="BIGINT" property="itemId" />
+    <result column="item" jdbcType="VARCHAR" property="item" />
+    <result column="po_number" jdbcType="VARCHAR" property="poNumber" />
+    <result column="po_header_id" jdbcType="BIGINT" property="poHeaderId" />
+    <result column="po_line" jdbcType="BIGINT" property="poLine" />
+    <result column="io_type" jdbcType="BIGINT" property="ioType" />
+    <result column="io_status" jdbcType="CHAR" property="ioStatus" />
+    <result column="car_number" jdbcType="VARCHAR" property="carNumber" />
+    <result column="driver_name" jdbcType="VARCHAR" property="driverName" />
+    <result column="driver_phone" jdbcType="VARCHAR" property="driverPhone" />
+    <result column="ship_date" jdbcType="TIMESTAMP" property="shipDate" />
+    <result column="scheduled_arrival_date" jdbcType="TIMESTAMP" property="scheduledArrivalDate" />
+    <result column="actual_arrival_date" jdbcType="TIMESTAMP" property="actualArrivalDate" />
+    <result column="transaction_date" jdbcType="TIMESTAMP" property="transactionDate" />
+    <result column="transaction_piece" jdbcType="BIGINT" property="transactionPiece" />
+    <result column="transaction_weight" jdbcType="DOUBLE" property="transactionWeight" />
+    <result column="warehouse" jdbcType="VARCHAR" property="warehouse" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+    <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+    <result column="last_updated_by" jdbcType="VARCHAR" property="lastUpdatedBy" />
+    <result column="last_updated_date" jdbcType="TIMESTAMP" property="lastUpdatedDate" />
+    <result column="organization_id" jdbcType="BIGINT" property="organizationId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    transaction_id, transaction_summary_id, item_id, item, po_number,po_header_id, po_line, io_type, 
+    io_status, car_number, driver_name, driver_phone, ship_date, scheduled_arrival_date, 
+    actual_arrival_date, transaction_date, transaction_piece, transaction_weight, warehouse, 
+    remarks, created_by, created_date, last_updated_by, last_updated_date, organization_id
+  </sql>
+  <sql id="Base_Where">
+	<trim prefix="WHERE" prefixOverrides="AND |OR ">   
+      <if test="transactionSummaryId != null">
+        and transaction_summary_id = #{transactionSummaryId,jdbcType=BIGINT}
+      </if>
+      <if test="itemId != null">
+        and item_id = #{itemId,jdbcType=BIGINT}
+      </if>
+      <if test="item != null">
+        and item = #{item,jdbcType=VARCHAR}
+      </if>
+      <if test="poHeaderId != null">
+        and po_header_id = #{poHeaderId,jdbcType=BIGINT}
+      </if>
+      <if test="poNumber != null and poNumber != '' ">
+        and po_number like UPPER(CONCAT('%',#{poNumber,jdbcType=VARCHAR},'%')) 
+      </if> 
+      <if test="poLine != null">
+        and po_line = #{poLine,jdbcType=BIGINT}
+      </if>
+      <if test="ioType != null">
+        and io_type = #{ioType,jdbcType=BIGINT}
+      </if>
+      <if test="ioStatus != null">
+        and io_status = #{ioStatus,jdbcType=CHAR}
+      </if>
+      <if test="carNumber != null and carNumber != '' ">
+        and car_number like UPPER(CONCAT('%',#{carNumber,jdbcType=VARCHAR},'%'))
+      </if>
+      <if test="driverName != null">
+        and driver_name = #{driverName,jdbcType=VARCHAR}
+      </if>
+      <if test="driverPhone != null">
+        and driver_phone = #{driverPhone,jdbcType=VARCHAR}
+      </if>
+      <if test="shipDate != null">
+        and ship_date = #{shipDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="scheduledArrivalDate != null">
+        and scheduled_arrival_date = #{scheduledArrivalDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="actualArrivalDate != null">
+        and actual_arrival_date = #{actualArrivalDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="transactionDate != null">
+        and transaction_date = #{transactionDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="warehouse != null">
+        and warehouse = #{warehouse,jdbcType=VARCHAR}
+      </if>
+      </trim>
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from material_transaction
+    where transaction_id = #{transactionId,jdbcType=BIGINT}
+  </select>
+  <select id="findByCond" parameterType="com.honest.sdms.transaction.entity.MaterialTransaction" resultMap="BaseResultMap">
+	select
+	<include refid="Base_Column_List" />
+	from material_transaction
+	<include refid="Base_Where" />
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from material_transaction
+    where transaction_id = #{transactionId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.honest.sdms.transaction.entity.MaterialTransaction">
+    insert into material_transaction (transaction_id, transaction_summary_id, 
+      item_id, item, po_header_id, po_number, 
+      po_line, io_type, io_status, 
+      car_number, driver_name, driver_phone, 
+      ship_date, scheduled_arrival_date, actual_arrival_date, 
+      transaction_date, transaction_piece, transaction_weight, 
+      warehouse, remarks, created_by, 
+      created_date, last_updated_by, last_updated_date, 
+      organization_id)
+    values (#{transactionId,jdbcType=BIGINT}, #{transactionSummaryId,jdbcType=BIGINT}, 
+      #{itemId,jdbcType=BIGINT}, #{item,jdbcType=VARCHAR}, #{poHeaderId,jdbcType=BIGINT}, #{poNumber,jdbcType=VARCHAR}, 
+      #{poLine,jdbcType=BIGINT}, #{ioType,jdbcType=BIGINT}, #{ioStatus,jdbcType=CHAR}, 
+      #{carNumber,jdbcType=VARCHAR}, #{driverName,jdbcType=VARCHAR}, #{driverPhone,jdbcType=VARCHAR}, 
+      #{shipDate,jdbcType=TIMESTAMP}, #{scheduledArrivalDate,jdbcType=TIMESTAMP}, #{actualArrivalDate,jdbcType=TIMESTAMP}, 
+      #{transactionDate,jdbcType=TIMESTAMP}, #{transactionPiece,jdbcType=BIGINT}, #{transactionWeight,jdbcType=DOUBLE}, 
+      #{warehouse,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, #{createdBy,jdbcType=VARCHAR}, 
+      #{createdDate,jdbcType=TIMESTAMP}, #{lastUpdatedBy,jdbcType=VARCHAR}, #{lastUpdatedDate,jdbcType=TIMESTAMP}, 
+      #{organizationId,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.honest.sdms.transaction.entity.MaterialTransaction">
+    insert into material_transaction
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="transactionId != null">
+        transaction_id,
+      </if>
+      <if test="transactionSummaryId != null">
+        transaction_summary_id,
+      </if>
+      <if test="itemId != null">
+        item_id,
+      </if>
+      <if test="item != null">
+        item,
+      </if>
+      <if test="poNumber != null">
+        po_number,
+      </if>
+      <if test="poHeaderId != null">
+        po_header_id,
+      </if>
+      <if test="poLine != null">
+        po_line,
+      </if>
+      <if test="ioType != null">
+        io_type,
+      </if>
+      <if test="ioStatus != null">
+        io_status,
+      </if>
+      <if test="carNumber != null">
+        car_number,
+      </if>
+      <if test="driverName != null">
+        driver_name,
+      </if>
+      <if test="driverPhone != null">
+        driver_phone,
+      </if>
+      <if test="shipDate != null">
+        ship_date,
+      </if>
+      <if test="scheduledArrivalDate != null">
+        scheduled_arrival_date,
+      </if>
+      <if test="actualArrivalDate != null">
+        actual_arrival_date,
+      </if>
+      <if test="transactionDate != null">
+        transaction_date,
+      </if>
+      <if test="transactionPiece != null">
+        transaction_piece,
+      </if>
+      <if test="transactionWeight != null">
+        transaction_weight,
+      </if>
+      <if test="warehouse != null">
+        warehouse,
+      </if>
+      <if test="remarks != null">
+        remarks,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdDate != null">
+        created_date,
+      </if>
+      <if test="lastUpdatedBy != null">
+        last_updated_by,
+      </if>
+      <if test="lastUpdatedDate != null">
+        last_updated_date,
+      </if>
+      <if test="organizationId != null">
+        organization_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="transactionId != null">
+        #{transactionId,jdbcType=BIGINT},
+      </if>
+      <if test="transactionSummaryId != null">
+        #{transactionSummaryId,jdbcType=BIGINT},
+      </if>
+      <if test="itemId != null">
+        #{itemId,jdbcType=BIGINT},
+      </if>
+      <if test="item != null">
+        #{item,jdbcType=VARCHAR},
+      </if>
+      <if test="poNumber != null">
+        #{poNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="poHeaderId != null">
+        #{poHeaderId,jdbcType=BIGINT},
+      </if>
+      <if test="poLine != null">
+        #{poLine,jdbcType=BIGINT},
+      </if>
+      <if test="ioType != null">
+        #{ioType,jdbcType=BIGINT},
+      </if>
+      <if test="ioStatus != null">
+        #{ioStatus,jdbcType=CHAR},
+      </if>
+      <if test="carNumber != null">
+        #{carNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="driverName != null">
+        #{driverName,jdbcType=VARCHAR},
+      </if>
+      <if test="driverPhone != null">
+        #{driverPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="shipDate != null">
+        #{shipDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="scheduledArrivalDate != null">
+        #{scheduledArrivalDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actualArrivalDate != null">
+        #{actualArrivalDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="transactionDate != null">
+        #{transactionDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="transactionPiece != null">
+        #{transactionPiece,jdbcType=BIGINT},
+      </if>
+      <if test="transactionWeight != null">
+        #{transactionWeight,jdbcType=DOUBLE},
+      </if>
+      <if test="warehouse != null">
+        #{warehouse,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null">
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdDate != null">
+        #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedBy != null">
+        #{lastUpdatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdatedDate != null">
+        #{lastUpdatedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="organizationId != null">
+        #{organizationId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.honest.sdms.transaction.entity.MaterialTransaction">
+    update material_transaction
+    <set>
+      <if test="transactionSummaryId != null">
+        transaction_summary_id = #{transactionSummaryId,jdbcType=BIGINT},
+      </if>
+      <if test="itemId != null">
+        item_id = #{itemId,jdbcType=BIGINT},
+      </if>
+      <if test="item != null">
+        item = #{item,jdbcType=VARCHAR},
+      </if>
+      <if test="poNumber != null">
+        po_number = #{poNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="poHeaderId != null">
+        po_header_id = #{poHeaderId,jdbcType=BIGINT},
+      </if>
+      <if test="poLine != null">
+        po_line = #{poLine,jdbcType=BIGINT},
+      </if>
+      <if test="ioType != null">
+        io_type = #{ioType,jdbcType=BIGINT},
+      </if>
+      <if test="ioStatus != null">
+        io_status = #{ioStatus,jdbcType=CHAR},
+      </if>
+      <if test="carNumber != null">
+        car_number = #{carNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="driverName != null">
+        driver_name = #{driverName,jdbcType=VARCHAR},
+      </if>
+      <if test="driverPhone != null">
+        driver_phone = #{driverPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="shipDate != null">
+        ship_date = #{shipDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="scheduledArrivalDate != null">
+        scheduled_arrival_date = #{scheduledArrivalDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actualArrivalDate != null">
+        actual_arrival_date = #{actualArrivalDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="transactionDate != null">
+        transaction_date = #{transactionDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="transactionPiece != null">
+        transaction_piece = #{transactionPiece,jdbcType=BIGINT},
+      </if>
+      <if test="transactionWeight != null">
+        transaction_weight = #{transactionWeight,jdbcType=DOUBLE},
+      </if>
+      <if test="warehouse != null">
+        warehouse = #{warehouse,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null">
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdDate != null">
+        created_date = #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedBy != null">
+        last_updated_by = #{lastUpdatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdatedDate != null">
+        last_updated_date = #{lastUpdatedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="organizationId != null">
+        organization_id = #{organizationId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where transaction_id = #{transactionId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.honest.sdms.transaction.entity.MaterialTransaction">
+    update material_transaction
+    set transaction_summary_id = #{transactionSummaryId,jdbcType=BIGINT},
+      item_id = #{itemId,jdbcType=BIGINT},
+      item = #{item,jdbcType=VARCHAR},
+      po_number = #{poNumber,jdbcType=VARCHAR},
+      po_header_id = #{poHeaderId,jdbcType=BIGINT},
+      po_line = #{poLine,jdbcType=BIGINT},
+      io_type = #{ioType,jdbcType=BIGINT},
+      io_status = #{ioStatus,jdbcType=CHAR},
+      car_number = #{carNumber,jdbcType=VARCHAR},
+      driver_name = #{driverName,jdbcType=VARCHAR},
+      driver_phone = #{driverPhone,jdbcType=VARCHAR},
+      ship_date = #{shipDate,jdbcType=TIMESTAMP},
+      scheduled_arrival_date = #{scheduledArrivalDate,jdbcType=TIMESTAMP},
+      actual_arrival_date = #{actualArrivalDate,jdbcType=TIMESTAMP},
+      transaction_date = #{transactionDate,jdbcType=TIMESTAMP},
+      transaction_piece = #{transactionPiece,jdbcType=BIGINT},
+      transaction_weight = #{transactionWeight,jdbcType=DOUBLE},
+      warehouse = #{warehouse,jdbcType=VARCHAR},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      created_by = #{createdBy,jdbcType=VARCHAR},
+      created_date = #{createdDate,jdbcType=TIMESTAMP},
+      last_updated_by = #{lastUpdatedBy,jdbcType=VARCHAR},
+      last_updated_date = #{lastUpdatedDate,jdbcType=TIMESTAMP},
+      organization_id = #{organizationId,jdbcType=BIGINT}
+    where transaction_id = #{transactionId,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.honest.sdms.transaction.dao.PoLineMapper">
+  <resultMap id="BaseResultMap" type="com.honest.sdms.transaction.entity.PoLine">
+    <id column="line_id" jdbcType="BIGINT" property="lineId" />
+    <result column="header_id" jdbcType="BIGINT" property="headerId" />
+    <result column="weight" jdbcType="DOUBLE" property="weight" />
+    <result column="specific_id" jdbcType="BIGINT" property="specificId" />
+    <result column="piece_num" jdbcType="BIGINT" property="pieceNum" />
+    <result column="Unit_Price" jdbcType="DOUBLE" property="unitPrice" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+    <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+    <result column="last_updated_by" jdbcType="VARCHAR" property="lastUpdatedBy" />
+    <result column="last_updated_date" jdbcType="TIMESTAMP" property="lastUpdatedDate" />
+    <result column="organization_id" jdbcType="BIGINT" property="organizationId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    line_id, header_id, weight, specific_id, piece_num, Unit_Price, remarks, created_by, 
+    created_date, last_updated_by, last_updated_date, organization_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from po_line
+    where line_id = #{lineId,jdbcType=BIGINT}
+  </select>
+  <select id="findPoLinesByPoHeaderId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />,
+    (select ds.dict_data_name from sys_dict_datas ds where ds.id = p.specific_id and ds.organization_id = p.organization_id and ds.dict_id = 3) as specificName
+    from po_line p
+    where header_id = #{poHeaderId,jdbcType=BIGINT} 
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from po_line
+    where line_id = #{lineId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.honest.sdms.transaction.entity.PoLine">
+    insert into po_line (line_id, header_id, weight, 
+      specific_id, piece_num, Unit_Price, 
+      remarks, created_by, created_date, 
+      last_updated_by, last_updated_date, organization_id
+      )
+    values (#{lineId,jdbcType=BIGINT}, #{headerId,jdbcType=BIGINT}, #{weight,jdbcType=DOUBLE}, 
+      #{specificId,jdbcType=BIGINT}, #{pieceNum,jdbcType=BIGINT}, #{unitPrice,jdbcType=DOUBLE}, 
+      #{remarks,jdbcType=VARCHAR}, #{createdBy,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP}, 
+      #{lastUpdatedBy,jdbcType=VARCHAR}, #{lastUpdatedDate,jdbcType=TIMESTAMP}, #{organizationId,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.honest.sdms.transaction.entity.PoLine">
+    insert into po_line
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="lineId != null">
+        line_id,
+      </if>
+      <if test="headerId != null">
+        header_id,
+      </if>
+      <if test="weight != null">
+        weight,
+      </if>
+      <if test="specificId != null">
+        specific_id,
+      </if>
+      <if test="pieceNum != null">
+        piece_num,
+      </if>
+      <if test="unitPrice != null">
+        Unit_Price,
+      </if>
+      <if test="remarks != null">
+        remarks,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="createdDate != null">
+        created_date,
+      </if>
+      <if test="lastUpdatedBy != null">
+        last_updated_by,
+      </if>
+      <if test="lastUpdatedDate != null">
+        last_updated_date,
+      </if>
+      <if test="organizationId != null">
+        organization_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="lineId != null">
+        #{lineId,jdbcType=BIGINT},
+      </if>
+      <if test="headerId != null">
+        #{headerId,jdbcType=BIGINT},
+      </if>
+      <if test="weight != null">
+        #{weight,jdbcType=DOUBLE},
+      </if>
+      <if test="specificId != null">
+        #{specificId,jdbcType=BIGINT},
+      </if>
+      <if test="pieceNum != null">
+        #{pieceNum,jdbcType=BIGINT},
+      </if>
+      <if test="unitPrice != null">
+        #{unitPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="remarks != null">
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdDate != null">
+        #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedBy != null">
+        #{lastUpdatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdatedDate != null">
+        #{lastUpdatedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="organizationId != null">
+        #{organizationId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.honest.sdms.transaction.entity.PoLine">
+    update po_line
+    <set>
+      <if test="headerId != null">
+        header_id = #{headerId,jdbcType=BIGINT},
+      </if>
+      <if test="weight != null">
+        weight = #{weight,jdbcType=DOUBLE},
+      </if>
+      <if test="specificId != null">
+        specific_id = #{specificId,jdbcType=BIGINT},
+      </if>
+      <if test="pieceNum != null">
+        piece_num = #{pieceNum,jdbcType=BIGINT},
+      </if>
+      <if test="unitPrice != null">
+        Unit_Price = #{unitPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="remarks != null">
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createdDate != null">
+        created_date = #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUpdatedBy != null">
+        last_updated_by = #{lastUpdatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lastUpdatedDate != null">
+        last_updated_date = #{lastUpdatedDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="organizationId != null">
+        organization_id = #{organizationId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where line_id = #{lineId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.honest.sdms.transaction.entity.PoLine">
+    update po_line
+    set header_id = #{headerId,jdbcType=BIGINT},
+      weight = #{weight,jdbcType=DOUBLE},
+      specific_id = #{specificId,jdbcType=BIGINT},
+      piece_num = #{pieceNum,jdbcType=BIGINT},
+      Unit_Price = #{unitPrice,jdbcType=DOUBLE},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      created_by = #{createdBy,jdbcType=VARCHAR},
+      created_date = #{createdDate,jdbcType=TIMESTAMP},
+      last_updated_by = #{lastUpdatedBy,jdbcType=VARCHAR},
+      last_updated_date = #{lastUpdatedDate,jdbcType=TIMESTAMP},
+      organization_id = #{organizationId,jdbcType=BIGINT}
+    where line_id = #{lineId,jdbcType=BIGINT}
+  </update>
+</mapper>

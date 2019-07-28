@@ -4,15 +4,17 @@ import java.util.List;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.github.pagehelper.PageInfo;
 import com.honest.sdms.ApplicationTests;
 import com.honest.sdms.basedata.exceptions.HSException;
 import com.honest.sdms.system.entity.Role;
+import com.honest.sdms.system.entity.SysLog;
 import com.honest.sdms.system.entity.SysUser;
 import com.honest.sdms.system.service.IRolesService;
+import com.honest.sdms.system.service.ISysLogService;
 import com.honest.sdms.system.service.ISysUserService;
+import com.honest.sdms.tools.DateTimeUtil;
 
 public class SysUserServiceTest extends ApplicationTests{
 	
@@ -20,6 +22,25 @@ public class SysUserServiceTest extends ApplicationTests{
 	private ISysUserService sysUserService;
 	@Autowired
 	private IRolesService rolesService;
+	@Autowired
+	private ISysLogService sysLogService;
+	
+	@Test
+	public void testFindByCond() {
+		SysLog cond = new SysLog();
+		cond.setOrganizationId(360L);
+		
+//		String[] rangeDatas = new String[] {"1559489050758","1560093850758"};
+//		cond.setCreatedDateStart(new Date(Long.parseLong(rangeDatas[0])));
+//		cond.setCreatedDateEnd(new Date(Long.parseLong(rangeDatas[1])));
+//		System.out.println(cond.getCreatedDateStart().toLocaleString()+"======"+cond.getCreatedDateEnd().toLocaleString());
+		List<SysLog> list = sysLogService.findByCond(cond);
+		for(SysLog lg : list) {
+			System.out.println(lg.getCreatedDate()+"=="+new DateTimeUtil(lg.getCreatedDate()).toString(DateTimeUtil.DATE_FORMAT));
+		}
+		System.out.println(list.size());
+		
+	}
 	
 //	@Test
 	public void testFindSysUserPage() {
@@ -45,7 +66,7 @@ public class SysUserServiceTest extends ApplicationTests{
 		System.out.println(currentRoles.size());
 	}
 
-	@Test
+	//@Test
 	public void saveUser() throws HSException {
 		SysUser user = sysUserService.selectByPrimaryKey(3L);
 		user.setUserName(user.getUserName()+"22");

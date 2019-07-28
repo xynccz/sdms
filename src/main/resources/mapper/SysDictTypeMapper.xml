@@ -20,10 +20,10 @@
   <sql id="Base_Where">
 	  <trim prefix="WHERE" prefixOverrides="AND |OR ">
 	  	  <if test="dictName != null and dictName != ''">
-	        and dict_name = #{dictName,jdbcType=VARCHAR}
+	        and dict_name like CONCAT('%',#{dictName,jdbcType=VARCHAR},'%') 
 	      </if>
 	      <if test="dictCode != null and dictCode != ''">
-	        and dict_code = #{dictCode,jdbcType=VARCHAR}
+	        and lower(dict_code) like lower(CONCAT('%',#{dictCode,jdbcType=VARCHAR},'%'))
 	      </if>
 	      <if test="isValid != null and isValid != ''">
 	        and is_valid = #{isValid,jdbcType=CHAR}

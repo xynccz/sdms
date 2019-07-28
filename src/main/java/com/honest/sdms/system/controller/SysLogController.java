@@ -18,7 +18,7 @@ public class SysLogController {
 	private ISysLogService sysLogService;
 	
 	@RequestMapping(value = "/search", method = RequestMethod.POST, produces={"application/json;charset=UTF-8;"})
-	public @ResponseBody PageInfo<SysLog> searchUsers(SysLog cond,int pageNum,int pageSize,String sortName, String sortOrder){
+	public @ResponseBody PageInfo<SysLog> search(SysLog cond,int pageNum,int pageSize,String sortName, String sortOrder){
 		PageInfo<SysLog> pageInfo = sysLogService.findByCondWithPage(cond, sortName, sortOrder, pageNum, pageSize);
 		return pageInfo;
 	} 

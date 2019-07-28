@@ -326,7 +326,7 @@ public class StringUtil {
         System.out.println("source :" + title);   
         System.out.println("new:" + StringUtil.replace(title,strSrc,strDist));  
         
-        System.out.println(StringUtil.ToPinyin("曹成志"));
+        System.out.println(StringUtil.ToPinyin("苹果"));
     }   
   
   

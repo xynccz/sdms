@@ -24,7 +24,7 @@ public class SysDictDatasServiceImp extends BaseServiceImp<SysDictDatas, Long> i
 		this.baseMapper = baseMapper;
 		sysDictDatasMapper = (SysDictDatasMapper)baseMapper;
 	}
-
+	
 	/**
 	 * 获取指定字典对应的键值对
 	 */
@@ -48,6 +48,11 @@ public class SysDictDatasServiceImp extends BaseServiceImp<SysDictDatas, Long> i
 				}
 			}
 		}
+	}
+
+	@Override
+	public List<SysDictDatas> getDictDatasByDictCode(String dictCode) {
+		return sysDictDatasMapper.getDictDatasByDictCode(dictCode,Constants.getCurrentOrganizationId());
 	}
 
 }

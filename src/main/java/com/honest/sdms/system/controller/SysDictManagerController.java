@@ -28,13 +28,13 @@ public class SysDictManagerController {
 	private ISysDictDatasService sysDictDatasService;
 	
 	@RequestMapping(value = "/search", method = RequestMethod.POST, produces={"application/json;charset=UTF-8;"})
-	public @ResponseBody PageInfo<SysDictType> searchUsers(SysDictType cond,int pageNum,int pageSize,String sortName, String sortOrder){
+	public @ResponseBody PageInfo<SysDictType> search(SysDictType cond,int pageNum,int pageSize,String sortName, String sortOrder){
 		PageInfo<SysDictType> pageInfo = sysDictTypeService.findByCondWithPage(cond, sortName, sortOrder, pageNum, pageSize);
 		return pageInfo;
 	} 
 	
 	@RequestMapping(value="/saveDictDatas",method={RequestMethod.POST})
-	public @ResponseBody APIResponse<String> saveUser(@RequestBody List<SysDictDatas> dictDatas) throws HSException{
+	public @ResponseBody APIResponse<String> saveDictDatas(@RequestBody List<SysDictDatas> dictDatas) throws HSException{
 		sysDictDatasService.saveOrUpdateDictDatas(dictDatas);
 		return new APIResponse<String>(ResultStatus.OK);
 	} 
@@ -44,7 +44,7 @@ public class SysDictManagerController {
 	 * @throws HSException 
 	 */
 	@RequestMapping(value="/saveDictType",method={RequestMethod.POST})
-	public @ResponseBody APIResponse<String> saveUser(SysDictType dictType) throws HSException{
+	public @ResponseBody APIResponse<String> saveDictType(SysDictType dictType) throws HSException{
 		sysDictTypeService.saveOrUpdateDictType(dictType);
 		return new APIResponse<String>(ResultStatus.OK);
 	} 

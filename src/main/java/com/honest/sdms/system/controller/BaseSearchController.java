@@ -23,6 +23,8 @@ import com.honest.sdms.system.service.IRolesService;
 import com.honest.sdms.system.service.ISysDictDatasService;
 import com.honest.sdms.system.service.ISysUserService;
 import com.honest.sdms.tools.StringUtil;
+import com.honest.sdms.transaction.entity.Item;
+import com.honest.sdms.transaction.service.IItemService;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -41,6 +43,8 @@ public class BaseSearchController {
 	private IResourcesService resourcesService;
 	@Autowired
 	private ISysDictDatasService sysDictDatasService;
+	@Autowired
+	private IItemService itemService;
 	
 	/**
 	 * 获取指定字典的键值对
@@ -50,6 +54,16 @@ public class BaseSearchController {
 	@RequestMapping(value="/getDictDatasByDictId", method = RequestMethod.GET,produces= {"application/json;charset=UTF-8;"})
 	public @ResponseBody List<SysDictDatas> getDictDatasByDictId(@RequestParam("dictId") Long dictId) {
 		return sysDictDatasService.getDictDatasByDictId(dictId);
+	}
+	
+	@RequestMapping(value="/getDictDatasByDictCode", method = RequestMethod.GET,produces= {"application/json;charset=UTF-8;"})
+	public @ResponseBody List<SysDictDatas> getDictDatasByDictCode(@RequestParam("dictCode") String dictCode) {
+		return sysDictDatasService.getDictDatasByDictCode(dictCode);
+	}
+	
+	@RequestMapping(value="/getItems", method = RequestMethod.GET,produces= {"application/json;charset=UTF-8;"})
+	public @ResponseBody List<Item> getItems() {
+		return itemService.findByCond(new Item());
 	}
 	
 	/**

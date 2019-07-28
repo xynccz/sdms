@@ -105,19 +105,14 @@ public class BusinessManagerServiceImp extends IBusinessManagerService{
 			List<String> buttonGroups = new ArrayList<String>();
 			Map<Long, Resources> sourceMap = new HashMap<Long, Resources>();
 			for (Resources rs : resourcesList) {
-				Integer actionType = rs.getType();
+				int actionType = rs.getType().intValue();
 				String code = rs.getCode();
 				Long resoruceId = rs.getResourceId();
-				if (Constants.BUTTON.intValue() == actionType.intValue()) 
-				{
+				if (Constants.BUTTON.intValue() == actionType){
 					buttonGroups.add(code);
-				} else if (Constants.MENU.intValue() == actionType.intValue()
-						|| Constants.MODEL.intValue() == actionType.intValue()) 
-				{
-					if(!sourceMap.containsKey(resoruceId))
-					{
-						sourceMap.put(resoruceId, rs);
-					}
+				} else if (Constants.MENU.intValue() == actionType
+						|| Constants.MODEL.intValue() == actionType){
+					sourceMap.put(resoruceId, rs);
 				}
 			}
 			currentUser.setButtonGroups(buttonGroups);// 获取当前登录用户按钮组权限列表
@@ -197,10 +192,10 @@ public class BusinessManagerServiceImp extends IBusinessManagerService{
 			for(Iterator<Resources> sit = map.values().iterator();sit.hasNext();) {
 				Resources srs = sit.next();
 				JSONObject subObj = setResouece(srs);
-				subArray.add(subObj);
 				
 				Long rid = srs.getResourceId();
 				setTreeNodes(childMap, rid, subObj);
+				subArray.add(subObj);
 			}
 			rootNode.put("subs", subArray);
 		}
