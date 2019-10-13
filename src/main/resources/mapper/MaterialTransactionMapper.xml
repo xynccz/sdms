@@ -9,7 +9,8 @@
     <result column="po_number" jdbcType="VARCHAR" property="poNumber" />
     <result column="po_header_id" jdbcType="BIGINT" property="poHeaderId" />
     <result column="po_line" jdbcType="BIGINT" property="poLine" />
-    <result column="io_type" jdbcType="BIGINT" property="ioType" />
+    <result column="io_type" jdbcType="VARCHAR" property="ioType" />
+    <result column="io_type_name" jdbcType="VARCHAR" property="ioTypeName" />
     <result column="io_status" jdbcType="CHAR" property="ioStatus" />
     <result column="car_number" jdbcType="VARCHAR" property="carNumber" />
     <result column="driver_name" jdbcType="VARCHAR" property="driverName" />
@@ -21,6 +22,7 @@
     <result column="transaction_piece" jdbcType="BIGINT" property="transactionPiece" />
     <result column="transaction_weight" jdbcType="DOUBLE" property="transactionWeight" />
     <result column="warehouse" jdbcType="VARCHAR" property="warehouse" />
+    <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
     <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
     <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
@@ -55,7 +57,7 @@
         and po_line = #{poLine,jdbcType=BIGINT}
       </if>
       <if test="ioType != null">
-        and io_type = #{ioType,jdbcType=BIGINT}
+        and io_type = #{ioType,jdbcType=VARCHAR}
       </if>
       <if test="ioStatus != null">
         and io_status = #{ioStatus,jdbcType=CHAR}
@@ -94,9 +96,23 @@
   </select>
   <select id="findByCond" parameterType="com.honest.sdms.transaction.entity.MaterialTransaction" resultMap="BaseResultMap">
 	select
-	<include refid="Base_Column_List" />
-	from material_transaction
+	<include refid="Base_Column_List" />,
+	(select ds.dict_data_name from sys_dict_datas ds where ds.dict_data_code = p.io_type and ds.organization_id = p.organization_id and ds.dict_id = 8) as io_type_name,
+	(select ds.dict_data_name from sys_dict_datas ds where ds.dict_data_code = p.warehouse and ds.organization_id = p.organization_id and ds.dict_id = 1) as warehouse_name,
+	(select ds.dict_data_name from sys_dict_datas ds where ds.id = (select pe.specific_id from po_line pe where pe.header_id = p.po_header_id and pe.line_id=p.po_line and pe.organization_id = p.organization_id) and ds.organization_id = p.organization_id and ds.dict_id = 3) as specificName
+	from material_transaction p
 	<include refid="Base_Where" />
+  </select>
+  <select id="findMaterialTransactionsByIds" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />,
+    (select pe.specific_id from po_line pe where pe.header_id = p.po_header_id and pe.line_id=p.po_line and pe.organization_id = p.organization_id) as specificId
+    from material_transaction p
+    where transaction_id in
+    <foreach collection="transactionIds" item="transactionId" index="index" open="(" separator="," close=")">
+            #{transactionId}
+        </foreach>
+    and organization_id = #{organizationId,jdbcType=BIGINT} 
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from material_transaction
@@ -114,7 +130,7 @@
       organization_id)
     values (#{transactionId,jdbcType=BIGINT}, #{transactionSummaryId,jdbcType=BIGINT}, 
       #{itemId,jdbcType=BIGINT}, #{item,jdbcType=VARCHAR}, #{poHeaderId,jdbcType=BIGINT}, #{poNumber,jdbcType=VARCHAR}, 
-      #{poLine,jdbcType=BIGINT}, #{ioType,jdbcType=BIGINT}, #{ioStatus,jdbcType=CHAR}, 
+      #{poLine,jdbcType=BIGINT}, #{ioType,jdbcType=VARCHAR}, #{ioStatus,jdbcType=CHAR}, 
       #{carNumber,jdbcType=VARCHAR}, #{driverName,jdbcType=VARCHAR}, #{driverPhone,jdbcType=VARCHAR}, 
       #{shipDate,jdbcType=TIMESTAMP}, #{scheduledArrivalDate,jdbcType=TIMESTAMP}, #{actualArrivalDate,jdbcType=TIMESTAMP}, 
       #{transactionDate,jdbcType=TIMESTAMP}, #{transactionPiece,jdbcType=BIGINT}, #{transactionWeight,jdbcType=DOUBLE}, 
@@ -224,7 +240,7 @@
         #{poLine,jdbcType=BIGINT},
       </if>
       <if test="ioType != null">
-        #{ioType,jdbcType=BIGINT},
+        #{ioType,jdbcType=VARCHAR},
       </if>
       <if test="ioStatus != null">
         #{ioStatus,jdbcType=CHAR},
@@ -301,7 +317,7 @@
         po_line = #{poLine,jdbcType=BIGINT},
       </if>
       <if test="ioType != null">
-        io_type = #{ioType,jdbcType=BIGINT},
+        io_type = #{ioType,jdbcType=VARCHAR},
       </if>
       <if test="ioStatus != null">
         io_status = #{ioStatus,jdbcType=CHAR},
@@ -365,7 +381,7 @@
       po_number = #{poNumber,jdbcType=VARCHAR},
       po_header_id = #{poHeaderId,jdbcType=BIGINT},
       po_line = #{poLine,jdbcType=BIGINT},
-      io_type = #{ioType,jdbcType=BIGINT},
+      io_type = #{ioType,jdbcType=VARCHAR},
       io_status = #{ioStatus,jdbcType=CHAR},
       car_number = #{carNumber,jdbcType=VARCHAR},
       driver_name = #{driverName,jdbcType=VARCHAR},

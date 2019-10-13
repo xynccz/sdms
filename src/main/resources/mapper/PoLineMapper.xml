@@ -4,10 +4,13 @@
   <resultMap id="BaseResultMap" type="com.honest.sdms.transaction.entity.PoLine">
     <id column="line_id" jdbcType="BIGINT" property="lineId" />
     <result column="header_id" jdbcType="BIGINT" property="headerId" />
+    <result column="is_ship" jdbcType="VARCHAR" property="isShip" />
     <result column="weight" jdbcType="DOUBLE" property="weight" />
     <result column="specific_id" jdbcType="BIGINT" property="specificId" />
     <result column="piece_num" jdbcType="BIGINT" property="pieceNum" />
     <result column="Unit_Price" jdbcType="DOUBLE" property="unitPrice" />
+    <result column="item_id" jdbcType="BIGINT" property="itemId" />
+    <result column="item" jdbcType="VARCHAR" property="item" />
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
     <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
     <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
@@ -16,7 +19,7 @@
     <result column="organization_id" jdbcType="BIGINT" property="organizationId" />
   </resultMap>
   <sql id="Base_Column_List">
-    line_id, header_id, weight, specific_id, piece_num, Unit_Price, remarks, created_by, 
+    line_id, header_id, is_ship, weight, specific_id, piece_num, Unit_Price, remarks, created_by, 
     created_date, last_updated_by, last_updated_date, organization_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -28,21 +31,36 @@
   <select id="findPoLinesByPoHeaderId" parameterType="java.lang.Long" resultMap="BaseResultMap">
   	select 
     <include refid="Base_Column_List" />,
+    (select ph.item from po_header ph where ph.header_id = p.header_id and ph.organization_id = p.organization_id) as item,
+    (select ph.item_id from po_header ph where ph.header_id = p.header_id and ph.organization_id = p.organization_id) as item_id,
     (select ds.dict_data_name from sys_dict_datas ds where ds.id = p.specific_id and ds.organization_id = p.organization_id and ds.dict_id = 3) as specificName
     from po_line p
-    where header_id = #{poHeaderId,jdbcType=BIGINT} 
+    where header_id = #{poHeaderId,jdbcType=BIGINT} and organization_id = #{organizationId,jdbcType=BIGINT}
+  </select>
+  <select id="findPoLinesByPoHeaderIds" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />,
+    (select ph.item from po_header ph where ph.header_id = p.header_id and ph.organization_id = p.organization_id) as item,
+    (select ph.item_id from po_header ph where ph.header_id = p.header_id and ph.organization_id = p.organization_id) as item_id,
+    (select ds.dict_data_name from sys_dict_datas ds where ds.id = p.specific_id and ds.organization_id = p.organization_id and ds.dict_id = 3) as specificName
+    from po_line p
+    where header_id in 
+     	<foreach collection="poHeaderIds" item="poHeaderId" index="index" open="(" separator="," close=")">
+            #{poHeaderId}
+        </foreach>
+    and organization_id = #{organizationId,jdbcType=BIGINT} 
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from po_line
     where line_id = #{lineId,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.honest.sdms.transaction.entity.PoLine">
-    insert into po_line (line_id, header_id, weight, 
+    insert into po_line (line_id, header_id, is_ship, weight, 
       specific_id, piece_num, Unit_Price, 
       remarks, created_by, created_date, 
       last_updated_by, last_updated_date, organization_id
       )
-    values (#{lineId,jdbcType=BIGINT}, #{headerId,jdbcType=BIGINT}, #{weight,jdbcType=DOUBLE}, 
+    values (#{lineId,jdbcType=BIGINT}, #{headerId,jdbcType=BIGINT},#{isShip,jdbcType=VARCHAR}, #{weight,jdbcType=DOUBLE}, 
       #{specificId,jdbcType=BIGINT}, #{pieceNum,jdbcType=BIGINT}, #{unitPrice,jdbcType=DOUBLE}, 
       #{remarks,jdbcType=VARCHAR}, #{createdBy,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP}, 
       #{lastUpdatedBy,jdbcType=VARCHAR}, #{lastUpdatedDate,jdbcType=TIMESTAMP}, #{organizationId,jdbcType=BIGINT}
@@ -56,6 +74,9 @@
       </if>
       <if test="headerId != null">
         header_id,
+      </if>
+      <if test="isShip != null">
+        is_ship,
       </if>
       <if test="weight != null">
         weight,
@@ -95,6 +116,9 @@
       <if test="headerId != null">
         #{headerId,jdbcType=BIGINT},
       </if>
+      <if test="isShip != null">
+        #{isShip,jdbcType=VARCHAR},
+      </if>
       <if test="weight != null">
         #{weight,jdbcType=DOUBLE},
       </if>
@@ -133,6 +157,9 @@
       <if test="headerId != null">
         header_id = #{headerId,jdbcType=BIGINT},
       </if>
+      <if test="isShip != null">
+        is_ship = #{isShip,jdbcType=VARCHAR},
+      </if>
       <if test="weight != null">
         weight = #{weight,jdbcType=DOUBLE},
       </if>
@@ -170,6 +197,7 @@
     update po_line
     set header_id = #{headerId,jdbcType=BIGINT},
       weight = #{weight,jdbcType=DOUBLE},
+      is_ship = #{isShip,jdbcType=VARCHAR},
       specific_id = #{specificId,jdbcType=BIGINT},
       piece_num = #{pieceNum,jdbcType=BIGINT},
       Unit_Price = #{unitPrice,jdbcType=DOUBLE},

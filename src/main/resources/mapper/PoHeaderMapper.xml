@@ -13,6 +13,7 @@
     <result column="item_id" jdbcType="BIGINT" property="itemId" />
     <result column="item" jdbcType="VARCHAR" property="item" />
     <result column="origin_place" jdbcType="VARCHAR" property="originPlace" />
+    <result column="origin_place_name" jdbcType="VARCHAR" property="originPlaceName" />
     <result column="net_weight" jdbcType="DOUBLE" property="netWeight" />
     <result column="gross_weight" jdbcType="DOUBLE" property="grossWeight" />
     <result column="settlement_weight" jdbcType="DOUBLE" property="settlementWeight" />
@@ -83,8 +84,9 @@
   </select>
   <select id="findByCond" parameterType="com.honest.sdms.transaction.entity.PoHeader" resultMap="BaseResultMap">
 	select
-	<include refid="Base_Column_List" />
-	from po_header
+	<include refid="Base_Column_List" />,
+	(select ds.dict_data_name from sys_dict_datas ds where ds.dict_data_code = p.origin_place and ds.organization_id = p.organization_id and ds.dict_id = 5) as origin_place_name
+	from po_header p
 	<include refid="Base_Where" />
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
