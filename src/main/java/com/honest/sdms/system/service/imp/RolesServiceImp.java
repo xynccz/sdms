@@ -52,10 +52,10 @@ public class RolesServiceImp extends BaseServiceImp<Role, Long> implements IRole
 		
 		//更新角色信息
 		userRoleService.deleteUsersByRoleId(role.getRoleId());
-		String newUserIds = StringUtil.replace(role.getUserIds(), new String[] {"[","]"}, new String[] {"",""});
-		if(!StringUtil.isNullOrEmpty(newUserIds))
-		{
-			for(String userId : Constants.SPLIT.split(newUserIds)){
+		
+		String[] roleIds = StringUtil.stringToArray(role.getUserIds());
+		if(roleIds != null && roleIds.length > 0){
+			for(String userId : roleIds){
 				UserRole ur = new UserRole(Long.parseLong(userId),role.getRoleId());
 				userRoleService.insertSelective(ur);
 			}

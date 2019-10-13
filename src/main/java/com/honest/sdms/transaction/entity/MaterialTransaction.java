@@ -1,6 +1,6 @@
 package com.honest.sdms.transaction.entity;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 import com.honest.sdms.system.entity.BaseVO;
 
@@ -9,47 +9,81 @@ public class MaterialTransaction extends BaseVO{
 	private static final long serialVersionUID = 1L;
 
 	private Long transactionId;
-
+	private Long[] transactionIdIn;
     private Long transactionSummaryId;
-
     private Long itemId;
-
     private String item;
-
     private Long poHeaderId;
-    
+    private String poHeaderIds;
     private String poNumber;
-
     private Long poLine;
-
-    private Long ioType;
-
+    private Long specificId;
+    private String specificName;//规格
+    private String ioType;//交易类型，来源数据字典
+    private String ioTypeName;
     private String ioStatus;
-
     private String carNumber;
-
     private String driverName;
-
     private String driverPhone;
-
-    private Date shipDate;
-
-    private Date scheduledArrivalDate;
-
-    private Date actualArrivalDate;
-
-    private Date transactionDate;
-
+    private Timestamp shipDate;
+    private Timestamp scheduledArrivalDate;
+    private Timestamp actualArrivalDate;
+    private Timestamp transactionDate;
     private Long transactionPiece;
-
     private Double transactionWeight;
-
     private String warehouse;
-
+    private String warehouseName;
     private String remarks;
 
-    
-    public Long getTransactionId() {
+    public Long getSpecificId() {
+		return specificId;
+	}
+
+	public void setSpecificId(Long specificId) {
+		this.specificId = specificId;
+	}
+
+	public String getSpecificName() {
+		return specificName;
+	}
+
+	public void setSpecificName(String specificName) {
+		this.specificName = specificName;
+	}
+
+	public Long[] getTransactionIdIn() {
+		return transactionIdIn;
+	}
+
+	public void setTransactionIdIn(Long[] transactionIdIn) {
+		this.transactionIdIn = transactionIdIn;
+	}
+
+	public String getWarehouseName() {
+		return warehouseName;
+	}
+
+	public void setWarehouseName(String warehouseName) {
+		this.warehouseName = warehouseName;
+	}
+
+	public String getIoTypeName() {
+		return ioTypeName;
+	}
+
+	public void setIoTypeName(String ioTypeName) {
+		this.ioTypeName = ioTypeName;
+	}
+
+	public String getPoHeaderIds() {
+		return poHeaderIds;
+	}
+
+	public void setPoHeaderIds(String poHeaderIds) {
+		this.poHeaderIds = poHeaderIds;
+	}
+
+	public Long getTransactionId() {
         return transactionId;
     }
 
@@ -105,11 +139,11 @@ public class MaterialTransaction extends BaseVO{
         this.poLine = poLine;
     }
 
-    public Long getIoType() {
+    public String getIoType() {
         return ioType;
     }
 
-    public void setIoType(Long ioType) {
+    public void setIoType(String ioType) {
         this.ioType = ioType;
     }
 
@@ -145,35 +179,35 @@ public class MaterialTransaction extends BaseVO{
         this.driverPhone = driverPhone == null ? null : driverPhone.trim();
     }
 
-    public Date getShipDate() {
+    public Timestamp getShipDate() {
         return shipDate;
     }
 
-    public void setShipDate(Date shipDate) {
+    public void setShipDate(Timestamp shipDate) {
         this.shipDate = shipDate;
     }
 
-    public Date getScheduledArrivalDate() {
+    public Timestamp getScheduledArrivalDate() {
         return scheduledArrivalDate;
     }
 
-    public void setScheduledArrivalDate(Date scheduledArrivalDate) {
+    public void setScheduledArrivalDate(Timestamp scheduledArrivalDate) {
         this.scheduledArrivalDate = scheduledArrivalDate;
     }
 
-    public Date getActualArrivalDate() {
+    public Timestamp getActualArrivalDate() {
         return actualArrivalDate;
     }
 
-    public void setActualArrivalDate(Date actualArrivalDate) {
+    public void setActualArrivalDate(Timestamp actualArrivalDate) {
         this.actualArrivalDate = actualArrivalDate;
     }
 
-    public Date getTransactionDate() {
+    public Timestamp getTransactionDate() {
         return transactionDate;
     }
 
-    public void setTransactionDate(Date transactionDate) {
+    public void setTransactionDate(Timestamp transactionDate) {
         this.transactionDate = transactionDate;
     }
 

@@ -20,6 +20,24 @@ public class Constants {
 	public static final Long DEFAULT_ORGANIZATIONID = 360L;
 	
 	public static final int DEFAULT_PAGE_SIZE = 20;
+	
+	public static class Status{
+		public static final String Y = "Y";
+		public static final String N = "N";
+	}
+	
+	public static class IoType{
+		public static final String PO_IN = "PO_IN";
+		public static final String PO_OUT = "PO_OUT";
+		public static final String PO_SHIP = "PO_SHIP";
+	}
+	
+	//库存类别
+	public static class InventoryType{
+		public static final Long rawStock = 42L;//原料
+		public static final Long product = 43L;//成品
+		public static final Long unqualified = 44L;//次品
+	}
 	 
 	 public static final String JWT_ERRCODE_EXPIRE = "TOKEN_ERRCODE_EXPIRE_TOKEN签名过期";//Token超时异常
 	 public static final String JWT_ERRCODE_FAIL = "JWT_ERRCODE_FAIL_TOKEN签名验证不通过";//token校验失败

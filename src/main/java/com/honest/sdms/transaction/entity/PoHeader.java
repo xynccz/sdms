@@ -9,48 +9,37 @@ public class PoHeader extends BaseVO{
 	private static final long serialVersionUID = 1L;
 
 	private Long headerId;
-
     private String poNumber;
-    
     private String poType;
-
     private String vendor;
-
     private Double totalAmount;
-
     private String buyer;
-
     private String agent;
-
     private Double agentPay;
-
     private Long itemId;
-
     private String item;
-
     private String originPlace;
-
+    private String originPlaceName;
     private Double netWeight;
-
     private Double grossWeight;
-
     private Double settlementWeight;
-
     private Double lossWeight;
-
     private String unit;
-
     private Long totlePieces;
-
     private String packageType;
-
     private Timestamp dateOfPurchase;
-    
     private String isClosed;
-
     private String remarks;
 
-    public String getPoType() {
+    public String getOriginPlaceName() {
+		return originPlaceName;
+	}
+
+	public void setOriginPlaceCode(String originPlaceName) {
+		this.originPlaceName = originPlaceName;
+	}
+
+	public String getPoType() {
 		return poType;
 	}
 

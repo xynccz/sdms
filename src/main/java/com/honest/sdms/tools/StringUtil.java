@@ -10,6 +10,8 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 
+import com.honest.sdms.Constants;
+
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
@@ -42,10 +44,22 @@ public class StringUtil {
         for(int i = 0;i < s1.length;i++){   
             source = StringUtil.replace(source, s1[i], s2[i]);   
         }   
-  
         return source;   
     }   
   
+    /**
+     * 特殊字符串转数组
+     * @param source 格式：[9,8]
+     * @return
+     */
+    public static String[] stringToArray(String source) {
+    	String newRoleIds = StringUtil.replace(source, new String[] {"[","]","\""}, new String[] {"","",""});
+		if(!StringUtil.isNullOrEmpty(newRoleIds)){
+			return Constants.SPLIT.split(newRoleIds);
+		}else {
+			return null;
+		}
+    }
   
     /**  
      * 字符串替换

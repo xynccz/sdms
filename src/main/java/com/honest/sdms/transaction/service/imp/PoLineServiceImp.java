@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.honest.sdms.Constants;
 import com.honest.sdms.system.dao.IBaseMapper;
 import com.honest.sdms.system.service.imp.BaseServiceImp;
 import com.honest.sdms.transaction.dao.PoLineMapper;
@@ -32,8 +33,12 @@ public class PoLineServiceImp extends BaseServiceImp<PoLine, Long> implements IP
 
 	@Override
 	public List<PoLine> findPoLinesByPoHeaderId(Long poHeaderId) {
-		return poLineMapper.findPoLinesByPoHeaderId(poHeaderId);
+		return poLineMapper.findPoLinesByPoHeaderId(poHeaderId,Constants.getCurrentSysUser().getOrganizationId());
 	}
 
-	
+	@Override
+	public List<PoLine> findPoLinesByPoHeaderIds(Long[] poHeaderIds){
+		return poLineMapper.findPoLinesByPoHeaderIds(poHeaderIds, Constants.getCurrentSysUser().getOrganizationId());
+	}
+
 }

@@ -10,5 +10,7 @@ public interface IPoLineService extends IBaseService<PoLine, Long>{
 	abstract void savePoLine(PoLine poLine);
 	
 	abstract List<PoLine> findPoLinesByPoHeaderId(Long poHeaderId);
+	
+	abstract List<PoLine> findPoLinesByPoHeaderIds(Long[] poHeaderIds);
 
 }

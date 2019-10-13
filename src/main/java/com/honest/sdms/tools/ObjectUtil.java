@@ -18,6 +18,10 @@ public class ObjectUtil {
         BeanUtils.copyProperties(src, target, getNullPropertyNames(src));
     }
 
+    public static void copyProperties(Object src, Object target){
+        BeanUtils.copyProperties(src, target);
+    }
+    
     private static String[] getNullPropertyNames (Object source) {
         final BeanWrapper src = new BeanWrapperImpl(source);
         java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();

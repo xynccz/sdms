@@ -15,11 +15,15 @@ public class OrderHeader extends BaseVO{
 
     private String buyerNotes;
 
-    private Long shopId;
+    private String shopId;//客户商品编码，需要创建与系统自己商品编码的对应关系
+
+    private String shopOrderNo;//客户订单号
 
     private String shopName;
 
     private String customerServiceNotes;
+
+    private Long orderCount;
 
     private Double orderAmount;
 
@@ -63,12 +67,20 @@ public class OrderHeader extends BaseVO{
         this.buyerNotes = buyerNotes == null ? null : buyerNotes.trim();
     }
 
-    public Long getShopId() {
+    public String getShopId() {
         return shopId;
     }
 
-    public void setShopId(Long shopId) {
-        this.shopId = shopId;
+    public void setShopId(String shopId) {
+        this.shopId = shopId == null ? null : shopId.trim();
+    }
+
+    public String getShopOrderNo() {
+        return shopOrderNo;
+    }
+
+    public void setShopOrderNo(String shopOrderNo) {
+        this.shopOrderNo = shopOrderNo == null ? null : shopOrderNo.trim();
     }
 
     public String getShopName() {
@@ -85,6 +97,14 @@ public class OrderHeader extends BaseVO{
 
     public void setCustomerServiceNotes(String customerServiceNotes) {
         this.customerServiceNotes = customerServiceNotes == null ? null : customerServiceNotes.trim();
+    }
+
+    public Long getOrderCount() {
+        return orderCount;
+    }
+
+    public void setOrderCount(Long orderCount) {
+        this.orderCount = orderCount;
     }
 
     public Double getOrderAmount() {

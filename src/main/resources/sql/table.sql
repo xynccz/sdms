@@ -165,6 +165,7 @@ create table po_header(
 create table po_line(
 	line_id bigint primary key AUTO_INCREMENT,
 	header_id bigint not null,
+	is_ship char(1) DEFAULT 'N' COMMENT '是否已生成发货信息',
 	weight double,
 	specific_id bigint COMMENT '规格，用数据字典配置，使用sys_dict_datas表的主键id标识',
 	piece_num bigint COMMENT '行件数',
@@ -186,7 +187,7 @@ create table material_transaction(
 	po_header_id  bigint,
 	po_number varchar(500) COMMENT 'PO信息',
 	po_line bigint COMMENT 'PO行',
-	io_type bigint COMMENT '交易类型',
+	io_type varchar(100) DEFAULT NULL COMMENT '交易类型,来源数据字典',
 	io_status char DEFAULT 'N' COMMENT '是否入库，Y入库',
 	car_number varchar(100) COMMENT '车牌号',
 	driver_name varchar(100) COMMENT '司机姓名',
@@ -224,11 +225,14 @@ create table qc_check(
 
 create table material_storeage(
 	store_id bigint primary key AUTO_INCREMENT,
+	Inventory_type_id bigint(20) DEFAULT NULL COMMENT '库存类型，关联库存类型数据字典',
 	item_id bigint not null,
 	item varchar(200) not null,
 	transaction_summary_id bigint,
-	po_number bigint COMMENT 'PO信息',
+	po_header_id bigint COMMENT 'PO信息',
+	specific_id bigint DEFAULT NULL COMMENT '产品规格',
 	warehouse varchar(200) COMMENT '到货仓库',
+	net_weight_per_unit double DEFAULT NULL COMMENT '单件净重，成品装的净重,只在成品库存中出现的概念',
 	net_weight double,
 	gross_weight double,
 	piece_num bigint,
@@ -254,3 +258,70 @@ create table io_type(
 	last_updated_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
 	organization_id bigint not null COMMENT '组织号'
 )
+
+create table order_header(
+	header_id bigint primary key,
+	order_no varchar(100) comment '订单号，唯一',
+	order_type_id bigint comment '订单类型', 
+	order_status varchar(100) comment '订单状态,未付款,已付款,已发货,已签收,退货申请,退货中,已退货,取消交易',
+	buyer_notes varchar(500) COMMENT '买家留言',
+	shop_id varchar(100) COMMENT '商品编号',
+	shop_order_no varchar(300) COMMENT '商家订单号，从店铺发过来的',
+	shop_name varchar(100) comment '店铺名称',
+    customer_service_notes varchar(500) COMMENT '客服备注信息',
+    order_count bigint COMMENT '订单数量,客户订单显示2，那么就要发2件货'
+    order_amount double COMMENT '订单金额',
+	created_by varchar(64) NOT NULL COMMENT '创建者',
+	created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+	last_updated_by varchar(64) NOT NULL COMMENT '更新者',
+	last_updated_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+	organization_id bigint not null COMMENT '组织号'
+)COMMENT = '订单头表';
+
+create table order_detail(
+	detail_id bigint primary key,
+	header_id bigint not null,
+	product_name varchar(500) COMMENT '商品名称',
+	item_id bigint not null,
+	item varchar(200) not null,
+	specific_id bigint(20) DEFAULT NULL COMMENT '产品规格',
+	warehouse varchar(200) COMMENT '到货仓库',
+	weight double COMMENT '产品重量',
+	piece_num bigint COMMENT '件数',
+	remarks varchar(500),
+	created_by varchar(64) NOT NULL COMMENT '创建者',
+	created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+	last_updated_by varchar(64) NOT NULL COMMENT '更新者',
+	last_updated_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+	organization_id bigint not null,
+  	foreign key (header_id) references order_header(header_id) on delete cascade on update cascade
+)COMMENT = '订单明细表';
+
+--订单物流表
+create table order_express(
+	id bigint primary key,
+	header_id bigint not null,
+	express_company varchar(500) comment '物流公司',
+	express_no varchar(200) comment '物流单号',
+	express_status varchar(200) comment '物流状态',
+	net_name varchar(300) comment '网名',
+	consignee_realname varchar(300) comment '收件人',
+	consignee_telphone varchar(50) comment '联系电话',
+	consignee_province varchar(50) comment '省',
+	consignee_city varchar(50) comment '市',
+	consignee_county varchar(50) comment '区',
+	consignee_address varchar(2000) comment '收件详细地址',
+	consignee_zip varchar(50) comment '邮编',
+	delivery_conditions varchar(100) COMMENT '发货条件，比如款到发货',
+	delivery_amount double comment '实际支付给物流公司的金额',
+	express_result_last varchar(500) comment '物流最新状态描述',
+	express_result varchar(2000) comment '物流描述',
+	express_create_time DATETIME comment '发货时间',
+	express_update_time DATETIME comment '物流更新时间',
+	created_by varchar(64) NOT NULL COMMENT '创建者',
+	created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+	last_updated_by varchar(64) NOT NULL COMMENT '更新者',
+	last_updated_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  	organization_id bigint not null,
+  	foreign key (header_id) references order_header(header_id) on delete cascade on update cascade
+)COMMENT = '订单物流信息表';

@@ -7,30 +7,82 @@ public class MaterialStoreage extends BaseVO{
 	private static final long serialVersionUID = 1L;
 
 	private Long storeId;
-
+	private Long inventoryTypeId;
+	private String inventoryType;
+	private String storeIds;
     private Long itemId;
-
     private String item;
-
     private Long transactionSummaryId;
-
-    private Long poNumber;
-
+    private Long poHeaderId;
+    private Long specificId;
+    private String specificName;//规格
     private String warehouse;
-
+    private String warehouseName;
+    private Double netWeightPerUnit;
     private Double netWeight;
-
     private Double grossWeight;
-
     private Long pieceNum;
-
     private Long createTransactionId;
-
     private Long updateTransactionId;
-
     private String remarks;
 
-    public Long getStoreId() {
+    public Double getNetWeightPerUnit() {
+		return netWeightPerUnit;
+	}
+
+	public void setNetWeightPerUnit(Double netWeightPerUnit) {
+		this.netWeightPerUnit = netWeightPerUnit;
+	}
+
+	public Long getInventoryTypeId() {
+		return inventoryTypeId;
+	}
+
+	public void setInventoryTypeId(Long inventoryTypeId) {
+		this.inventoryTypeId = inventoryTypeId;
+	}
+
+	public String getInventoryType() {
+		return inventoryType;
+	}
+
+	public void setInventoryType(String inventoryType) {
+		this.inventoryType = inventoryType;
+	}
+
+	public String getWarehouseName() {
+		return warehouseName;
+	}
+
+	public void setWarehouseName(String warehouseName) {
+		this.warehouseName = warehouseName;
+	}
+
+	public String getStoreIds() {
+		return storeIds;
+	}
+
+	public void setStoreIds(String storeIds) {
+		this.storeIds = storeIds;
+	}
+
+	public Long getSpecificId() {
+		return specificId;
+	}
+
+	public void setSpecificId(Long specificId) {
+		this.specificId = specificId;
+	}
+
+	public String getSpecificName() {
+		return specificName;
+	}
+
+	public void setSpecificName(String specificName) {
+		this.specificName = specificName;
+	}
+
+	public Long getStoreId() {
         return storeId;
     }
 
@@ -62,15 +114,15 @@ public class MaterialStoreage extends BaseVO{
         this.transactionSummaryId = transactionSummaryId;
     }
 
-    public Long getPoNumber() {
-        return poNumber;
-    }
+    public Long getPoHeaderId() {
+		return poHeaderId;
+	}
 
-    public void setPoNumber(Long poNumber) {
-        this.poNumber = poNumber;
-    }
+	public void setPoHeaderId(Long poHeaderId) {
+		this.poHeaderId = poHeaderId;
+	}
 
-    public String getWarehouse() {
+	public String getWarehouse() {
         return warehouse;
     }
 

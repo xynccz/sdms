@@ -53,23 +53,19 @@ public class SysUserServiceImp extends BaseServiceImp<SysUser, Long> implements 
 	 */
 	@Override
 	public void saveOrUpdateSysUser(SysUser user) throws HSException {
-
 		//说明是新用户
-		if(user.getUserId() == null)
-		{
+		if(user.getUserId() == null){
 			user.setLoginPassword(StringUtil.encrypt(Constants.DEFAULT_PASSWORD));
 			insertSelective(user);
-		}else
-		{
+		}else{
 			updateByPrimaryKeySelective(user);
 		}
 		
 		//更新角色信息
 		userRoleService.deleteRolesByUserId(user.getUserId());
-		String newRoleIds = StringUtil.replace(user.getSelectRoleIds(), new String[] {"[","]"}, new String[] {"",""});
-		if(!StringUtil.isNullOrEmpty(newRoleIds))
-		{
-			for(String roleId : Constants.SPLIT.split(newRoleIds)){
+		String[] roleIds = StringUtil.stringToArray(user.getSelectRoleIds());
+		if(roleIds != null && roleIds.length > 0){
+			for(String roleId : roleIds){
 				UserRole ur = new UserRole(user.getUserId(),Long.parseLong(roleId));
 				userRoleService.insertSelective(ur);
 			}
