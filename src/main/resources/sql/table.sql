@@ -101,7 +101,7 @@ CREATE TABLE sys_dict_datas(
 	last_updated_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
 	remarks varchar(500) COMMENT '备注信息',
 	organization_id bigint not null COMMENT '组织号',
-	UNIQUE (dict_id,dict_data_code,organization_id)
+	UNIQUE (dict_id,dict_data_code,organization_id),
 	foreign key (dict_id) references sys_dict_type(dict_id) on delete cascade on update cascade
 ) COMMENT = '字典参数配置表';
 
@@ -260,17 +260,20 @@ create table io_type(
 )
 
 create table order_header(
-	header_id bigint primary key,
+	header_id bigint primary key AUTO_INCREMENT,
 	order_no varchar(100) comment '订单号，唯一',
 	order_type_id bigint comment '订单类型', 
-	order_status varchar(100) comment '订单状态,未付款,已付款,已发货,已签收,退货申请,退货中,已退货,取消交易',
+	order_status varchar(500) comment '订单状态,记录订单状态日志,未付款,已付款,已发货,已签收,退货申请,退货中,已退货,取消交易',
 	buyer_notes varchar(500) COMMENT '买家留言',
 	shop_id varchar(100) COMMENT '商品编号',
 	shop_order_no varchar(300) COMMENT '商家订单号，从店铺发过来的',
 	shop_name varchar(100) comment '店铺名称',
     customer_service_notes varchar(500) COMMENT '客服备注信息',
-    order_count bigint COMMENT '订单数量,客户订单显示2，那么就要发2件货'
+    order_count bigint COMMENT '订单数量,客户订单显示2，那么就要发2件货',
     order_amount double COMMENT '订单金额',
+    cancel_order char default 'N' COMMENT '取消订单，Y标识此单已取消，业务上表示撕单动作',
+    order_log varchar(800) COMMENT '订单处理过程日志记录',
+    is_valid char default 'Y' COMMENT '是否有效，导入订单不满足设定规则此订单就会无效，比如地址写错了',
 	created_by varchar(64) NOT NULL COMMENT '创建者',
 	created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
 	last_updated_by varchar(64) NOT NULL COMMENT '更新者',
@@ -279,7 +282,7 @@ create table order_header(
 )COMMENT = '订单头表';
 
 create table order_detail(
-	detail_id bigint primary key,
+	detail_id bigint primary key AUTO_INCREMENT,
 	header_id bigint not null,
 	product_name varchar(500) COMMENT '商品名称',
 	item_id bigint not null,
@@ -299,7 +302,7 @@ create table order_detail(
 
 --订单物流表
 create table order_express(
-	id bigint primary key,
+	id bigint primary key AUTO_INCREMENT,
 	header_id bigint not null,
 	express_company varchar(500) comment '物流公司',
 	express_no varchar(200) comment '物流单号',
@@ -325,3 +328,54 @@ create table order_express(
   	organization_id bigint not null,
   	foreign key (header_id) references order_header(header_id) on delete cascade on update cascade
 )COMMENT = '订单物流信息表';
+
+create table download_records(
+ id bigint primary key AUTO_INCREMENT,
+ file_name varchar(500) not null,
+ status CHAR comment '文件状态',
+ source_file_name varchar(500) not null comment '源文件名',
+ file_path varchar(300),
+ file_type bigint comment '文件类型，在数据字典中配置对应关系',
+ file_size bigint comment '文件大小',
+ file_md5 varchar(32) comment '文件MD5码',
+ description varchar(800),
+ customer varchar(100) comment '客户名称',
+ operation_date DATETIME comment '文件操作时间',
+ created_by varchar(64) NOT NULL COMMENT '创建者',
+ created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+ last_updated_by varchar(64) NOT NULL COMMENT '更新者',
+ last_updated_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+ organization_id bigint not null
+) comment '文件记录表，可以对订单，财务报表等文件附件的保存记录';
+
+create table customer_order_excel_config(
+	id bigint primary key AUTO_INCREMENT,
+	customer_id bigint not null comment '店铺id',
+	customer_name varchar(200) comment'客户名称',
+	code_field varchar(100) not null comment'字段值，来源于订单相关表字段',
+	code_desc varchar(200) not null comment '字段描述',
+	code_relation varchar(3000) comment '字段值对应关系，在执行导入或导出值改值对应的输出值，格式为json格式',
+	remarks varchar(500) COMMENT '备注信息',
+	operate_type varchar(20) not null comment'excel文件操作分类：input，output',
+	is_valid char(1) DEFAULT 'Y' NOT NULL COMMENT '状态是否有效',
+	position bigint comment '导出时字段显示位置',
+	created_by varchar(64) NOT NULL COMMENT '创建者',
+	created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+	last_updated_by varchar(64) NOT NULL COMMENT '更新者',
+	last_updated_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  	organization_id bigint not null,
+  	foreign key (customer_id) references sys_dict_datas(id) on delete cascade on update cascade
+) comment '订单excel导入导出配置表';
+
+create table customer_order_relation(
+	id bigint primary key AUTO_INCREMENT,
+	shop_id bigint not null comment '店铺id',
+	code_field varchar(100) not null comment'字段值，来源于订单相关表字段', 
+	initial_val varchar(200) not null comment '初始值',
+	actual_val varchar(200) not null comment '实际对应值', 
+	created_by varchar(64) NOT NULL COMMENT '创建者',
+	created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+	last_updated_by varchar(64) NOT NULL COMMENT '更新者',
+	last_updated_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  	organization_id bigint not null
+)comment '客户订单数据对应关系表';

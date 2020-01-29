@@ -52,7 +52,7 @@ public class PoHeaderServiceImp extends BaseServiceImp<PoHeader, Long> implement
 			poHeader.setItem(item.getItem());
 			poHeader.setIsClosed("N");
 			poHeader.setPoNumber(this.createPoNumber(poHeader.getItem()));
-			insertSelective(poHeader);
+			insert(poHeader);
 			for(PoLine line : poLines) {
 				line.setHeaderId(poHeader.getHeaderId());
 				poLineService.savePoLine(line);

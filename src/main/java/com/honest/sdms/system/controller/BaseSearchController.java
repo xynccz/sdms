@@ -1,5 +1,6 @@
 package com.honest.sdms.system.controller;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,9 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.honest.sdms.Constants;
 import com.honest.sdms.basedata.APIResponse;
 import com.honest.sdms.basedata.ResultStatus;
+import com.honest.sdms.order.entity.OrderDetail;
+import com.honest.sdms.order.entity.OrderExpress;
+import com.honest.sdms.order.entity.OrderHeader;
+import com.honest.sdms.system.entity.Role;
 import com.honest.sdms.system.entity.RoleResource;
 import com.honest.sdms.system.entity.SysDictDatas;
-import com.honest.sdms.system.entity.Role;
 import com.honest.sdms.system.entity.SysUser;
 import com.honest.sdms.system.service.IResourcesService;
 import com.honest.sdms.system.service.IRoleResourcesService;
@@ -66,6 +70,35 @@ public class BaseSearchController {
 		return itemService.findByCond(new Item());
 	}
 	
+	@RequestMapping(value="/getOrderFieldList", method = RequestMethod.GET,produces= {"application/json;charset=UTF-8;"})
+	public @ResponseBody JSONArray getOrderFieldList() {
+		JSONArray array = new JSONArray();
+		Field[] fields = OrderHeader.class.getDeclaredFields();
+		for(Field field : fields) {
+			JSONObject json = new JSONObject();
+			json.put("key", field.getName());
+			json.put("value", field.getName());
+			array.add(json);
+		}
+		
+		fields = OrderDetail.class.getDeclaredFields();
+		for(Field field : fields) {
+			JSONObject json = new JSONObject();
+			json.put("key", field.getName());
+			json.put("value", field.getName());
+			array.add(json);
+		}
+		
+		fields = OrderExpress.class.getDeclaredFields();
+		for(Field field : fields) {
+			JSONObject json = new JSONObject();
+			json.put("key", field.getName());
+			json.put("value", field.getName());
+			array.add(json);
+		}
+		return array;
+	}
+
 	/**
 	 * 获取当前账套的用户列表
 	 * @return

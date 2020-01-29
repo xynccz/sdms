@@ -53,8 +53,9 @@ public class SysLogAspect {
     		RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();//这个RequestContextHolder是Springmvc提供来获得请求的东西
             HttpServletRequest request = ((ServletRequestAttributes)requestAttributes).getRequest();
     		
-            if("/logManagement/search".equals(request.getRequestURI()))
+            if("/logManagement/search".equals(request.getRequestURI())){
             	return;
+            }
             
     		//保存日志
             SysLog sysLog = new SysLog();
@@ -71,12 +72,12 @@ public class SysLogAspect {
             //获取切入点所在的方法
             Method method = signature.getMethod();
             SdmsLog myLog = method.getAnnotation(SdmsLog.class);
-            if (myLog != null) {
+            if (myLog != null){
                 String value = myLog.value();
                 sysLog.setRemarks(value);//保存获取的操作
             }
             
-            sysLogService.insertSelective(sysLog);
+            sysLogService.insert(sysLog);
     	}
     }
     

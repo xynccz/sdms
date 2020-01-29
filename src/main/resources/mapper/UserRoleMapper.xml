@@ -31,77 +31,13 @@
     where role_id = #{roleId} and organization_id = #{organizationId}
   </delete>
   <insert id="insert" parameterType="com.honest.sdms.system.entity.UserRole">
-    insert into user_role (id, user_id, role_id, 
+    insert into user_role (user_id, role_id, 
       organization_id, created_by, created_date
       )
-    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}, 
+    values (#{userId,jdbcType=BIGINT}, #{roleId,jdbcType=BIGINT}, 
       #{organizationId,jdbcType=BIGINT}, #{createdBy,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.honest.sdms.system.entity.UserRole">
-    insert into user_role
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="userId != null">
-        user_id,
-      </if>
-      <if test="roleId != null">
-        role_id,
-      </if>
-      <if test="organizationId != null">
-        organization_id,
-      </if>
-      <if test="createdBy != null">
-        created_by,
-      </if>
-      <if test="createdDate != null">
-        created_date,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="userId != null">
-        #{userId,jdbcType=BIGINT},
-      </if>
-      <if test="roleId != null">
-        #{roleId,jdbcType=BIGINT},
-      </if>
-      <if test="organizationId != null">
-        #{organizationId,jdbcType=BIGINT},
-      </if>
-      <if test="createdBy != null">
-        #{createdBy,jdbcType=VARCHAR},
-      </if>
-      <if test="createdDate != null">
-        #{createdDate,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.honest.sdms.system.entity.UserRole">
-    update user_role
-    <set>
-      <if test="userId != null">
-        user_id = #{userId,jdbcType=BIGINT},
-      </if>
-      <if test="roleId != null">
-        role_id = #{roleId,jdbcType=BIGINT},
-      </if>
-      <if test="organizationId != null">
-        organization_id = #{organizationId,jdbcType=BIGINT},
-      </if>
-      <if test="createdBy != null">
-        created_by = #{createdBy,jdbcType=VARCHAR},
-      </if>
-      <if test="createdDate != null">
-        created_date = #{createdDate,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
   <update id="updateByPrimaryKey" parameterType="com.honest.sdms.system.entity.UserRole">
     update user_role
     set user_id = #{userId,jdbcType=BIGINT},

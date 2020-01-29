@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.honest.sdms.system.dao.CustomerOrderExcelConfigMapper">
+  <resultMap id="BaseResultMap" type="com.honest.sdms.system.entity.CustomerOrderExcelConfig">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="customer_id" jdbcType="BIGINT" property="customerId" />
+    <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
+    <result column="code_field" jdbcType="VARCHAR" property="codeField" />
+    <result column="code_desc" jdbcType="VARCHAR" property="codeDesc" />
+    <result column="operate_type" jdbcType="VARCHAR" property="operateType" />
+    <result column="code_relation" jdbcType="VARCHAR" property="codeRelation" />
+    <result column="is_valid" jdbcType="VARCHAR" property="isValid" />
+    <result column="position" jdbcType="BIGINT" property="position" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+    <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+    <result column="last_updated_by" jdbcType="VARCHAR" property="lastUpdatedBy" />
+    <result column="last_updated_date" jdbcType="TIMESTAMP" property="lastUpdatedDate" />
+    <result column="organization_id" jdbcType="BIGINT" property="organizationId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, customer_id, customer_name, code_field, code_desc, operate_type, code_relation, remarks, is_valid, position, created_by, created_date, last_updated_by, 
+    last_updated_date, organization_id
+  </sql>
+  <sql id="Base_Where">
+	<trim prefix="WHERE" prefixOverrides="AND |OR ">
+	  <if test="codeField != null and codeField != ''">
+        and code_field = #{codeField,jdbcType=VARCHAR}
+      </if>
+      <if test="customerId != null">
+        and customer_id = #{customerId,jdbcType=BIGINT}
+      </if>
+      <if test="customerName != null and customerName != ''">
+        and customer_name = #{customerName,jdbcType=VARCHAR}
+      </if>
+      <if test="codeDesc != null and codeDesc != ''">
+        and code_desc = #{codeDesc,jdbcType=VARCHAR}
+      </if>
+      <if test="operateType != null and operateType != ''">
+        and operate_type = #{operateType,jdbcType=VARCHAR}
+      </if>
+      <if test="isValid != null and isValid != ''">
+        and is_valid = #{isValid,jdbcType=VARCHAR}
+      </if>
+      <if test="organizationId != null">
+        and organization_id = #{organizationId,jdbcType=BIGINT}
+      </if>
+	</trim>
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from customer_order_excel_config
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="findByCond" parameterType="com.honest.sdms.system.entity.CustomerOrderExcelConfig" resultMap="BaseResultMap">
+	select
+	<include refid="Base_Column_List" />
+	from customer_order_excel_config
+	<include refid="Base_Where"/>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from customer_order_excel_config
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.honest.sdms.system.entity.CustomerOrderExcelConfig">
+    insert into customer_order_excel_config (customer_id, customer_name, code_field, 
+      code_desc, code_relation, operate_type, is_valid, position, remarks, created_by, 
+      created_date, last_updated_by, last_updated_date, organization_id)
+    values (#{customerId,jdbcType=BIGINT}, #{customerName,jdbcType=VARCHAR}, #{codeField,jdbcType=VARCHAR}, 
+      #{codeDesc,jdbcType=VARCHAR}, #{codeRelation,jdbcType=VARCHAR}, #{operateType,jdbcType=VARCHAR}, #{isValid,jdbcType=VARCHAR}, #{position,jdbcType=BIGINT},#{remarks,jdbcType=VARCHAR},#{createdBy,jdbcType=VARCHAR}, 
+      #{createdDate,jdbcType=TIMESTAMP}, #{lastUpdatedBy,jdbcType=VARCHAR}, #{lastUpdatedDate,jdbcType=TIMESTAMP}, 
+      #{organizationId,jdbcType=BIGINT})
+  </insert>
+  
+  <update id="updateByPrimaryKey" parameterType="com.honest.sdms.system.entity.CustomerOrderExcelConfig">
+    update customer_order_excel_config
+    set customer_id = #{customerId,jdbcType=BIGINT},
+      customer_name = #{customerName,jdbcType=VARCHAR},
+      code_field = #{codeField,jdbcType=VARCHAR},
+      code_desc = #{codeDesc,jdbcType=VARCHAR},
+      code_relation = #{codeRelation,jdbcType=VARCHAR},
+      operate_type = #{operateType,jdbcType=VARCHAR},
+      is_valid = #{isValid,jdbcType=VARCHAR},
+      position = #{position,jdbcType=BIGINT},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      created_by = #{createdBy,jdbcType=VARCHAR},
+      created_date = #{createdDate,jdbcType=TIMESTAMP},
+      0last_updated_by = #{lastUpdatedBy,jdbcType=VARCHAR},
+      last_updated_date = #{lastUpdatedDate,jdbcType=TIMESTAMP},
+      organization_id = #{organizationId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

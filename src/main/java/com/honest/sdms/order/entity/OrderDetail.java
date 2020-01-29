@@ -7,23 +7,14 @@ public class OrderDetail extends BaseVO{
 	private static final long serialVersionUID = 1L;
 
 	private Long detailId;
-
     private Long headerId;
-
     private String productName;
-
     private Long itemId;
-
     private String item;
-
     private Long specificId;
-
     private String warehouse;
-
     private Double weight;
-
     private Long pieceNum;
-
     private String remarks;
 
 

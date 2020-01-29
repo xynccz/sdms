@@ -11,13 +11,16 @@ import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.filter.DelegatingFilterProxy;
 
 import com.honest.sdms.basedata.security.MyFormAuthenticationFilter;
 import com.honest.sdms.basedata.security.PermissionsRealm;
@@ -33,6 +36,16 @@ import net.sf.ehcache.CacheManager;
 public class ShiroConfig {
 
 	private static final Logger logger = LoggerFactory.getLogger(ShiroConfig.class);
+	
+	@Bean
+	public FilterRegistrationBean<DelegatingFilterProxy> delegatingFilterProxy(){
+	    FilterRegistrationBean<DelegatingFilterProxy> filterRegistrationBean = new FilterRegistrationBean<DelegatingFilterProxy>();
+	    DelegatingFilterProxy proxy = new DelegatingFilterProxy();
+	    proxy.setTargetFilterLifecycle(true);
+	    proxy.setTargetBeanName("shiroFilter");
+	    filterRegistrationBean.setFilter(proxy);
+	    return filterRegistrationBean;
+	}
 	
 	@Bean(name="shiroFilter")
     public ShiroFilterFactoryBean shirFilter(@Qualifier("securityManager") SecurityManager securityManager) {
@@ -90,6 +103,8 @@ public class ShiroConfig {
 		securityManager.setSubjectDAO(subjectDAO);
         
         securityManager.setCacheManager(ehCacheManager);
+        
+        ThreadContext.bind(securityManager);
         return securityManager;
     }
 

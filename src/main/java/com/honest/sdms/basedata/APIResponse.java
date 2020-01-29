@@ -12,6 +12,9 @@ public class APIResponse<T> implements java.io.Serializable {
 	private String msg;//返回消息
 	private T data;//返回数据
 	
+	public APIResponse () {
+	}
+	
 	public APIResponse (int code, String msg) {
 		this.code = code;
 		this.msg = msg;
@@ -27,14 +30,12 @@ public class APIResponse<T> implements java.io.Serializable {
 	
 	public APIResponse (ResultStatus status, T data) {
 		
-		if(status != null)
-		{
+		if(status != null){
 			this.code = status.getValue();
 			this.msg = status.getReasonPhrase();
 		}
 		
-		if(data != null)
-		{
+		if(data != null){
 			this.data = data;
 		}
 	}

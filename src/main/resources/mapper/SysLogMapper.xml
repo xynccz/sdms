@@ -67,11 +67,11 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.honest.sdms.system.entity.SysLog">
-    insert into sys_log (id, login_name, ip, 
+    insert into sys_log (login_name, ip, 
       operate_type, operate_url, execute_time, created_date, 
       remarks, organization_id, content
       )
-    values (#{id,jdbcType=BIGINT}, #{loginName,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, 
+    values (#{loginName,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, 
       #{operateType,jdbcType=VARCHAR}, #{operateUrl,jdbcType=VARCHAR},#{executeTime,jdbcType=BIGINT}, #{createdDate,jdbcType=TIMESTAMP}, 
       #{remarks,jdbcType=VARCHAR}, #{organizationId,jdbcType=BIGINT}, #{content,jdbcType=LONGVARCHAR}
       )
@@ -84,103 +84,7 @@
 	    from sys_log
 		<include refid="Base_Where"/>
 	</select>
-  <insert id="insertSelective" parameterType="com.honest.sdms.system.entity.SysLog">
-    insert into sys_log
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="loginName != null">
-        login_name,
-      </if>
-      <if test="ip != null">
-        ip,
-      </if>
-      <if test="operateType != null">
-        operate_type,
-      </if>
-      <if test="operateUrl != null">
-        operate_url,
-      </if>
-      <if test="executeTime != null">
-        execute_time,
-      </if>
-      <if test="createdDate != null">
-        created_date,
-      </if>
-      <if test="remarks != null">
-        remarks,
-      </if>
-      <if test="organizationId != null">
-        organization_id,
-      </if>
-      <if test="content != null">
-        content,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="loginName != null">
-        #{loginName,jdbcType=VARCHAR},
-      </if>
-      <if test="ip != null">
-        #{ip,jdbcType=VARCHAR},
-      </if>
-      <if test="operateType != null">
-        #{operateType,jdbcType=VARCHAR},
-      </if>
-      <if test="operateUrl != null">
-        #{operateUrl,jdbcType=VARCHAR},
-      </if>
-      <if test="executeTime != null">
-        #{executeTime,jdbcType=BIGINT},
-      </if>
-      <if test="createdDate != null">
-        #{createdDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="remarks != null">
-        #{remarks,jdbcType=VARCHAR},
-      </if>
-      <if test="organizationId != null">
-        #{organizationId,jdbcType=BIGINT},
-      </if>
-      <if test="content != null">
-        #{content,jdbcType=LONGVARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.honest.sdms.system.entity.SysLog">
-    update sys_log
-    <set>
-      <if test="loginName != null">
-        login_name = #{loginName,jdbcType=VARCHAR},
-      </if>
-      <if test="ip != null">
-        ip = #{ip,jdbcType=VARCHAR},
-      </if>
-      <if test="operateType != null">
-        operate_type = #{operateType,jdbcType=VARCHAR},
-      </if>
-      <if test="operateUrl != null">
-        operate_url = #{operateUrl,jdbcType=VARCHAR},
-      </if>
-      <if test="createdDate != null">
-        created_date = #{createdDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="remarks != null">
-        remarks = #{remarks,jdbcType=VARCHAR},
-      </if>
-      <if test="organizationId != null">
-        organization_id = #{organizationId,jdbcType=BIGINT},
-      </if>
-      <if test="content != null">
-        content = #{content,jdbcType=LONGVARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.honest.sdms.system.entity.SysLog">
     update sys_log
     set login_name = #{loginName,jdbcType=VARCHAR},

@@ -40,7 +40,7 @@ public class SysUserServiceImp extends BaseServiceImp<SysUser, Long> implements 
 
 	@Override
 	public int saveSysUser(SysUser sysUser) {
-		return insertSelective(sysUser);
+		return insert(sysUser);
 	}
 	
 	@Override
@@ -56,9 +56,9 @@ public class SysUserServiceImp extends BaseServiceImp<SysUser, Long> implements 
 		//说明是新用户
 		if(user.getUserId() == null){
 			user.setLoginPassword(StringUtil.encrypt(Constants.DEFAULT_PASSWORD));
-			insertSelective(user);
+			insert(user);
 		}else{
-			updateByPrimaryKeySelective(user);
+			updateByPrimaryKey(user);
 		}
 		
 		//更新角色信息
@@ -67,7 +67,7 @@ public class SysUserServiceImp extends BaseServiceImp<SysUser, Long> implements 
 		if(roleIds != null && roleIds.length > 0){
 			for(String roleId : roleIds){
 				UserRole ur = new UserRole(user.getUserId(),Long.parseLong(roleId));
-				userRoleService.insertSelective(ur);
+				userRoleService.insert(ur);
 			}
 		}
 	}

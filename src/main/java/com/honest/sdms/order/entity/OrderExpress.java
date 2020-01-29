@@ -8,41 +8,23 @@ public class OrderExpress extends BaseVO{
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
-
     private Long headerId;
-
     private String expressCompany;
-
     private String expressNo;
-
     private String expressStatus;
-
     private String netName;
-
     private String consigneeRealname;
-
     private String consigneeTelphone;
-
     private String consigneeProvince;
-
     private String consigneeCity;
-
     private String consigneeCounty;
-
     private String consigneeAddress;
-
     private String consigneeZip;
-
     private String deliveryConditions;
-
     private Double deliveryAmount;
-
     private String expressResultLast;
-
     private String expressResult;
-
     private Date expressCreateTime;
-
     private Date expressUpdateTime;
 
     public Long getId() {

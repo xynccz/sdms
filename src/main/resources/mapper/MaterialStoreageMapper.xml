@@ -84,14 +84,13 @@
     where store_id = #{storeId,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.honest.sdms.transaction.entity.MaterialStoreage">
-    insert into material_storeage (store_id, item_id, item, 
+    insert into material_storeage (item_id, item, 
       transaction_summary_id, inventory_type_id, po_header_id, specific_id, warehouse, net_weight_per_unit,
       net_weight, gross_weight, piece_num, 
       create_transaction_id, update_transaction_id, 
       remarks, created_by, created_date, 
-      last_updated_by, last_updated_date, organization_id
-      )
-    values (#{storeId,jdbcType=BIGINT}, #{itemId,jdbcType=BIGINT}, #{item,jdbcType=VARCHAR}, 
+      last_updated_by, last_updated_date, organization_id)
+    values (#{itemId,jdbcType=BIGINT}, #{item,jdbcType=VARCHAR}, 
       #{transactionSummaryId,jdbcType=BIGINT},#{inventoryTypeId,jdbcType=BIGINT}, #{poHeaderId,jdbcType=BIGINT}, #{specificId,jdbcType=BIGINT}, #{warehouse,jdbcType=VARCHAR}, 
       #{netWeightPerUnit,jdbcType=DOUBLE},#{netWeight,jdbcType=DOUBLE}, #{grossWeight,jdbcType=DOUBLE}, #{pieceNum,jdbcType=BIGINT}, 
       #{createTransactionId,jdbcType=BIGINT}, #{updateTransactionId,jdbcType=BIGINT}, 
@@ -99,196 +98,7 @@
       #{lastUpdatedBy,jdbcType=VARCHAR}, #{lastUpdatedDate,jdbcType=TIMESTAMP}, #{organizationId,jdbcType=BIGINT}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.honest.sdms.transaction.entity.MaterialStoreage">
-    insert into material_storeage
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="storeId != null">
-        store_id,
-      </if>
-      <if test="itemId != null">
-        item_id,
-      </if>
-      <if test="item != null">
-        item,
-      </if>
-      <if test="transactionSummaryId != null">
-        transaction_summary_id,
-      </if>
-      <if test="inventoryTypeId != null">
-        inventory_type_id,
-      </if>
-      <if test="poHeaderId != null">
-        po_header_id,
-      </if>
-      <if test="specificId != null">
-        specific_id,
-      </if>
-      <if test="warehouse != null">
-        warehouse,
-      </if>
-      <if test="netWeightPerUnit != null">
-        net_weight_per_unit,
-      </if>
-      <if test="netWeight != null">
-        net_weight,
-      </if>
-      <if test="grossWeight != null">
-        gross_weight,
-      </if>
-      <if test="pieceNum != null">
-        piece_num,
-      </if>
-      <if test="createTransactionId != null">
-        create_transaction_id,
-      </if>
-      <if test="updateTransactionId != null">
-        update_transaction_id,
-      </if>
-      <if test="remarks != null">
-        remarks,
-      </if>
-      <if test="createdBy != null">
-        created_by,
-      </if>
-      <if test="createdDate != null">
-        created_date,
-      </if>
-      <if test="lastUpdatedBy != null">
-        last_updated_by,
-      </if>
-      <if test="lastUpdatedDate != null">
-        last_updated_date,
-      </if>
-      <if test="organizationId != null">
-        organization_id,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="storeId != null">
-        #{storeId,jdbcType=BIGINT},
-      </if>
-      <if test="itemId != null">
-        #{itemId,jdbcType=BIGINT},
-      </if>
-      <if test="item != null">
-        #{item,jdbcType=VARCHAR},
-      </if>
-      <if test="transactionSummaryId != null">
-        #{transactionSummaryId,jdbcType=BIGINT},
-      </if>
-      <if test="inventoryTypeId != null">
-        #{inventoryTypeId,jdbcType=BIGINT},
-      </if>
-      <if test="poHeaderId != null">
-        #{poHeaderId,jdbcType=BIGINT},
-      </if>
-      <if test="specificId != null">
-        #{specificId,jdbcType=BIGINT},
-      </if>
-      <if test="warehouse != null">
-        #{warehouse,jdbcType=VARCHAR},
-      </if>
-      <if test="netWeightPerUnit != null">
-        #{netWeightPerUnit,jdbcType=DOUBLE},
-      </if>
-      <if test="netWeight != null">
-        #{netWeight,jdbcType=DOUBLE},
-      </if>
-      <if test="grossWeight != null">
-        #{grossWeight,jdbcType=DOUBLE},
-      </if>
-      <if test="pieceNum != null">
-        #{pieceNum,jdbcType=BIGINT},
-      </if>
-      <if test="createTransactionId != null">
-        #{createTransactionId,jdbcType=BIGINT},
-      </if>
-      <if test="updateTransactionId != null">
-        #{updateTransactionId,jdbcType=BIGINT},
-      </if>
-      <if test="remarks != null">
-        #{remarks,jdbcType=VARCHAR},
-      </if>
-      <if test="createdBy != null">
-        #{createdBy,jdbcType=VARCHAR},
-      </if>
-      <if test="createdDate != null">
-        #{createdDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="lastUpdatedBy != null">
-        #{lastUpdatedBy,jdbcType=VARCHAR},
-      </if>
-      <if test="lastUpdatedDate != null">
-        #{lastUpdatedDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="organizationId != null">
-        #{organizationId,jdbcType=BIGINT},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.honest.sdms.transaction.entity.MaterialStoreage">
-    update material_storeage
-    <set>
-      <if test="itemId != null">
-        item_id = #{itemId,jdbcType=BIGINT},
-      </if>
-      <if test="item != null">
-        item = #{item,jdbcType=VARCHAR},
-      </if>
-      <if test="transactionSummaryId != null">
-        transaction_summary_id = #{transactionSummaryId,jdbcType=BIGINT},
-      </if>
-      <if test="inventoryTypeId != null">
-        inventory_type_id = #{inventoryTypeId,jdbcType=BIGINT},
-      </if>
-      <if test="poHeaderId != null">
-        po_header_id = #{poHeaderId,jdbcType=BIGINT},
-      </if>
-      <if test="specificId != null">
-        specific_id = #{specificId,jdbcType=BIGINT},
-      </if>
-      <if test="warehouse != null">
-        warehouse = #{warehouse,jdbcType=VARCHAR},
-      </if>
-      <if test="netWeightPerUnit != null">
-        net_weight_per_unit = #{netWeightPerUnit,jdbcType=DOUBLE},
-      </if>
-      <if test="netWeight != null">
-        net_weight = #{netWeight,jdbcType=DOUBLE},
-      </if>
-      <if test="grossWeight != null">
-        gross_weight = #{grossWeight,jdbcType=DOUBLE},
-      </if>
-      <if test="pieceNum != null">
-        piece_num = #{pieceNum,jdbcType=BIGINT},
-      </if>
-      <if test="createTransactionId != null">
-        create_transaction_id = #{createTransactionId,jdbcType=BIGINT},
-      </if>
-      <if test="updateTransactionId != null">
-        update_transaction_id = #{updateTransactionId,jdbcType=BIGINT},
-      </if>
-      <if test="remarks != null">
-        remarks = #{remarks,jdbcType=VARCHAR},
-      </if>
-      <if test="createdBy != null">
-        created_by = #{createdBy,jdbcType=VARCHAR},
-      </if>
-      <if test="createdDate != null">
-        created_date = #{createdDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="lastUpdatedBy != null">
-        last_updated_by = #{lastUpdatedBy,jdbcType=VARCHAR},
-      </if>
-      <if test="lastUpdatedDate != null">
-        last_updated_date = #{lastUpdatedDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="organizationId != null">
-        organization_id = #{organizationId,jdbcType=BIGINT},
-      </if>
-    </set>
-    where store_id = #{storeId,jdbcType=BIGINT}
-  </update>
+
   <update id="updateByPrimaryKey" parameterType="com.honest.sdms.transaction.entity.MaterialStoreage">
     update material_storeage
     set item_id = #{itemId,jdbcType=BIGINT},

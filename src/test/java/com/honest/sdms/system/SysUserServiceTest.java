@@ -70,7 +70,7 @@ public class SysUserServiceTest extends ApplicationTests{
 	public void saveUser() throws HSException {
 		SysUser user = sysUserService.selectByPrimaryKey(3L);
 		user.setUserName(user.getUserName()+"22");
-		sysUserService.updateByPrimaryKeySelective(user);
+		sysUserService.updateByPrimaryKey(user);
 //		throw new HSException("dsf");
 	}
 }

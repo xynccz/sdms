@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.honest.sdms.system.dao.CustomerOrderRelationMapper">
+  <resultMap id="BaseResultMap" type="com.honest.sdms.system.entity.CustomerOrderRelation">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="shop_id" jdbcType="BIGINT" property="shopId" />
+    <result column="code_field" jdbcType="VARCHAR" property="codeField" />
+    <result column="initial_val" jdbcType="VARCHAR" property="initialVal" />
+    <result column="actual_val" jdbcType="VARCHAR" property="actualVal" />
+    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+    <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+    <result column="last_updated_by" jdbcType="VARCHAR" property="lastUpdatedBy" />
+    <result column="last_updated_date" jdbcType="TIMESTAMP" property="lastUpdatedDate" />
+    <result column="organization_id" jdbcType="BIGINT" property="organizationId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, shop_id, code_field, initial_val, actual_val, created_by, created_date, last_updated_by, 
+    last_updated_date, organization_id
+  </sql>
+  <sql id="Base_Where">
+	<trim prefix="WHERE" prefixOverrides="AND |OR ">
+      <if test="codeField != null and codeField != ''">
+        code_field = #{codeField,jdbcType=VARCHAR},
+      </if>
+      <if test="initialVal != null and initialVal != ''">
+        initial_val = #{initialVal,jdbcType=VARCHAR},
+      </if>
+      <if test="actualVal != null and actualVal != ''">
+        actual_val = #{actualVal,jdbcType=VARCHAR},
+      </if>
+      <if test="organizationId != null">
+        and organization_id = #{organizationId,jdbcType=BIGINT}
+      </if>
+	</trim>
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from customer_order_relation where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="findByCond" parameterType="com.honest.sdms.system.entity.CustomerOrderRelation" resultMap="BaseResultMap">
+	select
+	<include refid="Base_Column_List" />
+	from customer_order_relation
+	<include refid="Base_Where"/>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from customer_order_relation
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.honest.sdms.system.entity.CustomerOrderRelation">
+    insert into customer_order_relation (shop_id, code_field, 
+      initial_val, actual_val, created_by, 
+      created_date, last_updated_by, last_updated_date, organization_id)
+    values (#{shopId,jdbcType=BIGINT}, #{codeField,jdbcType=VARCHAR}, 
+      #{initialVal,jdbcType=VARCHAR}, #{actualVal,jdbcType=VARCHAR}, #{createdBy,jdbcType=VARCHAR}, 
+      #{createdDate,jdbcType=TIMESTAMP}, #{lastUpdatedBy,jdbcType=VARCHAR}, #{lastUpdatedDate,jdbcType=TIMESTAMP}, 
+      #{organizationId,jdbcType=BIGINT})
+  </insert>
+  
+  <update id="updateByPrimaryKey" parameterType="com.honest.sdms.system.entity.CustomerOrderRelation">
+    update customer_order_relation
+    set shop_id = #{shopId,jdbcType=BIGINT},
+      code_field = #{codeField,jdbcType=VARCHAR},
+      initial_val = #{initialVal,jdbcType=VARCHAR},
+      actual_val = #{actualVal,jdbcType=VARCHAR},
+      created_by = #{createdBy,jdbcType=VARCHAR},
+      created_date = #{createdDate,jdbcType=TIMESTAMP},
+      last_updated_by = #{lastUpdatedBy,jdbcType=VARCHAR},
+      last_updated_date = #{lastUpdatedDate,jdbcType=TIMESTAMP},
+      organization_id = #{organizationId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

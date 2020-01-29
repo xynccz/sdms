@@ -30,13 +30,13 @@ public class SysLogServiceImp extends BaseServiceImp<SysLog, Long> implements IS
 	@Override
 	public void saveSysLog(SysLog log) {
 		log.setOrganizationId(Constants.getCurrentOrganizationId());
-		sysLogMapper.insertSelective(log);
+		sysLogMapper.insert(log);
 	}
 
 	@Override
 	public PageInfo<SysLog> findByCondWithPage(SysLog cond, String sortName, String sortOrder, int pageNum, int pageSize) {
 		String selectData = cond.getSelectDatas();
-		if(!StringUtil.isNullOrEmpty(selectData)) {
+		if(!StringUtil.isNullOrEmpty(selectData)){
 			selectData = StringUtil.replace(selectData, new String[] {"[","]"}, new String[] {"",""});
 			String[] rangeDatas = Constants.SPLIT.split(selectData);
 			cond.setCreatedDateStart(new Date(Long.parseLong(rangeDatas[0])));

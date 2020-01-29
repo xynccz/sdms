@@ -3,29 +3,23 @@ package com.honest.sdms.order.entity;
 import com.honest.sdms.system.entity.BaseVO;
 
 public class OrderHeader extends BaseVO{
+	
 	private static final long serialVersionUID = 1L;
 
 	private Long headerId;
-
     private String orderNo;
-
     private Long orderTypeId;
-
     private String orderStatus;
-
     private String buyerNotes;
-
-    private String shopId;//客户商品编码，需要创建与系统自己商品编码的对应关系
-
-    private String shopOrderNo;//客户订单号
-
+    private String shopId;
+    private String shopOrderNo;
     private String shopName;
-
     private String customerServiceNotes;
-
     private Long orderCount;
-
     private Double orderAmount;
+    private String cancelOrder;
+    private String orderLog;
+    private String isValid;
 
     public Long getHeaderId() {
         return headerId;
@@ -113,6 +107,30 @@ public class OrderHeader extends BaseVO{
 
     public void setOrderAmount(Double orderAmount) {
         this.orderAmount = orderAmount;
+    }
+
+    public String getCancelOrder() {
+        return cancelOrder;
+    }
+
+    public void setCancelOrder(String cancelOrder) {
+        this.cancelOrder = cancelOrder == null ? null : cancelOrder.trim();
+    }
+
+    public String getOrderLog() {
+        return orderLog;
+    }
+
+    public void setOrderLog(String orderLog) {
+        this.orderLog = orderLog == null ? null : orderLog.trim();
+    }
+
+    public String getIsValid() {
+        return isValid;
+    }
+
+    public void setIsValid(String isValid) {
+        this.isValid = isValid == null ? null : isValid.trim();
     }
 
 }

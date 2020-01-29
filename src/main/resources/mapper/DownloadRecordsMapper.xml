@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.honest.sdms.system.dao.DownloadRecordsMapper">
+  <resultMap id="BaseResultMap" type="com.honest.sdms.system.entity.DownloadRecords">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="file_name" jdbcType="VARCHAR" property="fileName" />
+    <result column="source_file_name" jdbcType="VARCHAR" property="sourceFileName" />
+    <result column="file_path" jdbcType="VARCHAR" property="filePath" />
+    <result column="file_type" jdbcType="BIGINT" property="fileType" />
+    <result column="file_size" jdbcType="BIGINT" property="fileSize" />
+    <result column="file_md5" jdbcType="VARCHAR" property="fileMd5" />
+    <result column="customer" jdbcType="VARCHAR" property="customer" />
+    <result column="status" jdbcType="VARCHAR" property="status"/>
+    <result column="description" jdbcType="VARCHAR" property="description"/>
+    <result column="operation_date" jdbcType="TIMESTAMP" property="operationDate" />
+    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+    <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+    <result column="last_updated_by" jdbcType="VARCHAR" property="lastUpdatedBy" />
+    <result column="last_updated_date" jdbcType="TIMESTAMP" property="lastUpdatedDate" />
+    <result column="organization_id" jdbcType="BIGINT" property="organizationId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, file_name, source_file_name, file_path, file_type, file_size, file_md5, customer, status, description
+    operation_date, created_by, created_date, last_updated_by, last_updated_date, organization_id
+  </sql>
+  <sql id="Base_Where">
+	<trim prefix="WHERE" prefixOverrides="AND |OR ">
+      <if test="fileName != null and fileName != '' ">
+        and file_name = #{fileName,jdbcType=VARCHAR}
+      </if>
+      <if test="sourceFileName != null and sourceFileName != '' ">
+        and source_file_name = #{sourceFileName,jdbcType=VARCHAR}
+      </if>
+      <if test="filePath != null and filePath != '' ">
+        and file_path = #{filePath,jdbcType=VARCHAR}
+      </if>
+      <if test="fileType != null">
+        and file_type = #{fileType,jdbcType=BIGINT}
+      </if>
+      <if test="customer != null and customer != '' ">
+        and customer = #{customer,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null and status != '' ">
+      	and status = #{status}
+      </if>
+      <if test="operationDate != null">
+        and operation_date = #{operationDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="createdDate != null">
+        and created_date = #{createdDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="lastUpdatedDate != null">
+        and last_updated_date = #{lastUpdatedDate,jdbcType=TIMESTAMP}
+      </if>
+      <if test="organizationId != null">
+        and organization_id = #{organizationId,jdbcType=BIGINT}
+      </if>
+	</trim>
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from download_records
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="findByCond" parameterType="com.honest.sdms.system.entity.DownloadRecords" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from download_records
+		<include refid="Base_Where"/>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from download_records
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.honest.sdms.system.entity.DownloadRecords">
+    insert into download_records (file_name, source_file_name, 
+      file_path, file_type, file_size, 
+      file_md5, customer, status,description, operation_date, 
+      created_by, created_date, last_updated_by, 
+      last_updated_date, organization_id)
+    values (#{fileName,jdbcType=VARCHAR}, #{sourceFileName,jdbcType=VARCHAR}, 
+      #{filePath,jdbcType=VARCHAR}, #{fileType,jdbcType=BIGINT}, #{fileSize,jdbcType=BIGINT}, 
+      #{fileMd5,jdbcType=VARCHAR}, #{customer,jdbcType=VARCHAR},#{status,jdbcType=VARCHAR},#{description,jdbcType=VARCHAR}, #{operationDate,jdbcType=TIMESTAMP}, 
+      #{createdBy,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP}, #{lastUpdatedBy,jdbcType=VARCHAR}, 
+      #{lastUpdatedDate,jdbcType=TIMESTAMP}, #{organizationId,jdbcType=BIGINT})
+  </insert>
+ 
+  <update id="updateByPrimaryKey" parameterType="com.honest.sdms.system.entity.DownloadRecords">
+    update download_records
+    set file_name = #{fileName,jdbcType=VARCHAR},
+      source_file_name = #{sourceFileName,jdbcType=VARCHAR},
+      file_path = #{filePath,jdbcType=VARCHAR},
+      file_type = #{fileType,jdbcType=BIGINT},
+      file_size = #{fileSize,jdbcType=BIGINT},
+      file_md5 = #{fileMd5,jdbcType=VARCHAR},
+      customer = #{customer,jdbcType=VARCHAR},
+      status = #{status},
+      description = #{description},
+      operation_date = #{operationDate,jdbcType=TIMESTAMP},
+      created_by = #{createdBy,jdbcType=VARCHAR},
+      created_date = #{createdDate,jdbcType=TIMESTAMP},
+      last_updated_by = #{lastUpdatedBy,jdbcType=VARCHAR},
+      last_updated_date = #{lastUpdatedDate,jdbcType=TIMESTAMP},
+      organization_id = #{organizationId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

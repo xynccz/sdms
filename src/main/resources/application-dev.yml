@@ -1,18 +1,9 @@
-api2doc: 
-  title: 金丰供应链系统API接口文档
-
-server:
-  port: 8090
-
-logging:
-  config: classpath:log4j2.xml
-
 spring:
     application:
         name: sdms
     #pringboot上传文件大小的配置
-    http.multipart.maxFileSize: 10Mb  
-    http.multipart.maxRequestSize: 50Mb
+    servlet.multipart.max-file-size: 50MB
+    servlet.multipart.max-request-size: 50MB
     
     #Druid数据源配置,https://github.com/alibaba/druid/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98
     datasource: 

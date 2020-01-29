@@ -16,10 +16,6 @@ public interface IBaseMapper<T extends BaseVO, PK extends Serializable>{
 
     int insert(T model);
 
-    int insertSelective(T model);
-
-    int updateByPrimaryKeySelective(T model);
-
     int updateByPrimaryKey(T model);
     
     T selectByPrimaryKey(PK id);

@@ -28,7 +28,7 @@ public class PoLineServiceImp extends BaseServiceImp<PoLine, Long> implements IP
 	
 	@Override
 	public void savePoLine(PoLine poLine) {
-		insertSelective(poLine);
+		insert(poLine);
 	}
 
 	@Override

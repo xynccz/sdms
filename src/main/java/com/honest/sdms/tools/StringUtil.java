@@ -164,7 +164,6 @@ public class StringUtil {
         if (s != null && "".equals(s.trim())){   
             return null;   
         }   
-    
         return s;   
     }   
     

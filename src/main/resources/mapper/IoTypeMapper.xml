@@ -28,115 +28,15 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.honest.sdms.transaction.entity.IoType">
-    insert into io_type (id, type_code, type_name, 
+    insert into io_type (type_code, type_name, 
       is_valid, remarks, created_by, 
-      created_date, last_updated_by, last_updated_date, 
-      organization_id)
-    values (#{id,jdbcType=BIGINT}, #{typeCode,jdbcType=VARCHAR}, #{typeName,jdbcType=VARCHAR}, 
+      created_date, last_updated_by, last_updated_date, organization_id)
+    values (#{typeCode,jdbcType=VARCHAR}, #{typeName,jdbcType=VARCHAR}, 
       #{isValid,jdbcType=CHAR}, #{remarks,jdbcType=VARCHAR}, #{createdBy,jdbcType=VARCHAR}, 
       #{createdDate,jdbcType=TIMESTAMP}, #{lastUpdatedBy,jdbcType=VARCHAR}, #{lastUpdatedDate,jdbcType=TIMESTAMP}, 
       #{organizationId,jdbcType=BIGINT})
   </insert>
-  <insert id="insertSelective" parameterType="com.honest.sdms.transaction.entity.IoType">
-    insert into io_type
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="typeCode != null">
-        type_code,
-      </if>
-      <if test="typeName != null">
-        type_name,
-      </if>
-      <if test="isValid != null">
-        is_valid,
-      </if>
-      <if test="remarks != null">
-        remarks,
-      </if>
-      <if test="createdBy != null">
-        created_by,
-      </if>
-      <if test="createdDate != null">
-        created_date,
-      </if>
-      <if test="lastUpdatedBy != null">
-        last_updated_by,
-      </if>
-      <if test="lastUpdatedDate != null">
-        last_updated_date,
-      </if>
-      <if test="organizationId != null">
-        organization_id,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="typeCode != null">
-        #{typeCode,jdbcType=VARCHAR},
-      </if>
-      <if test="typeName != null">
-        #{typeName,jdbcType=VARCHAR},
-      </if>
-      <if test="isValid != null">
-        #{isValid,jdbcType=CHAR},
-      </if>
-      <if test="remarks != null">
-        #{remarks,jdbcType=VARCHAR},
-      </if>
-      <if test="createdBy != null">
-        #{createdBy,jdbcType=VARCHAR},
-      </if>
-      <if test="createdDate != null">
-        #{createdDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="lastUpdatedBy != null">
-        #{lastUpdatedBy,jdbcType=VARCHAR},
-      </if>
-      <if test="lastUpdatedDate != null">
-        #{lastUpdatedDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="organizationId != null">
-        #{organizationId,jdbcType=BIGINT},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.honest.sdms.transaction.entity.IoType">
-    update io_type
-    <set>
-      <if test="typeCode != null">
-        type_code = #{typeCode,jdbcType=VARCHAR},
-      </if>
-      <if test="typeName != null">
-        type_name = #{typeName,jdbcType=VARCHAR},
-      </if>
-      <if test="isValid != null">
-        is_valid = #{isValid,jdbcType=CHAR},
-      </if>
-      <if test="remarks != null">
-        remarks = #{remarks,jdbcType=VARCHAR},
-      </if>
-      <if test="createdBy != null">
-        created_by = #{createdBy,jdbcType=VARCHAR},
-      </if>
-      <if test="createdDate != null">
-        created_date = #{createdDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="lastUpdatedBy != null">
-        last_updated_by = #{lastUpdatedBy,jdbcType=VARCHAR},
-      </if>
-      <if test="lastUpdatedDate != null">
-        last_updated_date = #{lastUpdatedDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="organizationId != null">
-        organization_id = #{organizationId,jdbcType=BIGINT},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+  
   <update id="updateByPrimaryKey" parameterType="com.honest.sdms.transaction.entity.IoType">
     update io_type
     set type_code = #{typeCode,jdbcType=VARCHAR},

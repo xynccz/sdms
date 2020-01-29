@@ -29,24 +29,6 @@ public abstract class BaseServiceImp<T extends BaseVO, PK extends Serializable> 
 	}
 
 	@Override
-	public int insertSelective(T model) {
-		if(model.getOrganizationId() == null)
-			model.setOrganizationId(Constants.getCurrentOrganizationId());
-		model.setCreatedBy(Constants.getCurrentSysUser().getLoginName());
-		model.setLastUpdatedBy(model.getCreatedBy());
-		model.setCreatedDate(new DateTimeUtil().toTimestamp());
-		model.setLastUpdatedDate(new DateTimeUtil().toTimestamp());
-		return baseMapper.insertSelective(model);
-	}
-
-	@Override
-	public int updateByPrimaryKeySelective(T model) {
-		model.setLastUpdatedBy(Constants.getCurrentSysUser().getLoginName());
-		model.setLastUpdatedDate(new DateTimeUtil().toTimestamp());
-		return baseMapper.updateByPrimaryKeySelective(model);
-	}
-
-	@Override
 	public int updateByPrimaryKey(T model) {
 		model.setLastUpdatedBy(Constants.getCurrentSysUser().getLoginName());
 		model.setLastUpdatedDate(new DateTimeUtil().toTimestamp());

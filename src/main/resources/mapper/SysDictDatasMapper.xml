@@ -29,6 +29,7 @@
   	<include refid="Base_Column_List" />
     from sys_dict_datas
     where dict_id = #{dictId,jdbcType=BIGINT} and organization_id = #{organizationId,jdbcType=BIGINT}
+    and is_valid = 'Y' order by dict_data_name
   </select>
   
   <select id="getDictDatasByDictCode" resultMap="BaseResultMap">
@@ -45,124 +46,16 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.honest.sdms.system.entity.SysDictDatas">
-    insert into sys_dict_datas (id, dict_data_code, dict_data_name, 
+    insert into sys_dict_datas (dict_data_code, dict_data_name, 
       is_valid, dict_id, created_by, 
       created_date, last_updated_by, last_updated_date, 
       remarks, organization_id)
-    values (#{id,jdbcType=BIGINT}, #{dictDataCode,jdbcType=VARCHAR}, #{dictDataName,jdbcType=VARCHAR}, 
+    values (#{dictDataCode,jdbcType=VARCHAR}, #{dictDataName,jdbcType=VARCHAR}, 
       #{isValid,jdbcType=CHAR}, #{dictId,jdbcType=BIGINT}, #{createdBy,jdbcType=VARCHAR}, 
       #{createdDate,jdbcType=TIMESTAMP}, #{lastUpdatedBy,jdbcType=VARCHAR}, #{lastUpdatedDate,jdbcType=TIMESTAMP}, 
       #{remarks,jdbcType=VARCHAR}, #{organizationId,jdbcType=BIGINT})
   </insert>
-  <insert id="insertSelective" parameterType="com.honest.sdms.system.entity.SysDictDatas">
-    insert into sys_dict_datas
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="dictDataCode != null">
-        dict_data_code,
-      </if>
-      <if test="dictDataName != null">
-        dict_data_name,
-      </if>
-      <if test="isValid != null">
-        is_valid,
-      </if>
-      <if test="dictId != null">
-        dict_id,
-      </if>
-      <if test="createdBy != null">
-        created_by,
-      </if>
-      <if test="createdDate != null">
-        created_date,
-      </if>
-      <if test="lastUpdatedBy != null">
-        last_updated_by,
-      </if>
-      <if test="lastUpdatedDate != null">
-        last_updated_date,
-      </if>
-      <if test="remarks != null">
-        remarks,
-      </if>
-      <if test="organizationId != null">
-        organization_id,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="dictDataCode != null">
-        #{dictDataCode,jdbcType=VARCHAR},
-      </if>
-      <if test="dictDataName != null">
-        #{dictDataName,jdbcType=VARCHAR},
-      </if>
-      <if test="isValid != null">
-        #{isValid,jdbcType=CHAR},
-      </if>
-      <if test="dictId != null">
-        #{dictId,jdbcType=BIGINT},
-      </if>
-      <if test="createdBy != null">
-        #{createdBy,jdbcType=VARCHAR},
-      </if>
-      <if test="createdDate != null">
-        #{createdDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="lastUpdatedBy != null">
-        #{lastUpdatedBy,jdbcType=VARCHAR},
-      </if>
-      <if test="lastUpdatedDate != null">
-        #{lastUpdatedDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="remarks != null">
-        #{remarks,jdbcType=VARCHAR},
-      </if>
-      <if test="organizationId != null">
-        #{organizationId,jdbcType=BIGINT},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.honest.sdms.system.entity.SysDictDatas">
-    update sys_dict_datas
-    <set>
-      <if test="dictDataCode != null">
-        dict_data_code = #{dictDataCode,jdbcType=VARCHAR},
-      </if>
-      <if test="dictDataName != null">
-        dict_data_name = #{dictDataName,jdbcType=VARCHAR},
-      </if>
-      <if test="isValid != null">
-        is_valid = #{isValid,jdbcType=CHAR},
-      </if>
-      <if test="dictId != null">
-        dict_id = #{dictId,jdbcType=BIGINT},
-      </if>
-      <if test="createdBy != null">
-        created_by = #{createdBy,jdbcType=VARCHAR},
-      </if>
-      <if test="createdDate != null">
-        created_date = #{createdDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="lastUpdatedBy != null">
-        last_updated_by = #{lastUpdatedBy,jdbcType=VARCHAR},
-      </if>
-      <if test="lastUpdatedDate != null">
-        last_updated_date = #{lastUpdatedDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="remarks != null">
-        remarks = #{remarks,jdbcType=VARCHAR},
-      </if>
-      <if test="organizationId != null">
-        organization_id = #{organizationId,jdbcType=BIGINT},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+
   <update id="updateByPrimaryKey" parameterType="com.honest.sdms.system.entity.SysDictDatas">
     update sys_dict_datas
     set dict_data_code = #{dictDataCode,jdbcType=VARCHAR},

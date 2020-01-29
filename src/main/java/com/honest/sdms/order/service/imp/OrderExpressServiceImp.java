@@ -1,5 +1,7 @@
 package com.honest.sdms.order.service.imp;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -22,5 +24,17 @@ public class OrderExpressServiceImp extends BaseServiceImp<OrderExpress, Long> i
 		this.baseMapper = baseMapper;
 		orderExpressMapper = (OrderExpressMapper)baseMapper;
 	}
+
+	@Override
+	public void saveList(List<OrderExpress> list) {
+		if(list != null && list.size() > 0){
+			for(OrderExpress order : list) {
+				orderExpressMapper.insert(order);
+			}
+		}
+		
+	}
+	
+	
 
 }

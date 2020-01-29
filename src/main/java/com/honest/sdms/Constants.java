@@ -1,5 +1,6 @@
 package com.honest.sdms;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -9,9 +10,11 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 
 import com.honest.sdms.system.entity.SysUser;
+import com.honest.sdms.tools.DateTimeUtil;
 
 public class Constants {
 	 
+	public static String CURRENT_YEAR = new DateTimeUtil().toString("yyyy");
 	public static Pattern SPLIT = Pattern.compile(",");
 	public static final Integer BUTTON = 3;//按钮
 	public static final Integer MENU = 2;//菜单
@@ -19,11 +22,21 @@ public class Constants {
 	public static final String DEFAULT_PASSWORD = "123456";
 	public static final Long DEFAULT_ORGANIZATIONID = 360L;
 	
+	//系统主目录
+	public static final String MAIN_PATH = "/Users/beisi/home" + File.separator + CURRENT_YEAR + File.separator;
+	public static final String ORDER_PATH_KEY = "orderAttachmentPath";//保存订单附件的服务器地址key值
+	
 	public static final int DEFAULT_PAGE_SIZE = 20;
+	
+	public static class FileType{
+		public static final Long ORDER_TYPE = 1000L;//订单类型
+	}
 	
 	public static class Status{
 		public static final String Y = "Y";
 		public static final String N = "N";
+		public static final String P = "P";
+		public static final String E = "E";
 	}
 	
 	public static class IoType{

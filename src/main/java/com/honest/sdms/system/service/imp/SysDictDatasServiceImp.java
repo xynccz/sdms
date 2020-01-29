@@ -35,16 +35,13 @@ public class SysDictDatasServiceImp extends BaseServiceImp<SysDictDatas, Long> i
 
 	@Override
 	public void saveOrUpdateDictDatas(List<SysDictDatas> list) {
-		if(list != null && list.size() > 0) 
-		{
+		if(list != null && list.size() > 0){
 			for(SysDictDatas dictData : list) {
 				Long id = dictData.getId();
-				if(id != null)
-				{
+				if(id != null){
 					this.updateByPrimaryKey(dictData);
-				}else
-				{
-					this.insertSelective(dictData);
+				}else{
+					this.insert(dictData);
 				}
 			}
 		}

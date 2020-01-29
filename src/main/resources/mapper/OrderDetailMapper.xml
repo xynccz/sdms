@@ -34,164 +34,20 @@
     where detail_id = #{detailId,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.honest.sdms.order.entity.OrderDetail">
-    insert into order_detail (detail_id, header_id, product_name, 
+    insert into order_detail (header_id, product_name, 
       item_id, item, specific_id, 
       warehouse, weight, piece_num, 
       remarks, created_by, created_date, 
       last_updated_by, last_updated_date, organization_id
       )
-    values (#{detailId,jdbcType=BIGINT}, #{headerId,jdbcType=BIGINT}, #{productName,jdbcType=VARCHAR}, 
+    values (#{headerId,jdbcType=BIGINT}, #{productName,jdbcType=VARCHAR}, 
       #{itemId,jdbcType=BIGINT}, #{item,jdbcType=VARCHAR}, #{specificId,jdbcType=BIGINT}, 
       #{warehouse,jdbcType=VARCHAR}, #{weight,jdbcType=DOUBLE}, #{pieceNum,jdbcType=BIGINT}, 
       #{remarks,jdbcType=VARCHAR}, #{createdBy,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP}, 
       #{lastUpdatedBy,jdbcType=VARCHAR}, #{lastUpdatedDate,jdbcType=TIMESTAMP}, #{organizationId,jdbcType=BIGINT}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.honest.sdms.order.entity.OrderDetail">
-    insert into order_detail
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="detailId != null">
-        detail_id,
-      </if>
-      <if test="headerId != null">
-        header_id,
-      </if>
-      <if test="productName != null">
-        product_name,
-      </if>
-      <if test="itemId != null">
-        item_id,
-      </if>
-      <if test="item != null">
-        item,
-      </if>
-      <if test="specificId != null">
-        specific_id,
-      </if>
-      <if test="warehouse != null">
-        warehouse,
-      </if>
-      <if test="weight != null">
-        weight,
-      </if>
-      <if test="pieceNum != null">
-        piece_num,
-      </if>
-      <if test="remarks != null">
-        remarks,
-      </if>
-      <if test="createdBy != null">
-        created_by,
-      </if>
-      <if test="createdDate != null">
-        created_date,
-      </if>
-      <if test="lastUpdatedBy != null">
-        last_updated_by,
-      </if>
-      <if test="lastUpdatedDate != null">
-        last_updated_date,
-      </if>
-      <if test="organizationId != null">
-        organization_id,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="detailId != null">
-        #{detailId,jdbcType=BIGINT},
-      </if>
-      <if test="headerId != null">
-        #{headerId,jdbcType=BIGINT},
-      </if>
-      <if test="productName != null">
-        #{productName,jdbcType=VARCHAR},
-      </if>
-      <if test="itemId != null">
-        #{itemId,jdbcType=BIGINT},
-      </if>
-      <if test="item != null">
-        #{item,jdbcType=VARCHAR},
-      </if>
-      <if test="specificId != null">
-        #{specificId,jdbcType=BIGINT},
-      </if>
-      <if test="warehouse != null">
-        #{warehouse,jdbcType=VARCHAR},
-      </if>
-      <if test="weight != null">
-        #{weight,jdbcType=DOUBLE},
-      </if>
-      <if test="pieceNum != null">
-        #{pieceNum,jdbcType=BIGINT},
-      </if>
-      <if test="remarks != null">
-        #{remarks,jdbcType=VARCHAR},
-      </if>
-      <if test="createdBy != null">
-        #{createdBy,jdbcType=VARCHAR},
-      </if>
-      <if test="createdDate != null">
-        #{createdDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="lastUpdatedBy != null">
-        #{lastUpdatedBy,jdbcType=VARCHAR},
-      </if>
-      <if test="lastUpdatedDate != null">
-        #{lastUpdatedDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="organizationId != null">
-        #{organizationId,jdbcType=BIGINT},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.honest.sdms.order.entity.OrderDetail">
-    update order_detail
-    <set>
-      <if test="headerId != null">
-        header_id = #{headerId,jdbcType=BIGINT},
-      </if>
-      <if test="productName != null">
-        product_name = #{productName,jdbcType=VARCHAR},
-      </if>
-      <if test="itemId != null">
-        item_id = #{itemId,jdbcType=BIGINT},
-      </if>
-      <if test="item != null">
-        item = #{item,jdbcType=VARCHAR},
-      </if>
-      <if test="specificId != null">
-        specific_id = #{specificId,jdbcType=BIGINT},
-      </if>
-      <if test="warehouse != null">
-        warehouse = #{warehouse,jdbcType=VARCHAR},
-      </if>
-      <if test="weight != null">
-        weight = #{weight,jdbcType=DOUBLE},
-      </if>
-      <if test="pieceNum != null">
-        piece_num = #{pieceNum,jdbcType=BIGINT},
-      </if>
-      <if test="remarks != null">
-        remarks = #{remarks,jdbcType=VARCHAR},
-      </if>
-      <if test="createdBy != null">
-        created_by = #{createdBy,jdbcType=VARCHAR},
-      </if>
-      <if test="createdDate != null">
-        created_date = #{createdDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="lastUpdatedBy != null">
-        last_updated_by = #{lastUpdatedBy,jdbcType=VARCHAR},
-      </if>
-      <if test="lastUpdatedDate != null">
-        last_updated_date = #{lastUpdatedDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="organizationId != null">
-        organization_id = #{organizationId,jdbcType=BIGINT},
-      </if>
-    </set>
-    where detail_id = #{detailId,jdbcType=BIGINT}
-  </update>
+
   <update id="updateByPrimaryKey" parameterType="com.honest.sdms.order.entity.OrderDetail">
     update order_detail
     set header_id = #{headerId,jdbcType=BIGINT},
