@@ -2,20 +2,21 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.honest.sdms.order.dao.OrderHeaderMapper">
   <resultMap id="BaseResultMap" type="com.honest.sdms.order.entity.OrderHeader">
-    <id column="header_id" jdbcType="BIGINT" property="headerId" />
+    <id column="header_id" jdbcType="VARCHAR" property="headerId" />
     <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
     <result column="order_type_id" jdbcType="BIGINT" property="orderTypeId" />
     <result column="order_status" jdbcType="VARCHAR" property="orderStatus" />
     <result column="buyer_notes" jdbcType="VARCHAR" property="buyerNotes" />
-    <result column="shop_id" jdbcType="VARCHAR" property="shopId" />
-    <result column="shop_order_no" jdbcType="VARCHAR" property="shopOrderNo" />
-    <result column="shop_name" jdbcType="VARCHAR" property="shopName" />
+    <result column="customer_id" jdbcType="BIGINT" property="customerId" />
+    <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
     <result column="customer_service_notes" jdbcType="VARCHAR" property="customerServiceNotes" />
     <result column="order_count" jdbcType="BIGINT" property="orderCount" />
     <result column="order_amount" jdbcType="DOUBLE" property="orderAmount" />
     <result column="cancel_order" jdbcType="CHAR" property="cancelOrder" />
     <result column="order_log" jdbcType="VARCHAR" property="orderLog" />
     <result column="is_valid" jdbcType="CHAR" property="isValid" />
+    <result column="record_id" jdbcType="BIGINT" property="recordId" />
     <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
     <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
     <result column="last_updated_by" jdbcType="VARCHAR" property="lastUpdatedBy" />
@@ -23,9 +24,9 @@
     <result column="organization_id" jdbcType="BIGINT" property="organizationId" />
   </resultMap>
   <sql id="Base_Column_List">
-    header_id, order_no, order_type_id, order_status, buyer_notes, shop_id, shop_order_no, 
-    shop_name, customer_service_notes, order_count, order_amount, cancel_order, order_log, 
-    is_valid, created_by, created_date, last_updated_by, last_updated_date, organization_id
+    header_id, order_no, order_type_id, order_status, buyer_notes, customer_id, remarks,
+    customer_name, customer_service_notes, order_count, order_amount, cancel_order, order_log, 
+    is_valid, record_id, created_by, created_date, last_updated_by, last_updated_date, organization_id
   </sql>
   <sql id="Base_Where">
 	<trim prefix="WHERE" prefixOverrides="AND |OR ">
@@ -47,11 +48,14 @@
       <if test="buyerNotes != null and buyerNotes != ''">
         and buyer_notes = #{buyerNotes,jdbcType=VARCHAR}
       </if>
-      <if test="shopId != null">
-        and shop_id = #{shopId,jdbcType=BIGINT}
+      <if test="customerId != null">
+        and customer_id = #{customerId,jdbcType=BIGINT}
       </if>
-      <if test="shopName != null and shopName != ''">
-        and shop_name = #{shopName,jdbcType=VARCHAR}
+      <if test="recordId != null">
+        and record_id = #{recordId,jdbcType=BIGINT}
+      </if>
+      <if test="customerName != null and customerName != ''">
+        and customer_name = #{customerName,jdbcType=VARCHAR}
       </if>
       <if test="customerServiceNotes != null">
         and customer_service_notes = #{customerServiceNotes,jdbcType=VARCHAR}
@@ -70,31 +74,61 @@
 		from order_header
 	<include refid="Base_Where" />
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from order_header
-    where header_id = #{headerId,jdbcType=BIGINT}
+    where header_id = #{headerId,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from order_header
-    where header_id = #{headerId,jdbcType=BIGINT}
+    where header_id = #{headerId,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.honest.sdms.order.entity.OrderHeader">
-    insert into order_header (order_no, order_type_id, 
-      order_status, buyer_notes, shop_id, 
-      shop_order_no, shop_name, customer_service_notes, 
-      order_count, order_amount, cancel_order, 
-      order_log, is_valid, created_by, 
-      created_date, last_updated_by, last_updated_date, 
-      organization_id)
-    values (#{orderNo,jdbcType=VARCHAR}, #{orderTypeId,jdbcType=BIGINT}, 
-      #{orderStatus,jdbcType=VARCHAR}, #{buyerNotes,jdbcType=VARCHAR}, #{shopId,jdbcType=VARCHAR}, 
-      #{shopOrderNo,jdbcType=VARCHAR}, #{shopName,jdbcType=VARCHAR}, #{customerServiceNotes,jdbcType=VARCHAR}, 
-      #{orderCount,jdbcType=BIGINT}, #{orderAmount,jdbcType=DOUBLE}, #{cancelOrder,jdbcType=CHAR}, 
-      #{orderLog,jdbcType=VARCHAR}, #{isValid,jdbcType=CHAR}, #{createdBy,jdbcType=VARCHAR}, 
-      #{createdDate,jdbcType=TIMESTAMP}, #{lastUpdatedBy,jdbcType=VARCHAR}, #{lastUpdatedDate,jdbcType=TIMESTAMP}, 
-      #{organizationId,jdbcType=BIGINT})
+  <insert id="saveList" parameterType="list">
+	INSERT INTO order_header (header_id, order_no, order_type_id,
+	order_status, buyer_notes, customer_id,
+	customer_name, customer_service_notes,
+	order_count, order_amount, cancel_order,
+	order_log, remarks, is_valid, record_id, created_by,
+	created_date, last_updated_by, last_updated_date,
+	organization_id)
+	VALUES
+	<foreach collection="list" item="item" separator=",">
+		(#{item.headerId,jdbcType=VARCHAR}, #{item.orderNo,jdbcType=VARCHAR},
+		#{item.orderTypeId,jdbcType=BIGINT},
+		#{item.orderStatus,jdbcType=VARCHAR}, #{item.buyerNotes,jdbcType=VARCHAR}, 
+		#{item.customerId,jdbcType=BIGINT},
+		#{item.customerName,jdbcType=VARCHAR},
+		#{item.customerServiceNotes,jdbcType=VARCHAR},
+		#{item.orderCount,jdbcType=BIGINT}, #{item.orderAmount,jdbcType=DOUBLE},
+		#{item.cancelOrder,jdbcType=CHAR},
+		#{item.orderLog,jdbcType=VARCHAR}, #{item.remarks,jdbcType=VARCHAR},
+		#{item.isValid,jdbcType=CHAR},#{item.recordId,jdbcType=BIGINT}, #{item.createdBy,jdbcType=VARCHAR},
+		#{item.createdDate,jdbcType=TIMESTAMP}, #{item.lastUpdatedBy,jdbcType=VARCHAR},
+		#{item.lastUpdatedDate,jdbcType=TIMESTAMP},
+		#{item.organizationId,jdbcType=BIGINT})
+	</foreach>
+    </insert>
+	<insert id="insert" parameterType="com.honest.sdms.order.entity.OrderHeader">
+		insert into order_header (header_id, order_no, order_type_id,
+		order_status, buyer_notes, customer_id,
+		customer_name, customer_service_notes,
+		order_count, order_amount, cancel_order,
+		order_log, remarks, is_valid, record_id, created_by,
+		created_date, last_updated_by, last_updated_date,
+		organization_id)
+		values (#{headerId,jdbcType=VARCHAR}, #{orderNo,jdbcType=VARCHAR},
+		#{orderTypeId,jdbcType=BIGINT},
+		#{orderStatus,jdbcType=VARCHAR}, #{buyerNotes,jdbcType=VARCHAR}, #{customerId,jdbcType=BIGINT},
+		#{customerName,jdbcType=VARCHAR},
+		#{customerServiceNotes,jdbcType=VARCHAR},
+		#{orderCount,jdbcType=BIGINT}, #{orderAmount,jdbcType=DOUBLE},
+		#{cancelOrder,jdbcType=CHAR},
+		#{orderLog,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR},
+		#{isValid,jdbcType=CHAR}, #{recordId,jdbcType=BIGINT}, #{createdBy,jdbcType=VARCHAR},
+		#{createdDate,jdbcType=TIMESTAMP}, #{lastUpdatedBy,jdbcType=VARCHAR},
+		#{lastUpdatedDate,jdbcType=TIMESTAMP},
+		#{organizationId,jdbcType=BIGINT})
   </insert>
 
   <update id="updateByPrimaryKey" parameterType="com.honest.sdms.order.entity.OrderHeader">
@@ -103,20 +137,21 @@
       order_type_id = #{orderTypeId,jdbcType=BIGINT},
       order_status = #{orderStatus,jdbcType=VARCHAR},
       buyer_notes = #{buyerNotes,jdbcType=VARCHAR},
-      shop_id = #{shopId,jdbcType=VARCHAR},
-      shop_order_no = #{shopOrderNo,jdbcType=VARCHAR},
-      shop_name = #{shopName,jdbcType=VARCHAR},
+      customer_id = #{customerId,jdbcType=BIGINT},
+      customer_name = #{customerName,jdbcType=VARCHAR},
       customer_service_notes = #{customerServiceNotes,jdbcType=VARCHAR},
       order_count = #{orderCount,jdbcType=BIGINT},
       order_amount = #{orderAmount,jdbcType=DOUBLE},
       cancel_order = #{cancelOrder,jdbcType=CHAR},
       order_log = #{orderLog,jdbcType=VARCHAR},
+      remarks = #{remarks,jdbcType=VARCHAR},
       is_valid = #{isValid,jdbcType=CHAR},
+      record_id = #{recordId,jdbcType=BIGINT},
       created_by = #{createdBy,jdbcType=VARCHAR},
       created_date = #{createdDate,jdbcType=TIMESTAMP},
       last_updated_by = #{lastUpdatedBy,jdbcType=VARCHAR},
       last_updated_date = #{lastUpdatedDate,jdbcType=TIMESTAMP},
       organization_id = #{organizationId,jdbcType=BIGINT}
-    where header_id = #{headerId,jdbcType=BIGINT}
+    where header_id = #{headerId,jdbcType=VARCHAR}
   </update>
 </mapper>

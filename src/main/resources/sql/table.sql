@@ -260,19 +260,19 @@ create table io_type(
 )
 
 create table order_header(
-	header_id bigint primary key AUTO_INCREMENT,
+	header_id varchar(32) primary key,
 	order_no varchar(100) comment '订单号，唯一',
 	order_type_id bigint comment '订单类型', 
 	order_status varchar(500) comment '订单状态,记录订单状态日志,未付款,已付款,已发货,已签收,退货申请,退货中,已退货,取消交易',
 	buyer_notes varchar(500) COMMENT '买家留言',
-	shop_id varchar(100) COMMENT '商品编号',
-	shop_order_no varchar(300) COMMENT '商家订单号，从店铺发过来的',
-	shop_name varchar(100) comment '店铺名称',
+	customer_id bigint COMMENT '客户ID，关联sys_dict_datas主键ID',
+	customer_name varchar(100) comment '店铺名称',
     customer_service_notes varchar(500) COMMENT '客服备注信息',
     order_count bigint COMMENT '订单数量,客户订单显示2，那么就要发2件货',
     order_amount double COMMENT '订单金额',
     cancel_order char default 'N' COMMENT '取消订单，Y标识此单已取消，业务上表示撕单动作',
-    order_log varchar(800) COMMENT '订单处理过程日志记录',
+    order_log varchar(2000) COMMENT '订单处理过程日志记录',
+    remarks varchar(2000),
     is_valid char default 'Y' COMMENT '是否有效，导入订单不满足设定规则此订单就会无效，比如地址写错了',
 	created_by varchar(64) NOT NULL COMMENT '创建者',
 	created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -283,11 +283,11 @@ create table order_header(
 
 create table order_detail(
 	detail_id bigint primary key AUTO_INCREMENT,
-	header_id bigint not null,
+	header_id varchar(32) not null,
 	product_name varchar(500) COMMENT '商品名称',
-	item_id bigint not null,
-	item varchar(200) not null,
-	specific_id bigint(20) DEFAULT NULL COMMENT '产品规格',
+	item_id bigint,
+	item varchar(200),
+	item_specific_id bigint(20) DEFAULT NULL COMMENT '产品规格',
 	warehouse varchar(200) COMMENT '到货仓库',
 	weight double COMMENT '产品重量',
 	piece_num bigint COMMENT '件数',
@@ -303,7 +303,7 @@ create table order_detail(
 --订单物流表
 create table order_express(
 	id bigint primary key AUTO_INCREMENT,
-	header_id bigint not null,
+	header_id varchar(32) not null,
 	express_company varchar(500) comment '物流公司',
 	express_no varchar(200) comment '物流单号',
 	express_status varchar(200) comment '物流状态',
@@ -338,14 +338,15 @@ create table download_records(
  file_type bigint comment '文件类型，在数据字典中配置对应关系',
  file_size bigint comment '文件大小',
  file_md5 varchar(32) comment '文件MD5码',
- description varchar(800),
- customer varchar(100) comment '客户名称',
+ description varchar(2000),
+ customer_id bigint comment '客户ID，关联sys_dict_datas主键ID',
  operation_date DATETIME comment '文件操作时间',
  created_by varchar(64) NOT NULL COMMENT '创建者',
  created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
  last_updated_by varchar(64) NOT NULL COMMENT '更新者',
  last_updated_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
- organization_id bigint not null
+ organization_id bigint not null,
+ UNIQUE KEY 'u_download_u1' ('source_file_name','file_path','file_type')
 ) comment '文件记录表，可以对订单，财务报表等文件附件的保存记录';
 
 create table customer_order_excel_config(
@@ -379,3 +380,27 @@ create table customer_order_relation(
 	last_updated_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
   	organization_id bigint not null
 )comment '客户订单数据对应关系表';
+
+create table item_specific(
+	id bigint primary key AUTO_INCREMENT,
+	item_id bigint not null,
+	item varchar(200) not null,
+	specific_id bigint(20) DEFAULT NULL COMMENT '产品规格,关联sys_dict_datas表主键',
+	remarks varchar(500),
+	created_by varchar(64) NOT NULL COMMENT '创建者',
+	created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+	last_updated_by varchar(64) NOT NULL COMMENT '更新者',
+	last_updated_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+	organization_id bigint not null,
+	UNIQUE KEY `un_item_specific_index` (`item_id`,'grade_id',`specific_id`,`organization_id`)
+)COMMENT = '产品规格表';
+
+create table error_data_log(
+   id bigint primary key AUTO_INCREMENT,
+   source_id bigint comment'源id',
+   data varchar(4000) comment'记录异常数据',
+   remarks varchar(500) COMMENT '备注信息',
+   created_by varchar(64) NOT NULL COMMENT '创建者',
+   created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+   organization_id bigint not null
+)comment '系统操作异常日志表';

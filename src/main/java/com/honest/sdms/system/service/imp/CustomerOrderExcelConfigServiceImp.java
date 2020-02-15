@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.honest.sdms.basedata.exceptions.HSException;
 import com.honest.sdms.system.dao.CustomerOrderExcelConfigMapper;
-import com.honest.sdms.system.dao.CustomerOrderRelationMapper;
 import com.honest.sdms.system.dao.IBaseMapper;
 import com.honest.sdms.system.entity.CustomerOrderExcelConfig;
 import com.honest.sdms.system.service.ICustomerOrderExcelConfigService;
@@ -17,8 +16,6 @@ import com.honest.sdms.system.service.ICustomerOrderExcelConfigService;
 public class CustomerOrderExcelConfigServiceImp extends BaseServiceImp<CustomerOrderExcelConfig, Long> implements ICustomerOrderExcelConfigService{
 
 	private CustomerOrderExcelConfigMapper customerOrderExcelConfigMapper;
-	@Autowired
-	private CustomerOrderRelationMapper customerOrderRelationMapper;
 	
 	@Autowired
 	@Qualifier("customerOrderExcelConfigMapper")
@@ -26,6 +23,11 @@ public class CustomerOrderExcelConfigServiceImp extends BaseServiceImp<CustomerO
 	public void setBaseDao(IBaseMapper<CustomerOrderExcelConfig, Long> baseMapper) {
 		this.baseMapper = baseMapper;
 		customerOrderExcelConfigMapper = (CustomerOrderExcelConfigMapper)baseMapper;
+	}
+
+	@Override
+	public List<CustomerOrderExcelConfig> findCustomerOrderConfigByCustomerId(Long customerId, String operateType) {
+		return customerOrderExcelConfigMapper.findCustomerOrderConfigByCustomerId(customerId, operateType);
 	}
 
 	@Override

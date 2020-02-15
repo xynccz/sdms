@@ -9,7 +9,8 @@ public enum ResultStatus {
 	
 	OK(200,"ok"),
 	ERROR(300,"error"),
-	EXCEPTION(500,"exception");
+	EXCEPTION(500,"exception"),
+	DEFAULT(1000,null);
 	
 	private final int value;
 	private final String reasonPhrase;

@@ -11,7 +11,7 @@ public class PoLine extends BaseVO{
     private String isShip;//是否已生成交易信息
     private String item;
     private Double weight;
-    private Long specificId;
+    private Long itemGradeId;
     private String specificName;//从数据字典中查询，配置到xml中
     private Long pieceNum;
     private Double unitPrice;
@@ -65,15 +65,15 @@ public class PoLine extends BaseVO{
         this.weight = weight;
     }
 
-    public Long getSpecificId() {
-        return specificId;
-    }
+    public Long getItemGradeId() {
+		return itemGradeId;
+	}
 
-    public void setSpecificId(Long specificId) {
-        this.specificId = specificId;
-    }
-    
-    public String getSpecificName() {
+	public void setItemGradeId(Long itemGradeId) {
+		this.itemGradeId = itemGradeId;
+	}
+
+	public String getSpecificName() {
 		return specificName;
 	}
 

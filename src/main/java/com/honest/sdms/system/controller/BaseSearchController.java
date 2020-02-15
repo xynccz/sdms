@@ -2,6 +2,8 @@ package com.honest.sdms.system.controller;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +74,7 @@ public class BaseSearchController {
 	
 	@RequestMapping(value="/getOrderFieldList", method = RequestMethod.GET,produces= {"application/json;charset=UTF-8;"})
 	public @ResponseBody JSONArray getOrderFieldList() {
-		JSONArray array = new JSONArray();
+		List<JSONObject> array = new ArrayList<JSONObject>();
 		Field[] fields = OrderHeader.class.getDeclaredFields();
 		for(Field field : fields) {
 			JSONObject json = new JSONObject();
@@ -96,7 +98,16 @@ public class BaseSearchController {
 			json.put("value", field.getName());
 			array.add(json);
 		}
-		return array;
+		
+		Collections.sort(array, new Comparator<JSONObject>() {
+		    @Override
+		    public int compare(JSONObject o1, JSONObject o2) {
+		        String a = o1.getString("key");
+		        String b = o2.getString("key");
+		        return a.compareTo(b);
+		    }
+		});
+		return JSONArray.fromObject(array);
 	}
 
 	/**

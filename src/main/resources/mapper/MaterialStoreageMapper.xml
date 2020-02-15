@@ -8,6 +8,7 @@
     <result column="transaction_summary_id" jdbcType="BIGINT" property="transactionSummaryId" />
     <result column="inventory_type_id" jdbcType="BIGINT" property="inventoryTypeId" />
     <result column="po_header_id" jdbcType="BIGINT" property="poHeaderId" />
+    <result column="item_grade_id" jdbcType="BIGINT" property="itemGradeId" />
     <result column="specific_id" jdbcType="BIGINT" property="specificId" />
     <result column="warehouse" jdbcType="VARCHAR" property="warehouse" />
     <result column="net_weight_per_unit" jdbcType="DOUBLE" property="netWeightPerUnit" />
@@ -25,7 +26,7 @@
     <result column="organization_id" jdbcType="BIGINT" property="organizationId" />
   </resultMap>
   <sql id="Base_Column_List">
-    store_id, item_id, item, transaction_summary_id, inventory_type_id, po_header_id, specific_id, warehouse, net_weight_per_unit, net_weight, 
+    store_id, item_id, item, transaction_summary_id, inventory_type_id, po_header_id, item_grade_id, specific_id, warehouse, net_weight_per_unit, net_weight, 
     gross_weight, piece_num, create_transaction_id, update_transaction_id, remarks, created_by, 
     created_date, last_updated_by, last_updated_date, organization_id
   </sql>
@@ -45,6 +46,9 @@
       </if>
       <if test="poHeaderId != null">
         and po_header_id = #{poHeaderId,jdbcType=BIGINT}
+      </if>
+      <if test="itemGradeId != null">
+        and item_grade_id = #{itemGradeId,jdbcType=BIGINT}
       </if>
       <if test="specificId != null">
         and specific_id = #{specificId,jdbcType=BIGINT}
@@ -67,6 +71,7 @@
 	select
 	GROUP_CONCAT(store_id SEPARATOR ',') as store_ids,ms.item_id,ms.item,ms.specific_id,net_weight_per_unit, sum(ms.net_weight) as net_weight,sum(ms.piece_num) as piece_num,ms.warehouse,max(ms.created_date) as created_date,ms.organization_id,
 	(select ds.dict_data_name from sys_dict_datas ds where ds.id = ms.specific_id and ds.organization_id = ms.organization_id and ds.dict_id = 3) as specificName,
+	(select ds.dict_data_name from sys_dict_datas ds where ds.id = ms.item_grade_id and ds.organization_id = ms.organization_id and ds.dict_id = 13) as itemGradeName,
 	(select ds.dict_data_name from sys_dict_datas ds where ds.dict_data_code = ms.warehouse and ds.organization_id = ms.organization_id and ds.dict_id = 1) as warehouseName,
 	(select ds.dict_data_name from sys_dict_datas ds where ds.id = ms.inventory_type_id and ds.organization_id = ms.organization_id and ds.dict_id = 9) as inventoryType
 	from material_storeage ms
@@ -83,20 +88,50 @@
     delete from material_storeage
     where store_id = #{storeId,jdbcType=BIGINT}
   </delete>
+  <insert id="saveList" parameterType="list">
+	insert into material_storeage (item_id, item,
+	transaction_summary_id, inventory_type_id, po_header_id, item_grade_id, specific_id, warehouse,
+	net_weight_per_unit,
+	net_weight, gross_weight, piece_num,
+	create_transaction_id, update_transaction_id,
+	remarks, created_by, created_date,
+	last_updated_by, last_updated_date, organization_id)
+	VALUES
+	<foreach collection="list" item="item" separator=",">
+		(#{item.itemId,jdbcType=BIGINT}, #{item.item,jdbcType=VARCHAR},
+		#{item.transactionSummaryId,jdbcType=BIGINT},#{item.inventoryTypeId,jdbcType=BIGINT},
+		#{item.poHeaderId,jdbcType=BIGINT}, #{item.itemGradeId,jdbcType=BIGINT}, #{item.specificId,jdbcType=BIGINT},
+		#{item.warehouse,jdbcType=VARCHAR},
+		#{item.netWeightPerUnit,jdbcType=DOUBLE},#{item.netWeight,jdbcType=DOUBLE},
+		#{item.grossWeight,jdbcType=DOUBLE}, #{item.pieceNum,jdbcType=BIGINT},
+		#{item.createTransactionId,jdbcType=BIGINT},
+		#{item.updateTransactionId,jdbcType=BIGINT},
+		#{item.remarks,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=VARCHAR}, #{item.createdDate,jdbcType=TIMESTAMP},
+		#{item.lastUpdatedBy,jdbcType=VARCHAR},
+		#{item.lastUpdatedDate,jdbcType=TIMESTAMP},
+		#{item.organizationId,jdbcType=BIGINT})
+	</foreach>
+  </insert>
   <insert id="insert" parameterType="com.honest.sdms.transaction.entity.MaterialStoreage">
-    insert into material_storeage (item_id, item, 
-      transaction_summary_id, inventory_type_id, po_header_id, specific_id, warehouse, net_weight_per_unit,
-      net_weight, gross_weight, piece_num, 
-      create_transaction_id, update_transaction_id, 
-      remarks, created_by, created_date, 
-      last_updated_by, last_updated_date, organization_id)
-    values (#{itemId,jdbcType=BIGINT}, #{item,jdbcType=VARCHAR}, 
-      #{transactionSummaryId,jdbcType=BIGINT},#{inventoryTypeId,jdbcType=BIGINT}, #{poHeaderId,jdbcType=BIGINT}, #{specificId,jdbcType=BIGINT}, #{warehouse,jdbcType=VARCHAR}, 
-      #{netWeightPerUnit,jdbcType=DOUBLE},#{netWeight,jdbcType=DOUBLE}, #{grossWeight,jdbcType=DOUBLE}, #{pieceNum,jdbcType=BIGINT}, 
-      #{createTransactionId,jdbcType=BIGINT}, #{updateTransactionId,jdbcType=BIGINT}, 
-      #{remarks,jdbcType=VARCHAR}, #{createdBy,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP}, 
-      #{lastUpdatedBy,jdbcType=VARCHAR}, #{lastUpdatedDate,jdbcType=TIMESTAMP}, #{organizationId,jdbcType=BIGINT}
-      )
+	insert into material_storeage (item_id, item,
+	transaction_summary_id, inventory_type_id, po_header_id, item_grade_id, specific_id, warehouse,
+	net_weight_per_unit,
+	net_weight, gross_weight, piece_num,
+	create_transaction_id, update_transaction_id,
+	remarks, created_by, created_date,
+	last_updated_by, last_updated_date, organization_id)
+	values (#{itemId,jdbcType=BIGINT}, #{item,jdbcType=VARCHAR},
+	#{transactionSummaryId,jdbcType=BIGINT},#{inventoryTypeId,jdbcType=BIGINT},
+	#{poHeaderId,jdbcType=BIGINT}, #{itemGradeId,jdbcType=BIGINT}, #{specificId,jdbcType=BIGINT},
+	#{warehouse,jdbcType=VARCHAR},
+	#{netWeightPerUnit,jdbcType=DOUBLE},#{netWeight,jdbcType=DOUBLE},
+	#{grossWeight,jdbcType=DOUBLE}, #{pieceNum,jdbcType=BIGINT},
+	#{createTransactionId,jdbcType=BIGINT},
+	#{updateTransactionId,jdbcType=BIGINT},
+	#{remarks,jdbcType=VARCHAR}, #{createdBy,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP},
+	#{lastUpdatedBy,jdbcType=VARCHAR},
+	#{lastUpdatedDate,jdbcType=TIMESTAMP},
+	#{organizationId,jdbcType=BIGINT})
   </insert>
 
   <update id="updateByPrimaryKey" parameterType="com.honest.sdms.transaction.entity.MaterialStoreage">
@@ -106,6 +141,7 @@
       transaction_summary_id = #{transactionSummaryId,jdbcType=BIGINT},
       inventory_type_id = #{inventoryTypeId,jdbcType=BIGINT},
       po_header_id = #{poHeaderId,jdbcType=BIGINT},
+      item_grade_id = #{itemGradeId,jdbcType=BIGINT},
       specific_id = #{specificId,jdbcType=BIGINT},
       warehouse = #{warehouse,jdbcType=VARCHAR},
       net_weight_per_unit = #{netWeightPerUnit,jdbcType=DOUBLE},

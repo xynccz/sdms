@@ -14,16 +14,16 @@ import com.honest.sdms.tools.DateTimeUtil;
 
 public class Constants {
 	 
-	public static String CURRENT_YEAR = new DateTimeUtil().toString("yyyy");
 	public static Pattern SPLIT = Pattern.compile(",");
 	public static final Integer BUTTON = 3;//按钮
 	public static final Integer MENU = 2;//菜单
 	public static final Integer MODEL = 1;//模块
 	public static final String DEFAULT_PASSWORD = "123456";
 	public static final Long DEFAULT_ORGANIZATIONID = 360L;
+	public static final Integer DEFAULT_ID = 1000;
 	
 	//系统主目录
-	public static final String MAIN_PATH = "/Users/beisi/home" + File.separator + CURRENT_YEAR + File.separator;
+	public static final String MAIN_PATH = "/Users/beisi/home" + File.separator + new DateTimeUtil().toString("yyyy") + File.separator;
 	public static final String ORDER_PATH_KEY = "orderAttachmentPath";//保存订单附件的服务器地址key值
 	
 	public static final int DEFAULT_PAGE_SIZE = 20;
@@ -60,6 +60,9 @@ public class Constants {
 	 public static final String TOKEN_NAME = "token";
 	 public static final String TOKEN_HEAD = "X-Token";
 	 public static final String SYS_USER = "sysuser";
+	 
+	 public static final String INPUT = "INPUT";
+	 public static final String OUTPUT = "OUTPUT";
 	 
 	 public static final String ORGANIZATIONID = "organizationId";
 	 public static final String DEFAULT_CAPTCHA_PARAM = "captcha"; //为的是页面表单提交验证码的参数

@@ -64,12 +64,12 @@
   </delete>
   
   <insert id="insert" parameterType="com.honest.sdms.system.entity.Role">
-    insert into roles (role_name, role_code, 
-      description, organization_id, 
-      created_by, created_date)
-    values (#{roleName,jdbcType=VARCHAR}, #{roleCode,jdbcType=VARCHAR}, 
-      #{description,jdbcType=VARCHAR}, #{organizationId,jdbcType=BIGINT}, 
-      #{createdBy,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP})
+	insert into roles (role_name, role_code,
+	description, organization_id,
+	created_by, created_date)
+	values (#{roleName,jdbcType=VARCHAR}, #{roleCode,jdbcType=VARCHAR},
+	#{description,jdbcType=VARCHAR}, #{organizationId,jdbcType=BIGINT},
+	#{createdBy,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP})
   </insert>
 
   <update id="updateByPrimaryKey" parameterType="com.honest.sdms.system.entity.Role">

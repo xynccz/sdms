@@ -6,7 +6,7 @@
     <result column="header_id" jdbcType="BIGINT" property="headerId" />
     <result column="is_ship" jdbcType="VARCHAR" property="isShip" />
     <result column="weight" jdbcType="DOUBLE" property="weight" />
-    <result column="specific_id" jdbcType="BIGINT" property="specificId" />
+    <result column="item_grade_id" jdbcType="BIGINT" property="itemGradeId" />
     <result column="piece_num" jdbcType="BIGINT" property="pieceNum" />
     <result column="Unit_Price" jdbcType="DOUBLE" property="unitPrice" />
     <result column="item_id" jdbcType="BIGINT" property="itemId" />
@@ -19,7 +19,7 @@
     <result column="organization_id" jdbcType="BIGINT" property="organizationId" />
   </resultMap>
   <sql id="Base_Column_List">
-    line_id, header_id, is_ship, weight, specific_id, piece_num, Unit_Price, remarks, created_by, 
+    line_id, header_id, is_ship, weight, item_grade_id, piece_num, Unit_Price, remarks, created_by, 
     created_date, last_updated_by, last_updated_date, organization_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -33,7 +33,7 @@
     <include refid="Base_Column_List" />,
     (select ph.item from po_header ph where ph.header_id = p.header_id and ph.organization_id = p.organization_id) as item,
     (select ph.item_id from po_header ph where ph.header_id = p.header_id and ph.organization_id = p.organization_id) as item_id,
-    (select ds.dict_data_name from sys_dict_datas ds where ds.id = p.specific_id and ds.organization_id = p.organization_id and ds.dict_id = 3) as specificName
+    (select ds.dict_data_name from sys_dict_datas ds where ds.id = p.item_grade_id and ds.organization_id = p.organization_id and ds.dict_id = 13) as specificName
     from po_line p
     where header_id = #{poHeaderId,jdbcType=BIGINT} and organization_id = #{organizationId,jdbcType=BIGINT}
   </select>
@@ -42,7 +42,7 @@
     <include refid="Base_Column_List" />,
     (select ph.item from po_header ph where ph.header_id = p.header_id and ph.organization_id = p.organization_id) as item,
     (select ph.item_id from po_header ph where ph.header_id = p.header_id and ph.organization_id = p.organization_id) as item_id,
-    (select ds.dict_data_name from sys_dict_datas ds where ds.id = p.specific_id and ds.organization_id = p.organization_id and ds.dict_id = 3) as specificName
+    (select ds.dict_data_name from sys_dict_datas ds where ds.id = p.item_grade_id and ds.organization_id = p.organization_id and ds.dict_id = 13) as specificName
     from po_line p
     where header_id in 
      	<foreach collection="poHeaderIds" item="poHeaderId" index="index" open="(" separator="," close=")">
@@ -56,12 +56,12 @@
   </delete>
   <insert id="insert" parameterType="com.honest.sdms.transaction.entity.PoLine">
     insert into po_line (header_id, is_ship, weight, 
-      specific_id, piece_num, Unit_Price, 
+      item_grade_id, piece_num, Unit_Price, 
       remarks, created_by, created_date, 
       last_updated_by, last_updated_date, organization_id
       )
     values (#{headerId,jdbcType=BIGINT},#{isShip,jdbcType=VARCHAR}, #{weight,jdbcType=DOUBLE}, 
-      #{specificId,jdbcType=BIGINT}, #{pieceNum,jdbcType=BIGINT}, #{unitPrice,jdbcType=DOUBLE}, 
+      #{itemGradeId,jdbcType=BIGINT}, #{pieceNum,jdbcType=BIGINT}, #{unitPrice,jdbcType=DOUBLE}, 
       #{remarks,jdbcType=VARCHAR}, #{createdBy,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP}, 
       #{lastUpdatedBy,jdbcType=VARCHAR}, #{lastUpdatedDate,jdbcType=TIMESTAMP}, #{organizationId,jdbcType=BIGINT}
       )
@@ -72,7 +72,7 @@
     set header_id = #{headerId,jdbcType=BIGINT},
       weight = #{weight,jdbcType=DOUBLE},
       is_ship = #{isShip,jdbcType=VARCHAR},
-      specific_id = #{specificId,jdbcType=BIGINT},
+      item_grade_id = #{itemGradeId,jdbcType=BIGINT},
       piece_num = #{pieceNum,jdbcType=BIGINT},
       Unit_Price = #{unitPrice,jdbcType=DOUBLE},
       remarks = #{remarks,jdbcType=VARCHAR},

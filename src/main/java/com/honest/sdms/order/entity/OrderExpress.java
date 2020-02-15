@@ -1,6 +1,6 @@
 package com.honest.sdms.order.entity;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 import com.honest.sdms.system.entity.BaseVO;
 
@@ -8,7 +8,7 @@ public class OrderExpress extends BaseVO{
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
-    private Long headerId;
+    private String headerId;
     private String expressCompany;
     private String expressNo;
     private String expressStatus;
@@ -24,8 +24,8 @@ public class OrderExpress extends BaseVO{
     private Double deliveryAmount;
     private String expressResultLast;
     private String expressResult;
-    private Date expressCreateTime;
-    private Date expressUpdateTime;
+    private Timestamp expressCreateTime;
+    private Timestamp expressUpdateTime;
 
     public Long getId() {
         return id;
@@ -35,11 +35,11 @@ public class OrderExpress extends BaseVO{
         this.id = id;
     }
 
-    public Long getHeaderId() {
+    public String getHeaderId() {
         return headerId;
     }
 
-    public void setHeaderId(Long headerId) {
+    public void setHeaderId(String headerId) {
         this.headerId = headerId;
     }
 
@@ -163,19 +163,19 @@ public class OrderExpress extends BaseVO{
         this.expressResult = expressResult == null ? null : expressResult.trim();
     }
 
-    public Date getExpressCreateTime() {
+    public Timestamp getExpressCreateTime() {
         return expressCreateTime;
     }
 
-    public void setExpressCreateTime(Date expressCreateTime) {
+    public void setExpressCreateTime(Timestamp expressCreateTime) {
         this.expressCreateTime = expressCreateTime;
     }
 
-    public Date getExpressUpdateTime() {
+    public Timestamp getExpressUpdateTime() {
         return expressUpdateTime;
     }
 
-    public void setExpressUpdateTime(Date expressUpdateTime) {
+    public void setExpressUpdateTime(Timestamp expressUpdateTime) {
         this.expressUpdateTime = expressUpdateTime;
     }
 

@@ -35,21 +35,21 @@ public class ControllerExceptionHandle {
     @ResponseBody
     public APIResponse<String> handleException(Exception e){
 		StringUtil.writeStackTraceToLog(logger, e);
-		return new APIResponse<String>(ERROR,"系统运行异常,请稍后再试......");
+		return new APIResponse<String>(ERROR,"系统运行异常,请稍后再试......"+e.getMessage());
 	}
 	
 	@ExceptionHandler(NullPointerException.class)
     @ResponseBody
     public APIResponse<String> handleException(NullPointerException e){
 		StringUtil.writeStackTraceToLog(logger, e);
-		return new APIResponse<String>(ERROR,"系统异常：空指针异常,请稍后再试......");
+		return new APIResponse<String>(ERROR,"系统异常：空指针异常,请稍后再试......"+e.getMessage());
 	}
 	
 	@ExceptionHandler(RuntimeException.class)
     @ResponseBody
     public APIResponse<String> handleException(RuntimeException e){
 		StringUtil.writeStackTraceToLog(logger, e);
-		return new APIResponse<String>(ERROR,"系统异常：运行时异常,请稍后再试......");
+		return new APIResponse<String>(ERROR,"系统异常：运行时异常,请稍后再试......"+e.getMessage());
 	}
 	
 }

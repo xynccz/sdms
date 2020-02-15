@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.honest.sdms.system.dao.ItemSpecificMapper">
+  <resultMap id="BaseResultMap" type="com.honest.sdms.system.entity.ItemSpecific">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="item_id" jdbcType="BIGINT" property="itemId" />
+    <result column="item" jdbcType="VARCHAR" property="item" />
+    <result column="grade_id" jdbcType="BIGINT" property="gradeId" />
+    <result column="specific_id" jdbcType="BIGINT" property="specificId" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="is_valid" jdbcType="CHAR" property="isValid" />
+    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+    <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+    <result column="last_updated_by" jdbcType="VARCHAR" property="lastUpdatedBy" />
+    <result column="last_updated_date" jdbcType="TIMESTAMP" property="lastUpdatedDate" />
+    <result column="organization_id" jdbcType="BIGINT" property="organizationId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, item_id, item, grade_id, specific_id, remarks, is_valid, created_by, created_date, last_updated_by, last_updated_date, 
+    organization_id
+  </sql>
+  <sql id="Base_Where">
+	<trim prefix="WHERE" prefixOverrides="AND |OR ">
+	  <if test="item != null and item != '' ">
+        and item = #{item,jdbcType=VARCHAR}
+      </if>
+      <if test="isValid != null and isValid != '' ">
+        and is_valid = #{isValid,jdbcType=CHAR}
+      </if>
+      <if test="itemId != null">
+        and item_id = #{itemId,jdbcType=BIGINT}
+      </if>
+      <if test="gradeId != null">
+        and grade_id = #{gradeId,jdbcType=BIGINT}
+      </if>
+      <if test="specificId != null">
+        and specific_id = #{specificId,jdbcType=BIGINT}
+      </if>
+      <if test="organizationId != null">
+        and organization_id = #{organizationId,jdbcType=BIGINT}
+      </if>
+	</trim>
+  </sql>
+  <select id="findByCond" parameterType="com.honest.sdms.system.entity.ItemSpecific" resultMap="BaseResultMap">
+	select
+	<include refid="Base_Column_List" />
+		from item_specific
+	<include refid="Base_Where"/>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from item_specific
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from item_specific
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.honest.sdms.system.entity.ItemSpecific">
+		insert into item_specific (id, item_id, item, grade_id, specific_id,
+		remarks, is_valid, created_by, created_date,
+		last_updated_by, last_updated_date, organization_id)
+		values (#{id,jdbcType=BIGINT}, #{itemId,jdbcType=BIGINT},#{item,jdbcType=VARCHAR},
+		#{gradeId,jdbcType=BIGINT},#{specificId,jdbcType=BIGINT},
+		#{remarks,jdbcType=VARCHAR}, #{isValid,jdbcType=CHAR}, 
+		#{createdBy,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP},
+		#{lastUpdatedBy,jdbcType=VARCHAR},
+		#{lastUpdatedDate,jdbcType=TIMESTAMP},
+		#{organizationId,jdbcType=BIGINT})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.honest.sdms.system.entity.ItemSpecific">
+    update item_specific
+    set item_id = #{itemId,jdbcType=BIGINT},
+      grade_id = #{gradeId,jdbcType=BIGINT},
+      specific_id = #{specificId,jdbcType=BIGINT},
+      remarks = #{item,jdbcType=VARCHAR},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      is_valid = #{isValid,jdbcType=CHAR},
+      created_by = #{createdBy,jdbcType=VARCHAR},
+      created_date = #{createdDate,jdbcType=TIMESTAMP},
+      last_updated_by = #{lastUpdatedBy,jdbcType=VARCHAR},
+      last_updated_date = #{lastUpdatedDate,jdbcType=TIMESTAMP},
+      organization_id = #{organizationId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

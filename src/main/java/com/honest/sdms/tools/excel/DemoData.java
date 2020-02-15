@@ -1,14 +1,10 @@
 package com.honest.sdms.tools.excel;
 
-import com.alibaba.excel.annotation.ExcelProperty;
-
 public class DemoData {
-	@ExcelProperty("user")
 	private String user;
-	@ExcelProperty("password")
 	private String password;
-	@ExcelProperty("adress")
 	private String adress;
+	
 	public String getUser() {
 		return user;
 	}

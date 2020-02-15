@@ -14,7 +14,5 @@ public interface IMaterialTransactionService extends IBaseService<MaterialTransa
 	
 	abstract void createStocks(String transactionIds)throws HSException;
 	
-	abstract void saveList(List<MaterialTransaction> list)throws HSException;
-	
 	abstract void updateList(List<MaterialTransaction> list)throws HSException;
 }

@@ -9,6 +9,8 @@ import com.honest.sdms.system.entity.BaseVO;
 public interface IBaseService<T extends BaseVO, PK extends Serializable> {
 	
 	int insert(T model);
+	
+	void saveList(List<T> models);
 
     int updateByPrimaryKey(T model);
     

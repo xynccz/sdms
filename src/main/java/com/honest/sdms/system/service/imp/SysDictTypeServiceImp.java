@@ -34,9 +34,9 @@ public class SysDictTypeServiceImp extends BaseServiceImp<SysDictType, Long> imp
 	@Override
 	public void saveOrUpdateDictType(SysDictType dictType) throws HSException {
 		if(dictType.getDictId() == null){
-			sysDictTypeMapper.insert(dictType);
+			insert(dictType);
 		}else{ 
-			sysDictTypeMapper.updateByPrimaryKey(dictType);
+			updateByPrimaryKey(dictType);
 		}
 	}
 }

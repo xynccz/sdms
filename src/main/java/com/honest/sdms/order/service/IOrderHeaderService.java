@@ -1,18 +1,29 @@
 package com.honest.sdms.order.service;
 
-import org.springframework.web.multipart.MultipartFile;
+import java.util.List;
 
 import com.honest.sdms.basedata.APIResponse;
+import com.honest.sdms.basedata.exceptions.HSException;
+import com.honest.sdms.order.entity.OrderDetail;
+import com.honest.sdms.order.entity.OrderExpress;
 import com.honest.sdms.order.entity.OrderHeader;
+import com.honest.sdms.system.entity.DownloadRecords;
+import com.honest.sdms.system.entity.ErrorDataLog;
+import com.honest.sdms.system.entity.ItemSpecific;
 import com.honest.sdms.system.service.IBaseService;
 
-public interface IOrderHeaderService extends IBaseService<OrderHeader, Long>{
+public interface IOrderHeaderService extends IBaseService<OrderHeader, String>{
 	
 	/**
 	 * 解析订单
 	 * @param file 上传附件
 	 * @param shopCode 商家类型
 	 */
-	abstract APIResponse<String> saveOrdersFromFiles(MultipartFile[]  file, String shopCode);
-
+	abstract APIResponse<String> saveOrdersFromFiles(List<DownloadRecords> records);
+	
+	abstract void saveOrderInfos(List<OrderHeader> orderHeaders, List<OrderDetail> orderDetails, List<OrderExpress> orderExpress)throws HSException;
+	
+	abstract ItemSpecific selectItemSpecificById(Long id);
+	
+	abstract void saveErrorLog(ErrorDataLog errorLog);
 }

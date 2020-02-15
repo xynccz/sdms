@@ -18,35 +18,53 @@ public abstract class BaseServiceImp<T extends BaseVO, PK extends Serializable> 
     public abstract void setBaseDao(IBaseMapper<T, PK> baseMapper);
     
 	@Override
-	public int insert(T model) {
-		if(model.getOrganizationId() == null)
+	public int insert(T model){
+		if(model.getOrganizationId() == null){
 			model.setOrganizationId(Constants.getCurrentOrganizationId());
+		}
 		model.setCreatedBy(Constants.getCurrentSysUser().getLoginName());
 		model.setLastUpdatedBy(model.getCreatedBy());
 		model.setCreatedDate(new DateTimeUtil().toTimestamp());
 		model.setLastUpdatedDate(new DateTimeUtil().toTimestamp());
 		return baseMapper.insert(model);
 	}
+	
+	@Override
+	public void saveList(List<T> models){
+		if(models != null && models.size() > 0){
+			for(T model : models){
+				if(model.getOrganizationId() == null){
+					model.setOrganizationId(Constants.getCurrentOrganizationId());
+				}
+				model.setCreatedBy(Constants.getCurrentSysUser().getLoginName());
+				model.setLastUpdatedBy(model.getCreatedBy());
+				model.setCreatedDate(new DateTimeUtil().toTimestamp());
+				model.setLastUpdatedDate(new DateTimeUtil().toTimestamp());
+			}
+			
+			baseMapper.saveList(models);
+		}
+	}
 
 	@Override
-	public int updateByPrimaryKey(T model) {
+	public int updateByPrimaryKey(T model){
 		model.setLastUpdatedBy(Constants.getCurrentSysUser().getLoginName());
 		model.setLastUpdatedDate(new DateTimeUtil().toTimestamp());
 		return baseMapper.updateByPrimaryKey(model);
 	}
 
 	@Override
-	public T selectByPrimaryKey(PK id) {
+	public T selectByPrimaryKey(PK id){
 		return baseMapper.selectByPrimaryKey(id);
 	}
 
 	@Override
-	public int deleteByPrimaryKey(PK id) {
+	public int deleteByPrimaryKey(PK id){
 		return baseMapper.deleteByPrimaryKey(id);
 	}
 
 	@Override
-	public List<T> findByCond(T cond) {
+	public List<T> findByCond(T cond){
 		if(cond.getOrganizationId() == null)
 			cond.setOrganizationId(Constants.getCurrentOrganizationId());
 		
@@ -54,10 +72,10 @@ public abstract class BaseServiceImp<T extends BaseVO, PK extends Serializable> 
 	}
 
 	@Override
-	public int count(T cond) {
-		if(cond.getOrganizationId() == null)
+	public int count(T cond){
+		if(cond.getOrganizationId() == null){
 			cond.setOrganizationId(Constants.getCurrentOrganizationId());
-		
+		}
 		return baseMapper.count(cond);
 	}
 
@@ -71,12 +89,13 @@ public abstract class BaseServiceImp<T extends BaseVO, PK extends Serializable> 
      * @return 分页对象
      */
 	@Override
-	public PageInfo<T> findByCondWithPage(T cond, String sortName, String sortOrder, int pageNum, int pageSize) {
-		if(cond.getOrganizationId() == null)
+	public PageInfo<T> findByCondWithPage(T cond, String sortName, String sortOrder, int pageNum, int pageSize){
+		if(cond.getOrganizationId() == null){
 			cond.setOrganizationId(Constants.getCurrentOrganizationId());
+		}
 		
 		PageHelper.startPage(pageNum, pageSize);
-		if(sortName != null) {
+		if(sortName != null){
 			PageHelper.orderBy(sortName+" "+(sortOrder == null?"asc":sortOrder));
 		}
 		

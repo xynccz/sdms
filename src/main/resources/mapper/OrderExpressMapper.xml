@@ -3,7 +3,7 @@
 <mapper namespace="com.honest.sdms.order.dao.OrderExpressMapper">
   <resultMap id="BaseResultMap" type="com.honest.sdms.order.entity.OrderExpress">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="header_id" jdbcType="BIGINT" property="headerId" />
+    <result column="header_id" jdbcType="VARCHAR" property="headerId" />
     <result column="express_company" jdbcType="VARCHAR" property="expressCompany" />
     <result column="express_no" jdbcType="VARCHAR" property="expressNo" />
     <result column="express_status" jdbcType="VARCHAR" property="expressStatus" />
@@ -44,6 +44,27 @@
     delete from order_express
     where id = #{id,jdbcType=BIGINT}
   </delete>
+  <insert id="saveList" parameterType="list">
+	INSERT INTO order_express (header_id, express_company, 
+      express_no, express_status, net_name, 
+      consignee_realname, consignee_telphone, consignee_province, 
+      consignee_city, consignee_county, consignee_address, 
+      consignee_zip, delivery_conditions, delivery_amount, 
+      express_result_last, express_result, express_create_time, 
+      express_update_time, created_by, created_date, 
+      last_updated_by, last_updated_date, organization_id)
+	VALUES
+	<foreach collection="list" item="item" separator=",">
+		(#{item.headerId,jdbcType=VARCHAR}, #{item.expressCompany,jdbcType=VARCHAR}, 
+      #{item.expressNo,jdbcType=VARCHAR}, #{item.expressStatus,jdbcType=VARCHAR}, #{item.netName,jdbcType=VARCHAR}, 
+      #{item.consigneeRealname,jdbcType=VARCHAR}, #{item.consigneeTelphone,jdbcType=VARCHAR}, #{item.consigneeProvince,jdbcType=VARCHAR}, 
+      #{item.consigneeCity,jdbcType=VARCHAR}, #{item.consigneeCounty,jdbcType=VARCHAR}, #{item.consigneeAddress,jdbcType=VARCHAR}, 
+      #{item.consigneeZip,jdbcType=VARCHAR}, #{item.deliveryConditions,jdbcType=VARCHAR}, #{item.deliveryAmount,jdbcType=DOUBLE}, 
+      #{item.expressResultLast,jdbcType=VARCHAR}, #{item.expressResult,jdbcType=VARCHAR}, #{item.expressCreateTime,jdbcType=TIMESTAMP}, 
+      #{item.expressUpdateTime,jdbcType=TIMESTAMP}, #{item.createdBy,jdbcType=VARCHAR}, #{item.createdDate,jdbcType=TIMESTAMP}, 
+      #{item.lastUpdatedBy,jdbcType=VARCHAR}, #{item.lastUpdatedDate,jdbcType=TIMESTAMP}, #{item.organizationId,jdbcType=BIGINT})
+	</foreach>
+  </insert>
   <insert id="insert" parameterType="com.honest.sdms.order.entity.OrderExpress">
     insert into order_express (header_id, express_company, 
       express_no, express_status, net_name, 
@@ -52,22 +73,20 @@
       consignee_zip, delivery_conditions, delivery_amount, 
       express_result_last, express_result, express_create_time, 
       express_update_time, created_by, created_date, 
-      last_updated_by, last_updated_date, organization_id
-      )
-    values (#{headerId,jdbcType=BIGINT}, #{expressCompany,jdbcType=VARCHAR}, 
+      last_updated_by, last_updated_date, organization_id)
+    values (#{headerId,jdbcType=VARCHAR}, #{expressCompany,jdbcType=VARCHAR}, 
       #{expressNo,jdbcType=VARCHAR}, #{expressStatus,jdbcType=VARCHAR}, #{netName,jdbcType=VARCHAR}, 
       #{consigneeRealname,jdbcType=VARCHAR}, #{consigneeTelphone,jdbcType=VARCHAR}, #{consigneeProvince,jdbcType=VARCHAR}, 
       #{consigneeCity,jdbcType=VARCHAR}, #{consigneeCounty,jdbcType=VARCHAR}, #{consigneeAddress,jdbcType=VARCHAR}, 
       #{consigneeZip,jdbcType=VARCHAR}, #{deliveryConditions,jdbcType=VARCHAR}, #{deliveryAmount,jdbcType=DOUBLE}, 
       #{expressResultLast,jdbcType=VARCHAR}, #{expressResult,jdbcType=VARCHAR}, #{expressCreateTime,jdbcType=TIMESTAMP}, 
       #{expressUpdateTime,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP}, 
-      #{lastUpdatedBy,jdbcType=VARCHAR}, #{lastUpdatedDate,jdbcType=TIMESTAMP}, #{organizationId,jdbcType=BIGINT}
-      )
+      #{lastUpdatedBy,jdbcType=VARCHAR}, #{lastUpdatedDate,jdbcType=TIMESTAMP}, #{organizationId,jdbcType=BIGINT})
   </insert>
 
   <update id="updateByPrimaryKey" parameterType="com.honest.sdms.order.entity.OrderExpress">
     update order_express
-    set header_id = #{headerId,jdbcType=BIGINT},
+    set header_id = #{headerId,jdbcType=VARCHAR},
       express_company = #{expressCompany,jdbcType=VARCHAR},
       express_no = #{expressNo,jdbcType=VARCHAR},
       express_status = #{expressStatus,jdbcType=VARCHAR},

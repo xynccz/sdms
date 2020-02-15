@@ -349,17 +349,14 @@ public class StringUtil {
      * @return  
      */  
     public static boolean isNullOrEmpty(String s){   
-        if (s == null)   
-        {   
+        if (s == null){   
             return true;   
         }   
   
         s = s.trim();   
-        if (s.length() == 0)   
-        {   
+        if (s.length() == 0){   
             return true;   
         }   
-  
         return false;   
     }   
   

@@ -53,6 +53,12 @@
     from customer_order_excel_config
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="findCustomerOrderConfigByCustomerId" resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />
+    from customer_order_excel_config
+    where customer_id = #{customerId,jdbcType=BIGINT} and operate_type = #{operateType}
+  </select>
   <select id="findByCond" parameterType="com.honest.sdms.system.entity.CustomerOrderExcelConfig" resultMap="BaseResultMap">
 	select
 	<include refid="Base_Column_List" />
@@ -86,7 +92,7 @@
       remarks = #{remarks,jdbcType=VARCHAR},
       created_by = #{createdBy,jdbcType=VARCHAR},
       created_date = #{createdDate,jdbcType=TIMESTAMP},
-      0last_updated_by = #{lastUpdatedBy,jdbcType=VARCHAR},
+      last_updated_by = #{lastUpdatedBy,jdbcType=VARCHAR},
       last_updated_date = #{lastUpdatedDate,jdbcType=TIMESTAMP},
       organization_id = #{organizationId,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}

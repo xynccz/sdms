@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.honest.sdms.basedata.exceptions.HSException;
 import com.honest.sdms.system.dao.DownloadRecordsMapper;
 import com.honest.sdms.system.dao.IBaseMapper;
 import com.honest.sdms.system.entity.DownloadRecords;
@@ -25,14 +26,11 @@ public class DownloadRecordsServiceImp extends BaseServiceImp<DownloadRecords, L
 	}
 
 	@Override
-	public void saveDownloadRecords(List<DownloadRecords> records) {
+	public void saveDownloadRecords(List<DownloadRecords> records)throws HSException{
 		if(records != null && records.size() > 0){
-			for(DownloadRecords record : records) {
-				downloadRecordsMapper.insert(record);
-			}
+			saveList(records);
 		}
 		
 	}
 
-	
 }

@@ -14,6 +14,8 @@ public class MaterialStoreage extends BaseVO{
     private String item;
     private Long transactionSummaryId;
     private Long poHeaderId;
+    private Long itemGradeId;
+    private String itemGradeName;
     private Long specificId;
     private String specificName;//规格
     private String warehouse;
@@ -26,7 +28,23 @@ public class MaterialStoreage extends BaseVO{
     private Long updateTransactionId;
     private String remarks;
 
-    public Double getNetWeightPerUnit() {
+    public Long getItemGradeId() {
+		return itemGradeId;
+	}
+
+	public void setItemGradeId(Long itemGradeId) {
+		this.itemGradeId = itemGradeId;
+	}
+
+	public String getItemGradeName() {
+		return itemGradeName;
+	}
+
+	public void setItemGradeName(String itemGradeName) {
+		this.itemGradeName = itemGradeName;
+	}
+
+	public Double getNetWeightPerUnit() {
 		return netWeightPerUnit;
 	}
 

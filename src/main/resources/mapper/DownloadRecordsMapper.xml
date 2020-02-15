@@ -9,7 +9,7 @@
     <result column="file_type" jdbcType="BIGINT" property="fileType" />
     <result column="file_size" jdbcType="BIGINT" property="fileSize" />
     <result column="file_md5" jdbcType="VARCHAR" property="fileMd5" />
-    <result column="customer" jdbcType="VARCHAR" property="customer" />
+    <result column="customer_id" jdbcType="BIGINT" property="customerId" />
     <result column="status" jdbcType="VARCHAR" property="status"/>
     <result column="description" jdbcType="VARCHAR" property="description"/>
     <result column="operation_date" jdbcType="TIMESTAMP" property="operationDate" />
@@ -20,7 +20,7 @@
     <result column="organization_id" jdbcType="BIGINT" property="organizationId" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, file_name, source_file_name, file_path, file_type, file_size, file_md5, customer, status, description
+    id, file_name, source_file_name, file_path, file_type, file_size, file_md5, customer_id, status, description
     operation_date, created_by, created_date, last_updated_by, last_updated_date, organization_id
   </sql>
   <sql id="Base_Where">
@@ -37,8 +37,8 @@
       <if test="fileType != null">
         and file_type = #{fileType,jdbcType=BIGINT}
       </if>
-      <if test="customer != null and customer != '' ">
-        and customer = #{customer,jdbcType=VARCHAR}
+      <if test="customerId != null">
+        and customer_id = #{customerId,jdbcType=BIGINT}
       </if>
       <if test="status != null and status != '' ">
       	and status = #{status}
@@ -73,18 +73,42 @@
     delete from download_records
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.honest.sdms.system.entity.DownloadRecords">
-    insert into download_records (file_name, source_file_name, 
-      file_path, file_type, file_size, 
-      file_md5, customer, status,description, operation_date, 
-      created_by, created_date, last_updated_by, 
-      last_updated_date, organization_id)
-    values (#{fileName,jdbcType=VARCHAR}, #{sourceFileName,jdbcType=VARCHAR}, 
-      #{filePath,jdbcType=VARCHAR}, #{fileType,jdbcType=BIGINT}, #{fileSize,jdbcType=BIGINT}, 
-      #{fileMd5,jdbcType=VARCHAR}, #{customer,jdbcType=VARCHAR},#{status,jdbcType=VARCHAR},#{description,jdbcType=VARCHAR}, #{operationDate,jdbcType=TIMESTAMP}, 
-      #{createdBy,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP}, #{lastUpdatedBy,jdbcType=VARCHAR}, 
-      #{lastUpdatedDate,jdbcType=TIMESTAMP}, #{organizationId,jdbcType=BIGINT})
+  <insert id="saveList" parameterType="list" useGeneratedKeys="true" keyProperty="id">
+	insert into download_records (file_name, source_file_name,
+	file_path, file_type, file_size,
+	file_md5, customer_id, status,description, operation_date,
+	created_by, created_date, last_updated_by,
+	last_updated_date, organization_id)
+	VALUES
+	<foreach collection="list" item="item" separator=",">
+		(#{fileName,jdbcType=VARCHAR}, #{sourceFileName,jdbcType=VARCHAR},
+		#{filePath,jdbcType=VARCHAR}, #{fileType,jdbcType=BIGINT},
+		#{fileSize,jdbcType=BIGINT},
+		#{fileMd5,jdbcType=VARCHAR},
+		#{customerId,jdbcType=BIGINT},#{status,jdbcType=VARCHAR},#{description,jdbcType=VARCHAR},
+		#{operationDate,jdbcType=TIMESTAMP},
+		#{createdBy,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP}, #{lastUpdatedBy,jdbcType=VARCHAR},
+		#{lastUpdatedDate,jdbcType=TIMESTAMP},
+		#{organizationId,jdbcType=BIGINT})
+	</foreach>
   </insert>
+  <insert id="insert" parameterType="com.honest.sdms.system.entity.DownloadRecords"
+		useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into download_records (file_name, source_file_name,
+		file_path, file_type, file_size,
+		file_md5, customer_id, status,description, operation_date,
+		created_by, created_date, last_updated_by,
+		last_updated_date, organization_id)
+		values (#{fileName,jdbcType=VARCHAR}, #{sourceFileName,jdbcType=VARCHAR},
+		#{filePath,jdbcType=VARCHAR}, #{fileType,jdbcType=BIGINT},
+		#{fileSize,jdbcType=BIGINT},
+		#{fileMd5,jdbcType=VARCHAR},
+		#{customerId,jdbcType=BIGINT},#{status,jdbcType=VARCHAR},#{description,jdbcType=VARCHAR},
+		#{operationDate,jdbcType=TIMESTAMP},
+		#{createdBy,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP}, #{lastUpdatedBy,jdbcType=VARCHAR},
+		#{lastUpdatedDate,jdbcType=TIMESTAMP},
+		#{organizationId,jdbcType=BIGINT})
+	</insert>
  
   <update id="updateByPrimaryKey" parameterType="com.honest.sdms.system.entity.DownloadRecords">
     update download_records
@@ -94,7 +118,7 @@
       file_type = #{fileType,jdbcType=BIGINT},
       file_size = #{fileSize,jdbcType=BIGINT},
       file_md5 = #{fileMd5,jdbcType=VARCHAR},
-      customer = #{customer,jdbcType=VARCHAR},
+      customer_id = #{customerId,jdbcType=BIGINT},
       status = #{status},
       description = #{description},
       operation_date = #{operationDate,jdbcType=TIMESTAMP},

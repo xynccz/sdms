@@ -17,8 +17,8 @@ public class MaterialTransaction extends BaseVO{
     private String poHeaderIds;
     private String poNumber;
     private Long poLine;
-    private Long specificId;
-    private String specificName;//规格
+    private Long itemGradeId;
+    private String itemGradeName;//规格
     private String ioType;//交易类型，来源数据字典
     private String ioTypeName;
     private String ioStatus;
@@ -35,20 +35,20 @@ public class MaterialTransaction extends BaseVO{
     private String warehouseName;
     private String remarks;
 
-    public Long getSpecificId() {
-		return specificId;
+    public Long getItemGradeId() {
+		return itemGradeId;
 	}
 
-	public void setSpecificId(Long specificId) {
-		this.specificId = specificId;
+	public void setItemGradeId(Long itemGradeId) {
+		this.itemGradeId = itemGradeId;
 	}
 
-	public String getSpecificName() {
-		return specificName;
+	public String getItemGradeName() {
+		return itemGradeName;
 	}
 
-	public void setSpecificName(String specificName) {
-		this.specificName = specificName;
+	public void setItemGradeName(String itemGradeName) {
+		this.itemGradeName = itemGradeName;
 	}
 
 	public Long[] getTransactionIdIn() {

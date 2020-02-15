@@ -1,7 +1,5 @@
 package com.honest.sdms.transaction.service.imp;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -29,15 +27,6 @@ public class MaterialStorageServiceImp extends BaseServiceImp<MaterialStoreage, 
 	public void setBaseDao(IBaseMapper<MaterialStoreage, Long> baseMapper) {
 		this.baseMapper = baseMapper;
 		materialStoreageMapper = (MaterialStoreageMapper)baseMapper;
-	}
-
-	@Override
-	public void saveList(List<MaterialStoreage> list)throws HSException {
-		if(list != null && list.size() > 0) {
-			for(MaterialStoreage ms : list) {
-				this.insert(ms);
-			}
-		}
 	}
 
 	/**

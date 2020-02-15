@@ -14,10 +14,19 @@ public class DownloadRecords extends BaseVO{
     private String fileMd5;
     private String status;
     private String description;
-    private String customer;
+    private Long customerId;
+    private String customerName;
     private Date operationDate;
     
-    public String getStatus() {
+    public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+
+	public String getStatus() {
 		return status;
 	}
 
@@ -89,15 +98,15 @@ public class DownloadRecords extends BaseVO{
         this.fileMd5 = fileMd5 == null ? null : fileMd5.trim();
     }
 
-    public String getCustomer() {
-        return customer;
-    }
+    public Long getCustomerId() {
+		return customerId;
+	}
 
-    public void setCustomer(String customer) {
-        this.customer = customer == null ? null : customer.trim();
-    }
+	public void setCustomerId(Long customerId) {
+		this.customerId = customerId;
+	}
 
-    public Date getOperationDate() {
+	public Date getOperationDate() {
         return operationDate;
     }
 

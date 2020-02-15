@@ -6,26 +6,43 @@ public class OrderHeader extends BaseVO{
 	
 	private static final long serialVersionUID = 1L;
 
-	private Long headerId;
+	private String headerId;
     private String orderNo;
     private Long orderTypeId;
     private String orderStatus;
     private String buyerNotes;
-    private String shopId;
-    private String shopOrderNo;
-    private String shopName;
+    private Long customerId;
+    private String customerName;
     private String customerServiceNotes;
     private Long orderCount;
     private Double orderAmount;
     private String cancelOrder;
     private String orderLog;
+    private String remarks;
     private String isValid;
+    private Long recordId;
 
-    public Long getHeaderId() {
+    public Long getRecordId() {
+		return recordId;
+	}
+
+	public void setRecordId(Long recordId) {
+		this.recordId = recordId;
+	}
+
+	public String getRemarks() {
+		return remarks;
+	}
+
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
+
+	public String getHeaderId() {
         return headerId;
     }
 
-    public void setHeaderId(Long headerId) {
+    public void setHeaderId(String headerId) {
         this.headerId = headerId;
     }
 
@@ -61,31 +78,23 @@ public class OrderHeader extends BaseVO{
         this.buyerNotes = buyerNotes == null ? null : buyerNotes.trim();
     }
 
-    public String getShopId() {
-        return shopId;
-    }
+    public Long getCustomerId() {
+		return customerId;
+	}
 
-    public void setShopId(String shopId) {
-        this.shopId = shopId == null ? null : shopId.trim();
-    }
+	public void setCustomerId(Long customerId) {
+		this.customerId = customerId;
+	}
 
-    public String getShopOrderNo() {
-        return shopOrderNo;
-    }
+	public String getCustomerName() {
+		return customerName;
+	}
 
-    public void setShopOrderNo(String shopOrderNo) {
-        this.shopOrderNo = shopOrderNo == null ? null : shopOrderNo.trim();
-    }
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
 
-    public String getShopName() {
-        return shopName;
-    }
-
-    public void setShopName(String shopName) {
-        this.shopName = shopName == null ? null : shopName.trim();
-    }
-
-    public String getCustomerServiceNotes() {
+	public String getCustomerServiceNotes() {
         return customerServiceNotes;
     }
 

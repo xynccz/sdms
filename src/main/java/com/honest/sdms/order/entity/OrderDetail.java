@@ -7,15 +7,15 @@ public class OrderDetail extends BaseVO{
 	private static final long serialVersionUID = 1L;
 
 	private Long detailId;
-    private Long headerId;
+    private String headerId;
     private String productName;
     private Long itemId;
     private String item;
-    private Long specificId;
+    private Long itemSpecificId;
     private String warehouse;
     private Double weight;
     private Long pieceNum;
-    private String remarks;
+    private String description;
 
 
     public Long getDetailId() {
@@ -26,11 +26,11 @@ public class OrderDetail extends BaseVO{
         this.detailId = detailId;
     }
 
-    public Long getHeaderId() {
+    public String getHeaderId() {
         return headerId;
     }
 
-    public void setHeaderId(Long headerId) {
+    public void setHeaderId(String headerId) {
         this.headerId = headerId;
     }
 
@@ -58,12 +58,12 @@ public class OrderDetail extends BaseVO{
         this.item = item == null ? null : item.trim();
     }
 
-    public Long getSpecificId() {
-        return specificId;
+    public Long getItemSpecificId() {
+        return itemSpecificId;
     }
 
-    public void setSpecificId(Long specificId) {
-        this.specificId = specificId;
+    public void setItemSpecificId(Long itemSpecificId) {
+        this.itemSpecificId = itemSpecificId;
     }
 
     public String getWarehouse() {
@@ -90,12 +90,12 @@ public class OrderDetail extends BaseVO{
         this.pieceNum = pieceNum;
     }
 
-    public String getRemarks() {
-        return remarks;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public void setRemarks(String remarks) {
-        this.remarks = remarks == null ? null : remarks.trim();
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
 }

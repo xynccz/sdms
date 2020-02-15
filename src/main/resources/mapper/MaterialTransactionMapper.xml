@@ -99,14 +99,14 @@
 	<include refid="Base_Column_List" />,
 	(select ds.dict_data_name from sys_dict_datas ds where ds.dict_data_code = p.io_type and ds.organization_id = p.organization_id and ds.dict_id = 8) as io_type_name,
 	(select ds.dict_data_name from sys_dict_datas ds where ds.dict_data_code = p.warehouse and ds.organization_id = p.organization_id and ds.dict_id = 1) as warehouse_name,
-	(select ds.dict_data_name from sys_dict_datas ds where ds.id = (select pe.specific_id from po_line pe where pe.header_id = p.po_header_id and pe.line_id=p.po_line and pe.organization_id = p.organization_id) and ds.organization_id = p.organization_id and ds.dict_id = 3) as specificName
+	(select ds.dict_data_name from sys_dict_datas ds where ds.id = (select pe.item_grade_id from po_line pe where pe.header_id = p.po_header_id and pe.line_id=p.po_line and pe.organization_id = p.organization_id) and ds.organization_id = p.organization_id and ds.dict_id = 13) as itemGradeName
 	from material_transaction p
 	<include refid="Base_Where" />
   </select>
   <select id="findMaterialTransactionsByIds" parameterType="java.lang.Long" resultMap="BaseResultMap">
   	select 
     <include refid="Base_Column_List" />,
-    (select pe.specific_id from po_line pe where pe.header_id = p.po_header_id and pe.line_id=p.po_line and pe.organization_id = p.organization_id) as specificId
+    (select pe.item_grade_id from po_line pe where pe.header_id = p.po_header_id and pe.line_id=p.po_line and pe.organization_id = p.organization_id) as itemGradeId
     from material_transaction p
     where transaction_id in
     <foreach collection="transactionIds" item="transactionId" index="index" open="(" separator="," close=")">
@@ -118,6 +118,29 @@
     delete from material_transaction
     where transaction_id = #{transactionId,jdbcType=BIGINT}
   </delete>
+  <insert id="saveList" parameterType="list" >
+      insert into material_transaction (transaction_summary_id, 
+      item_id, item, po_header_id, po_number, 
+      po_line, io_type, io_status, 
+      car_number, driver_name, driver_phone, 
+      ship_date, scheduled_arrival_date, actual_arrival_date, 
+      transaction_date, transaction_piece, transaction_weight, 
+      warehouse, remarks, created_by, 
+      created_date, last_updated_by, last_updated_date, 
+      organization_id)
+      VALUES
+      <foreach collection="list" item="item" separator=",">
+          (#{item.transactionSummaryId,jdbcType=BIGINT}, 
+      #{item.itemId,jdbcType=BIGINT}, #{item.item,jdbcType=VARCHAR}, #{item.poHeaderId,jdbcType=BIGINT}, #{item.poNumber,jdbcType=VARCHAR}, 
+      #{item.poLine,jdbcType=BIGINT}, #{item.ioType,jdbcType=VARCHAR}, #{item.ioStatus,jdbcType=CHAR}, 
+      #{item.carNumber,jdbcType=VARCHAR}, #{item.driverName,jdbcType=VARCHAR}, #{item.driverPhone,jdbcType=VARCHAR}, 
+      #{item.shipDate,jdbcType=TIMESTAMP}, #{item.scheduledArrivalDate,jdbcType=TIMESTAMP}, #{item.actualArrivalDate,jdbcType=TIMESTAMP}, 
+      #{item.transactionDate,jdbcType=TIMESTAMP}, #{item.transactionPiece,jdbcType=BIGINT}, #{item.transactionWeight,jdbcType=DOUBLE}, 
+      #{item.warehouse,jdbcType=VARCHAR}, #{item.remarks,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=VARCHAR}, 
+      #{item.createdDate,jdbcType=TIMESTAMP}, #{item.lastUpdatedBy,jdbcType=VARCHAR}, #{item.lastUpdatedDate,jdbcType=TIMESTAMP}, 
+      #{item.organizationId,jdbcType=BIGINT})
+      </foreach>
+  </insert>
   <insert id="insert" parameterType="com.honest.sdms.transaction.entity.MaterialTransaction">
     insert into material_transaction (transaction_summary_id, 
       item_id, item, po_header_id, po_number, 
@@ -128,7 +151,7 @@
       warehouse, remarks, created_by, 
       created_date, last_updated_by, last_updated_date, 
       organization_id)
-    values #{transactionSummaryId,jdbcType=BIGINT}, 
+    values (#{transactionSummaryId,jdbcType=BIGINT}, 
       #{itemId,jdbcType=BIGINT}, #{item,jdbcType=VARCHAR}, #{poHeaderId,jdbcType=BIGINT}, #{poNumber,jdbcType=VARCHAR}, 
       #{poLine,jdbcType=BIGINT}, #{ioType,jdbcType=VARCHAR}, #{ioStatus,jdbcType=CHAR}, 
       #{carNumber,jdbcType=VARCHAR}, #{driverName,jdbcType=VARCHAR}, #{driverPhone,jdbcType=VARCHAR}, 

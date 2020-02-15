@@ -51,15 +51,6 @@ public class MaterialTransactionServiceImp extends BaseServiceImp<MaterialTransa
 	}
 	
 	@Override
-	public void saveList(List<MaterialTransaction> list) throws HSException {
-		if(list != null && list.size() > 0) {
-			for(MaterialTransaction trans : list) {
-				insert(trans);
-			}
-		}
-	}
-
-	@Override
 	public void updateList(List<MaterialTransaction> list) throws HSException {
 		if(list != null && list.size() > 0) {
 			for(MaterialTransaction trans : list) {
@@ -94,9 +85,9 @@ public class MaterialTransactionServiceImp extends BaseServiceImp<MaterialTransa
 				List<PoLine> poLines = poLineService.findPoLinesByPoHeaderIds(poHeaderIds);
 				for(PoLine poLine : poLines) {
 					String isShip = poLine.getIsShip();
-					if(Constants.Status.Y.equals(isShip))
+					if(Constants.Status.Y.equals(isShip)){
 						throw new HSException("此PO已生成发车信息，不允许重复创建发车信息");
-							
+					}
 					//生成交易记录
 					MaterialTransaction trans = new MaterialTransaction();
 					//属性拷贝

@@ -8,4 +8,7 @@ import com.honest.sdms.system.entity.CustomerOrderExcelConfig;
 public interface ICustomerOrderExcelConfigService extends IBaseService<CustomerOrderExcelConfig, Long>{
 
 	abstract void saveOrUpdateCustomerOrderExcelConfigs(List<CustomerOrderExcelConfig> list)throws HSException;
+	
+	abstract List<CustomerOrderExcelConfig> findCustomerOrderConfigByCustomerId(Long customerId, String operateType);
+
 }
