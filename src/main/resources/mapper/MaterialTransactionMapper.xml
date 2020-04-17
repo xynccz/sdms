@@ -44,7 +44,7 @@
       <if test="itemId != null">
         and item_id = #{itemId,jdbcType=BIGINT}
       </if>
-      <if test="item != null">
+      <if test="item != null and item != ''">
         and item = #{item,jdbcType=VARCHAR}
       </if>
       <if test="poHeaderId != null">
@@ -56,7 +56,7 @@
       <if test="poLine != null">
         and po_line = #{poLine,jdbcType=BIGINT}
       </if>
-      <if test="ioType != null">
+      <if test="ioType != null and ioType != ''">
         and io_type = #{ioType,jdbcType=VARCHAR}
       </if>
       <if test="ioStatus != null">
@@ -65,10 +65,10 @@
       <if test="carNumber != null and carNumber != '' ">
         and car_number like UPPER(CONCAT('%',#{carNumber,jdbcType=VARCHAR},'%'))
       </if>
-      <if test="driverName != null">
+      <if test="driverName != null and driverName != ''">
         and driver_name = #{driverName,jdbcType=VARCHAR}
       </if>
-      <if test="driverPhone != null">
+      <if test="driverPhone != null and driverPhone != ''">
         and driver_phone = #{driverPhone,jdbcType=VARCHAR}
       </if>
       <if test="shipDate != null">
@@ -83,7 +83,7 @@
       <if test="transactionDate != null">
         and transaction_date = #{transactionDate,jdbcType=TIMESTAMP}
       </if>
-      <if test="warehouse != null">
+      <if test="warehouse != null and warehouse != ''">
         and warehouse = #{warehouse,jdbcType=VARCHAR}
       </if>
       </trim>

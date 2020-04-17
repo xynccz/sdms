@@ -3,20 +3,30 @@
 <mapper namespace="com.honest.sdms.order.dao.OrderHeaderMapper">
   <resultMap id="BaseResultMap" type="com.honest.sdms.order.entity.OrderHeader">
     <id column="header_id" jdbcType="VARCHAR" property="headerId" />
+    <result column="record_id" jdbcType="BIGINT" property="recordId" />
     <result column="order_no" jdbcType="VARCHAR" property="orderNo" />
     <result column="order_type_id" jdbcType="BIGINT" property="orderTypeId" />
-    <result column="order_status" jdbcType="VARCHAR" property="orderStatus" />
+    <result column="order_status" jdbcType="BIGINT" property="orderStatus" />
+    <result column="item_specific_id" jdbcType="BIGINT" property="itemSpecificId" />
+    <result column="customer_item_specific" jdbcType="VARCHAR" property="customerItemSpecific" />
     <result column="buyer_notes" jdbcType="VARCHAR" property="buyerNotes" />
+    <result column="business_platform" jdbcType="VARCHAR" property="businessPlatform" />
     <result column="customer_id" jdbcType="BIGINT" property="customerId" />
+    <result column="customer_order_no" jdbcType="VARCHAR" property="customerOrderNo" />
     <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
-    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
     <result column="customer_service_notes" jdbcType="VARCHAR" property="customerServiceNotes" />
     <result column="order_count" jdbcType="BIGINT" property="orderCount" />
     <result column="order_amount" jdbcType="DOUBLE" property="orderAmount" />
-    <result column="cancel_order" jdbcType="CHAR" property="cancelOrder" />
+    <result column="is_reviewed" jdbcType="CHAR" property="isReviewed" />
+    <result column="is_generated_express_no" jdbcType="CHAR" property="isGeneratedExpressNo" />
+    <result column="is_printed" jdbcType="CHAR" property="isPrinted" />
+    <result column="is_shipped" jdbcType="CHAR" property="isShipped" />
+    <result column="is_completed" jdbcType="CHAR" property="isCompleted" />
+    <result column="is_created_express_info" jdbcType="CHAR" property="isCreatedExpressInfo" />
+    <result column="is_canceled" jdbcType="CHAR" property="isCanceled" />
     <result column="order_log" jdbcType="VARCHAR" property="orderLog" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
     <result column="is_valid" jdbcType="CHAR" property="isValid" />
-    <result column="record_id" jdbcType="BIGINT" property="recordId" />
     <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
     <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
     <result column="last_updated_by" jdbcType="VARCHAR" property="lastUpdatedBy" />
@@ -24,55 +34,120 @@
     <result column="organization_id" jdbcType="BIGINT" property="organizationId" />
   </resultMap>
   <sql id="Base_Column_List">
-    header_id, order_no, order_type_id, order_status, buyer_notes, customer_id, remarks,
-    customer_name, customer_service_notes, order_count, order_amount, cancel_order, order_log, 
-    is_valid, record_id, created_by, created_date, last_updated_by, last_updated_date, organization_id
+    header_id, record_id, order_no, order_type_id, order_status, item_specific_id, customer_item_specific,
+    buyer_notes, business_platform, customer_id, customer_order_no, customer_name, customer_service_notes, order_count, order_amount, 
+    is_reviewed, is_generated_express_no, is_printed, is_shipped, is_completed, is_created_express_info, 
+    is_canceled, order_log, remarks, is_valid, created_by, created_date, last_updated_by, 
+    last_updated_date, organization_id
+  </sql>
+  <sql id="Deatil_Base_Column_List">
+    detail_id, item_id, item, warehouse, weight, 
+    piece_num, description
+  </sql>
+  <sql id="Express_Base_Column_List">
+    id, express_company as expressCompany, express_company_code, express_no, express_status, net_name, consignee_realname as consigneeRealname, 
+    consignee_telphone as consigneeTelphone, concat_ws(',',consignee_province,consignee_city,consignee_county,consignee_address) as consigneeAddress, 
+    consignee_zip, sending_address, sender_name, sender_phone, delivery_conditions, delivery_amount, express_result_last, express_result, 
+    express_create_time, express_update_time
   </sql>
   <sql id="Base_Where">
 	<trim prefix="WHERE" prefixOverrides="AND |OR ">
       <if test="orderNo != null and orderNo != ''">
-        and order_no = #{orderNo,jdbcType=VARCHAR}
+        and p.order_no like UPPER(CONCAT('%',#{orderNo,jdbcType=VARCHAR},'%')) 
+      </if>
+      <if test="customerOrderNo != null and customerOrderNo != ''">
+        and p.customer_order_no like UPPER(CONCAT('%',#{customerOrderNo,jdbcType=VARCHAR},'%')) 
+      </if>
+      <if test="customerItemSpecific != null and customerItemSpecific != ''">
+        and p.customer_item_specific = #{customerItemSpecific}
       </if>
       <if test="orderTypeId != null">
-        and order_type_id = #{orderTypeId,jdbcType=BIGINT}
+        and p.order_type_id = #{orderTypeId,jdbcType=BIGINT}
       </if>
-      <if test="isValid != null">
-      	and is_valid = #{isValid}
+      <if test="businessPlatform != null and businessPlatform !=''">
+        and p.business_platform = #{businessPlatform,jdbcType=VARCHAR}
       </if>
-      <if test="cancelOrder != null">
-      	and cancel_order = #{cancelOrder}
+      <if test="isValid != null and isValid !=''">
+      	and p.is_valid = #{isValid}
+      </if>
+      <if test="isReviewed != null and isReviewed !=''">
+        and p.is_reviewed = #{isReviewed,jdbcType=CHAR}
+      </if>
+      <if test="isGeneratedExpressNo != null and isGeneratedExpressNo !=''">
+        and p.is_generated_express_no = #{isGeneratedExpressNo,jdbcType=CHAR}
+      </if>
+      <if test="isPrinted != null and isPrinted !=''">
+        and p.is_printed = #{isPrinted,jdbcType=CHAR}
+      </if>
+      <if test="isShipped != null and isShipped !=''">
+        and p.is_shipped = #{isShipped,jdbcType=CHAR}
+      </if>
+      <if test="isCompleted != null and isCompleted !=''">
+        and p.is_completed = #{isCompleted,jdbcType=CHAR}
+      </if>
+      <if test="isCreatedExpressInfo != null and isCreatedExpressInfo !=''">
+        and p.is_created_express_info = #{isCreatedExpressInfo,jdbcType=CHAR}
+      </if>
+      <if test="isCanceled != null and isValid !=''">
+        and p.is_canceled = #{isCanceled,jdbcType=CHAR}
       </if>
       <if test="orderStatus != null and orderStatus != ''">
-        and order_status = #{orderStatus,jdbcType=VARCHAR}
+        and p.order_status = #{orderStatus,jdbcType=VARCHAR}
       </if>
       <if test="buyerNotes != null and buyerNotes != ''">
-        and buyer_notes = #{buyerNotes,jdbcType=VARCHAR}
+        and p.buyer_notes = #{buyerNotes,jdbcType=VARCHAR}
       </if>
       <if test="customerId != null">
-        and customer_id = #{customerId,jdbcType=BIGINT}
+        and p.customer_id = #{customerId,jdbcType=BIGINT}
       </if>
       <if test="recordId != null">
-        and record_id = #{recordId,jdbcType=BIGINT}
+        and p.record_id = #{recordId,jdbcType=BIGINT}
       </if>
       <if test="customerName != null and customerName != ''">
-        and customer_name = #{customerName,jdbcType=VARCHAR}
+        and p.customer_name = #{customerName,jdbcType=VARCHAR}
       </if>
-      <if test="customerServiceNotes != null">
-        and customer_service_notes = #{customerServiceNotes,jdbcType=VARCHAR}
+      <if test="customerServiceNotes != null and customerServiceNotes != ''">
+        and p.customer_service_notes = #{customerServiceNotes,jdbcType=VARCHAR}
       </if>
       <if test="orderAmount != null">
-        and order_amount = #{orderAmount,jdbcType=DOUBLE}
+        and p.order_amount = #{orderAmount,jdbcType=DOUBLE}
       </if>
+      <if test="createdDate != null">
+        and DATE_FORMAT(p.created_date, '%Y-%m-%d') = DATE_FORMAT(#{createdDate,jdbcType=TIMESTAMP}, '%Y-%m-%d')
+      </if>
+      <if test="createdDateStart != null">
+		and p.created_date &gt;= #{createdDateStart,jdbcType=TIMESTAMP}
+	  </if>
+	  <if test="createdDateEnd != null">
+		and p.created_date &lt;= #{createdDateEnd,jdbcType=TIMESTAMP}
+	  </if>
       <if test="organizationId != null">
-        and organization_id = #{organizationId,jdbcType=BIGINT}
+        and p.organization_id = #{organizationId,jdbcType=BIGINT}
       </if>
 	</trim>
   </sql>
   <select id="findByCond" parameterType="com.honest.sdms.order.entity.OrderHeader" resultMap="BaseResultMap">
 	select
-	<include refid="Base_Column_List" />
-		from order_header
+	p.*,
+	<include refid="Deatil_Base_Column_List" />,
+	<include refid="Express_Base_Column_List" />,
+	(select ds.dict_data_name from sys_dict_datas ds,item_specific ic where p.item_specific_id = ic.id and ds.id = ic.grade_id and p.organization_id=ic.organization_id and ds.organization_id = ic.organization_id and ds.dict_id = 13) as itemGrade,
+	(select ds.dict_data_name from sys_dict_datas ds,item_specific ic where p.item_specific_id = ic.id and ds.id = ic.standard_id and p.organization_id=ic.organization_id and ds.organization_id = ic.organization_id and ds.dict_id = 3) as itemStandards,
+	(select ic.specific_code from item_specific ic where p.item_specific_id = ic.id and p.organization_id=ic.organization_id ) as itemSpecificCode,
+	CASE p.order_status
+		when 'UN_REVIEWED' THEN '待审核'
+		when 'ALREADY_REVIEWED' THEN '已审核'
+		when 'ALREADY_CREATE_EXPROCESS_ORDER' THEN '已生成单号'
+		when 'ALREADY_PRINTED_ORDER' THEN '已打印'
+		when 'ALREADY_OUT_STOCK' THEN '已出库'
+		when 'ALREADY_CANCEL_ORDER' THEN '已撕单'
+		ELSE ''
+	end as orderStatusDesc
+	from order_header p, order_detail d, order_express s
 	<include refid="Base_Where" />
+	and p.header_id = d.header_id and p.organization_id = d.organization_id
+	and p.header_id = s.header_id and s.organization_id = p.organization_id
+	and d.header_id = s.header_id and s.organization_id = d.organization_id
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -85,68 +160,83 @@
     where header_id = #{headerId,jdbcType=VARCHAR}
   </delete>
   <insert id="saveList" parameterType="list">
-	INSERT INTO order_header (header_id, order_no, order_type_id,
-	order_status, buyer_notes, customer_id,
-	customer_name, customer_service_notes,
-	order_count, order_amount, cancel_order,
-	order_log, remarks, is_valid, record_id, created_by,
-	created_date, last_updated_by, last_updated_date,
-	organization_id)
+	insert into order_header (header_id, record_id, order_no,
+	order_type_id, order_status, item_specific_id, customer_item_specific,
+	buyer_notes, business_platform, customer_id, customer_order_no, customer_name,
+	customer_service_notes, order_count, order_amount,
+	is_reviewed, is_generated_express_no, is_printed,
+	is_shipped, is_completed, is_created_express_info,
+	is_canceled, order_log, remarks,
+	is_valid, created_by, created_date,
+	last_updated_by, last_updated_date, organization_id)
 	VALUES
 	<foreach collection="list" item="item" separator=",">
-		(#{item.headerId,jdbcType=VARCHAR}, #{item.orderNo,jdbcType=VARCHAR},
-		#{item.orderTypeId,jdbcType=BIGINT},
-		#{item.orderStatus,jdbcType=VARCHAR}, #{item.buyerNotes,jdbcType=VARCHAR}, 
-		#{item.customerId,jdbcType=BIGINT},
-		#{item.customerName,jdbcType=VARCHAR},
+		(#{item.headerId,jdbcType=VARCHAR}, #{item.recordId,jdbcType=BIGINT},
+		#{item.orderNo,jdbcType=VARCHAR},
+		#{item.orderTypeId,jdbcType=BIGINT}, #{item.orderStatus,jdbcType=VARCHAR}, #{item.itemSpecificId,jdbcType=BIGINT}, #{item.customerItemSpecific,jdbcType=VARCHAR},
+		#{item.buyerNotes,jdbcType=VARCHAR},#{item.businessPlatform,jdbcType=VARCHAR}, #{item.customerId,jdbcType=BIGINT},
+		#{item.customerOrderNo,jdbcType=VARCHAR},#{item.customerName,jdbcType=VARCHAR},
 		#{item.customerServiceNotes,jdbcType=VARCHAR},
 		#{item.orderCount,jdbcType=BIGINT}, #{item.orderAmount,jdbcType=DOUBLE},
-		#{item.cancelOrder,jdbcType=CHAR},
-		#{item.orderLog,jdbcType=VARCHAR}, #{item.remarks,jdbcType=VARCHAR},
-		#{item.isValid,jdbcType=CHAR},#{item.recordId,jdbcType=BIGINT}, #{item.createdBy,jdbcType=VARCHAR},
-		#{item.createdDate,jdbcType=TIMESTAMP}, #{item.lastUpdatedBy,jdbcType=VARCHAR},
+		#{item.isReviewed,jdbcType=CHAR}, #{item.isGeneratedExpressNo,jdbcType=CHAR},
+		#{item.isPrinted,jdbcType=CHAR},
+		#{item.isShipped,jdbcType=CHAR}, #{item.isCompleted,jdbcType=CHAR}, #{item.isCreatedExpressInfo,jdbcType=CHAR},
+		#{item.isCanceled,jdbcType=CHAR}, #{item.orderLog,jdbcType=VARCHAR},
+		#{item.remarks,jdbcType=VARCHAR},
+		#{item.isValid,jdbcType=CHAR}, #{item.createdBy,jdbcType=VARCHAR}, #{item.createdDate,jdbcType=TIMESTAMP},
+		#{item.lastUpdatedBy,jdbcType=VARCHAR},
 		#{item.lastUpdatedDate,jdbcType=TIMESTAMP},
 		#{item.organizationId,jdbcType=BIGINT})
 	</foreach>
-    </insert>
-	<insert id="insert" parameterType="com.honest.sdms.order.entity.OrderHeader">
-		insert into order_header (header_id, order_no, order_type_id,
-		order_status, buyer_notes, customer_id,
-		customer_name, customer_service_notes,
-		order_count, order_amount, cancel_order,
-		order_log, remarks, is_valid, record_id, created_by,
-		created_date, last_updated_by, last_updated_date,
-		organization_id)
-		values (#{headerId,jdbcType=VARCHAR}, #{orderNo,jdbcType=VARCHAR},
-		#{orderTypeId,jdbcType=BIGINT},
-		#{orderStatus,jdbcType=VARCHAR}, #{buyerNotes,jdbcType=VARCHAR}, #{customerId,jdbcType=BIGINT},
-		#{customerName,jdbcType=VARCHAR},
-		#{customerServiceNotes,jdbcType=VARCHAR},
-		#{orderCount,jdbcType=BIGINT}, #{orderAmount,jdbcType=DOUBLE},
-		#{cancelOrder,jdbcType=CHAR},
-		#{orderLog,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR},
-		#{isValid,jdbcType=CHAR}, #{recordId,jdbcType=BIGINT}, #{createdBy,jdbcType=VARCHAR},
-		#{createdDate,jdbcType=TIMESTAMP}, #{lastUpdatedBy,jdbcType=VARCHAR},
-		#{lastUpdatedDate,jdbcType=TIMESTAMP},
-		#{organizationId,jdbcType=BIGINT})
   </insert>
-
+  <insert id="insert" parameterType="com.honest.sdms.order.entity.OrderHeader">
+    insert into order_header (header_id, record_id, order_no, 
+      order_type_id, order_status, item_specific_id, customer_item_specific
+      buyer_notes, business_platform, customer_id, customer_order_no, customer_name, 
+      customer_service_notes, order_count, order_amount, 
+      is_reviewed, is_generated_express_no, is_printed, 
+      is_shipped, is_completed, is_created_express_info, 
+      is_canceled, order_log, remarks, 
+      is_valid, created_by, created_date, 
+      last_updated_by, last_updated_date, organization_id
+      )
+    values (#{headerId,jdbcType=VARCHAR}, #{recordId,jdbcType=BIGINT}, #{orderNo,jdbcType=VARCHAR}, 
+      #{orderTypeId,jdbcType=BIGINT}, #{orderStatus,jdbcType=VARCHAR}, #{itemSpecificId,jdbcType=BIGINT}, #{customerItemSpecific,jdbcType=VARCHAR}, 
+      #{buyerNotes,jdbcType=VARCHAR},#{businessPlatform,jdbcType=VARCHAR}, #{customerId,jdbcType=BIGINT}, #{customerOrderNo,jdbcType=VARCHAR}, #{customerName,jdbcType=VARCHAR}, 
+      #{customerServiceNotes,jdbcType=VARCHAR}, #{orderCount,jdbcType=BIGINT}, #{orderAmount,jdbcType=DOUBLE}, 
+      #{isReviewed,jdbcType=CHAR}, #{isGeneratedExpressNo,jdbcType=CHAR}, #{isPrinted,jdbcType=CHAR}, 
+      #{isShipped,jdbcType=CHAR}, #{isCompleted,jdbcType=CHAR}, #{isCreatedExpressInfo,jdbcType=CHAR}, 
+      #{isCanceled,jdbcType=CHAR}, #{orderLog,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, 
+      #{isValid,jdbcType=CHAR}, #{createdBy,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP}, 
+      #{lastUpdatedBy,jdbcType=VARCHAR}, #{lastUpdatedDate,jdbcType=TIMESTAMP}, #{organizationId,jdbcType=BIGINT}
+      )
+  </insert>
+  
   <update id="updateByPrimaryKey" parameterType="com.honest.sdms.order.entity.OrderHeader">
     update order_header
-    set order_no = #{orderNo,jdbcType=VARCHAR},
+    set record_id = #{recordId,jdbcType=BIGINT},
+      order_no = #{orderNo,jdbcType=VARCHAR},
       order_type_id = #{orderTypeId,jdbcType=BIGINT},
       order_status = #{orderStatus,jdbcType=VARCHAR},
+      item_specific_id = #{itemSpecificId,jdbcType=BIGINT},
+      customer_item_specific = #{customerItemSpecific,jdbcType=VARCHAR}, 
       buyer_notes = #{buyerNotes,jdbcType=VARCHAR},
       customer_id = #{customerId,jdbcType=BIGINT},
+      customer_order_no = #{customerOrderNo,jdbcType=VARCHAR},
       customer_name = #{customerName,jdbcType=VARCHAR},
       customer_service_notes = #{customerServiceNotes,jdbcType=VARCHAR},
       order_count = #{orderCount,jdbcType=BIGINT},
       order_amount = #{orderAmount,jdbcType=DOUBLE},
-      cancel_order = #{cancelOrder,jdbcType=CHAR},
+      is_reviewed = #{isReviewed,jdbcType=CHAR},
+      is_generated_express_no = #{isGeneratedExpressNo,jdbcType=CHAR},
+      is_printed = #{isPrinted,jdbcType=CHAR},
+      is_shipped = #{isShipped,jdbcType=CHAR},
+      is_completed = #{isCompleted,jdbcType=CHAR},
+      is_created_express_info = #{isCreatedExpressInfo,jdbcType=CHAR},
+      is_canceled = #{isCanceled,jdbcType=CHAR},
       order_log = #{orderLog,jdbcType=VARCHAR},
       remarks = #{remarks,jdbcType=VARCHAR},
       is_valid = #{isValid,jdbcType=CHAR},
-      record_id = #{recordId,jdbcType=BIGINT},
       created_by = #{createdBy,jdbcType=VARCHAR},
       created_date = #{createdDate,jdbcType=TIMESTAMP},
       last_updated_by = #{lastUpdatedBy,jdbcType=VARCHAR},

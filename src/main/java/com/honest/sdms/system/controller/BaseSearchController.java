@@ -1,9 +1,6 @@
 package com.honest.sdms.system.controller;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,18 +13,19 @@ import org.springframework.web.bind.annotation.RestController;
 import com.honest.sdms.Constants;
 import com.honest.sdms.basedata.APIResponse;
 import com.honest.sdms.basedata.ResultStatus;
-import com.honest.sdms.order.entity.OrderDetail;
-import com.honest.sdms.order.entity.OrderExpress;
-import com.honest.sdms.order.entity.OrderHeader;
+import com.honest.sdms.system.entity.Customers;
 import com.honest.sdms.system.entity.Role;
 import com.honest.sdms.system.entity.RoleResource;
 import com.honest.sdms.system.entity.SysDictDatas;
 import com.honest.sdms.system.entity.SysUser;
+import com.honest.sdms.system.entity.Vendors;
+import com.honest.sdms.system.service.ICustomersService;
 import com.honest.sdms.system.service.IResourcesService;
 import com.honest.sdms.system.service.IRoleResourcesService;
 import com.honest.sdms.system.service.IRolesService;
 import com.honest.sdms.system.service.ISysDictDatasService;
 import com.honest.sdms.system.service.ISysUserService;
+import com.honest.sdms.system.service.IVendorsService;
 import com.honest.sdms.tools.StringUtil;
 import com.honest.sdms.transaction.entity.Item;
 import com.honest.sdms.transaction.service.IItemService;
@@ -51,6 +49,10 @@ public class BaseSearchController {
 	private ISysDictDatasService sysDictDatasService;
 	@Autowired
 	private IItemService itemService;
+	@Autowired
+	private ICustomersService customersService;
+	@Autowired
+	private IVendorsService vendorsService;
 	
 	/**
 	 * 获取指定字典的键值对
@@ -72,42 +74,59 @@ public class BaseSearchController {
 		return itemService.findByCond(new Item());
 	}
 	
+	@RequestMapping(value="/getCustomerList", method = RequestMethod.GET,produces= {"application/json;charset=UTF-8;"})
+	public @ResponseBody List<Customers> getCustomerList(String customerName) {
+		return customersService.getCustomerList(customerName);
+	}
+	
+	@RequestMapping(value="/getVendorList", method = RequestMethod.GET,produces= {"application/json;charset=UTF-8;"})
+	public @ResponseBody List<Vendors> getVendorist(String vendorName) {
+		return vendorsService.getVendorList(vendorName);
+	}
+	
+	@RequestMapping(value="/getOrderStatus", method = RequestMethod.GET,produces= {"application/json;charset=UTF-8;"})
+	public @ResponseBody JSONArray getOrderStatus() {
+		JSONArray array = new JSONArray();
+		JSONObject json1 = new JSONObject();
+		json1.put("key", Constants.OrderStatus.UN_REVIEWED);
+		json1.put("value", "待审核");
+		
+		JSONObject json2 = new JSONObject();
+		json2.put("key", Constants.OrderStatus.ALREADY_REVIEWED);
+		json2.put("value", "已审核");
+		
+		JSONObject json3 = new JSONObject();
+		json3.put("key", Constants.OrderStatus.ALREADY_CREATE_EXPROCESS_ORDER);
+		json3.put("value", "已生成单号");
+		
+		JSONObject json4 = new JSONObject();
+		json4.put("key", Constants.OrderStatus.ALREADY_PRINTED_ORDER);
+		json4.put("value", "已打印");
+		
+		JSONObject json5 = new JSONObject();
+		json5.put("key", Constants.OrderStatus.ALREADY_OUT_STOCK);
+		json5.put("value", "已出库");
+		
+		JSONObject json6 = new JSONObject();
+		json6.put("key", Constants.OrderStatus.ALREADY_CANCEL_ORDER);
+		json6.put("value", "已撕单");
+		
+		array.add(json1);
+		array.add(json2);
+		array.add(json3);
+		array.add(json4);
+		array.add(json5);
+		array.add(json6);
+		return array;
+	}
+	
+	/**
+	 * 获取客户订单字段合集
+	 * @return
+	 */
 	@RequestMapping(value="/getOrderFieldList", method = RequestMethod.GET,produces= {"application/json;charset=UTF-8;"})
 	public @ResponseBody JSONArray getOrderFieldList() {
-		List<JSONObject> array = new ArrayList<JSONObject>();
-		Field[] fields = OrderHeader.class.getDeclaredFields();
-		for(Field field : fields) {
-			JSONObject json = new JSONObject();
-			json.put("key", field.getName());
-			json.put("value", field.getName());
-			array.add(json);
-		}
-		
-		fields = OrderDetail.class.getDeclaredFields();
-		for(Field field : fields) {
-			JSONObject json = new JSONObject();
-			json.put("key", field.getName());
-			json.put("value", field.getName());
-			array.add(json);
-		}
-		
-		fields = OrderExpress.class.getDeclaredFields();
-		for(Field field : fields) {
-			JSONObject json = new JSONObject();
-			json.put("key", field.getName());
-			json.put("value", field.getName());
-			array.add(json);
-		}
-		
-		Collections.sort(array, new Comparator<JSONObject>() {
-		    @Override
-		    public int compare(JSONObject o1, JSONObject o2) {
-		        String a = o1.getString("key");
-		        String b = o2.getString("key");
-		        return a.compareTo(b);
-		    }
-		});
-		return JSONArray.fromObject(array);
+		return JSONArray.fromObject(customersService.getCustomerOrderFieldList());
 	}
 
 	/**

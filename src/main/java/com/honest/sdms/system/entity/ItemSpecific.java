@@ -8,11 +8,21 @@ public class ItemSpecific extends BaseVO{
     private Long itemId;
     private String item;
     private Long gradeId;
-    private Long specificId;
-    private String remarks;
+    private Long standardId;
+    private double netWeight;
+    private String specificCode;
     private String isValid;
 
-    public Long getGradeId() {
+    
+    public double getNetWeight() {
+		return netWeight;
+	}
+
+	public void setNetWeight(double netWeight) {
+		this.netWeight = netWeight;
+	}
+
+	public Long getGradeId() {
 		return gradeId;
 	}
 
@@ -52,20 +62,20 @@ public class ItemSpecific extends BaseVO{
         this.itemId = itemId;
     }
 
-    public Long getSpecificId() {
-        return specificId;
-    }
+	public Long getStandardId() {
+		return standardId;
+	}
 
-    public void setSpecificId(Long specificId) {
-        this.specificId = specificId;
-    }
+	public void setStandardId(Long standardId) {
+		this.standardId = standardId;
+	}
 
-    public String getRemarks() {
-        return remarks;
-    }
+	public String getSpecificCode() {
+		return specificCode;
+	}
 
-    public void setRemarks(String remarks) {
-        this.remarks = remarks == null ? null : remarks.trim();
-    }
+	public void setSpecificCode(String specificCode) {
+		this.specificCode = specificCode;
+	}
 
 }

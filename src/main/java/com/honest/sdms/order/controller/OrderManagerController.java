@@ -77,6 +77,7 @@ public class OrderManagerController {
 				}catch(Exception e){
 					record.setStatus(Constants.Status.E);
 					record.setDescription(e.getMessage());
+					return new APIResponse<String>(Constants.DEFAULT_ID, e.getMessage());
 				}finally{
 					if(record.getFilePath() != null){
 						downloadRecordsService.insert(record);

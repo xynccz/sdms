@@ -19,13 +19,13 @@ import com.honest.sdms.order.entity.OrderDetail;
 import com.honest.sdms.order.entity.OrderExpress;
 import com.honest.sdms.order.entity.OrderHeader;
 import com.honest.sdms.order.service.IOrderHeaderService;
+import com.honest.sdms.system.entity.CustomerArchives;
 import com.honest.sdms.system.entity.CustomerOrderExcelConfig;
 import com.honest.sdms.system.entity.DownloadRecords;
 import com.honest.sdms.system.entity.ErrorDataLog;
 import com.honest.sdms.system.entity.ItemSpecific;
+import com.honest.sdms.tools.ODDGenerator;
 import com.honest.sdms.tools.StringUtil;
-
-import net.sf.json.JSONObject;
 
 /**
  * Excel格式订单附件数据解析监听类
@@ -36,8 +36,8 @@ public class OrderModleDataListener extends AnalysisEventListener<Map<Integer, S
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderModleDataListener.class);
     private IOrderHeaderService orderHeaderService;
     private DownloadRecords record;
+    private Map<String, CustomerArchives> customerArchiveMap;//客户档案信息缓存
     private Map<Integer, String> headMap;//文件头信息
-    private Map<String,JSONObject> contrastMap;//客户给定值与系统设定值对应关系
     private Map<String,CustomerOrderExcelConfig> relateMap;//表字段与文件头字段对应关系
     private StringBuilder message;//记录解析异常信息
     private Long totalCount = -1L, errorCount = 0L;
@@ -49,17 +49,20 @@ public class OrderModleDataListener extends AnalysisEventListener<Map<Integer, S
     private List<OrderHeader> headList;//订单头信息
     private List<OrderDetail> detailList;//订单行信息
     private List<OrderExpress> expressList;//订单物流信息
+    private Map<Long, ItemSpecific> itemSpecificMap;//产品规格信息
     
-    public OrderModleDataListener(IOrderHeaderService orderHeaderService, StringBuilder message, Map<String,CustomerOrderExcelConfig> relateMap, DownloadRecords record){
+    
+    public OrderModleDataListener(IOrderHeaderService orderHeaderService, StringBuilder message, Map<String, CustomerArchives> customerArchiveMap, Map<String,CustomerOrderExcelConfig> relateMap, DownloadRecords record){
     	this.relateMap = relateMap;
     	this.message = message;
     	this.orderHeaderService = orderHeaderService;
+    	this.customerArchiveMap = customerArchiveMap;
     	this.record = record;
     	
     	headList = new ArrayList<OrderHeader>();
         detailList = new ArrayList<OrderDetail>();
         expressList = new ArrayList<OrderExpress>();
-        contrastMap = new HashMap<String, JSONObject>();
+        itemSpecificMap = new HashMap<Long, ItemSpecific>();
     }
 
     /**
@@ -83,16 +86,40 @@ public class OrderModleDataListener extends AnalysisEventListener<Map<Integer, S
 				BeanUtils.populate(head, dataMap);
 				BeanUtils.populate(detail, dataMap);
 				BeanUtils.populate(express, dataMap);
-				head.setRecordId(record.getId());
-				head.setIsValid(Constants.Status.Y);
 				
-				//重要，获取订单产品规格，包括是什么产品，规格多少
-				Long itemSpecificId = detail.getItemSpecificId();
-				ItemSpecific itemSpecific = orderHeaderService.selectItemSpecificById(itemSpecificId);
-				if(itemSpecific == null){
+				head.setRecordId(record.getId());
+				head.setIsReviewed(Constants.Status.N);//审批订单
+				head.setIsGeneratedExpressNo(Constants.Status.N);//生成快递单号
+				head.setIsPrinted(Constants.Status.N);//打印快递单号
+				head.setIsShipped(Constants.Status.N);//快递发运
+				head.setIsCreatedExpressInfo(Constants.Status.N);//创建快递信息
+				head.setIsCanceled(Constants.Status.N);//是否撕单
+				head.setIsCompleted(Constants.Status.N);//是否完结
+				head.setIsValid(Constants.Status.Y);
+				head.setOrderStatus(Constants.OrderStatus.UN_REVIEWED);//待审核
+				head.setOrderNo(ODDGenerator.getD(Constants.HM));
+				
+				/*
+				 * 此段逻辑重要，主要为了取客户产品规格信息与本系统中维护产品对应关系
+				 * 通过客户订单产品规格信息获取对应的客户档案
+				 */
+				String customerItemSpecific = head.getCustomerItemSpecific();
+				CustomerArchives customerArchive = customerArchiveMap.get(customerItemSpecific);
+				if(customerArchive == null){
+					errorCount++;
 					head.setIsValid(Constants.Status.N);
 					head.setRemarks("未找到商品规格配置信息，请检查");
 				}else{
+					Long itemSpecificId = customerArchive.getItemSpecificId();
+					ItemSpecific itemSpecific = null;
+					if(itemSpecificMap.containsKey(itemSpecificId)){
+						itemSpecific = itemSpecificMap.get(itemSpecificId);
+					}else {
+						itemSpecific = orderHeaderService.selectItemSpecificById(itemSpecificId);
+						itemSpecificMap.put(itemSpecificId, itemSpecific);
+					}
+					
+					head.setItemSpecificId(itemSpecificId);
 					detail.setItem(itemSpecific.getItem());
 					detail.setItemId(itemSpecific.getItemId());
 				}
@@ -108,11 +135,11 @@ public class OrderModleDataListener extends AnalysisEventListener<Map<Integer, S
 				
 				//对导入订单数据进行数据准确性校验及一些自定义规则校验
 				verifyOrderData(head, detail, express);
-				
+				Constants.setOrderLog(head, "订单初始导入");
 			}catch(Exception e){
 				errorCount++;
 				LOGGER.error("解析到一条数据异常:{},{}", data, context.readRowHolder().getRowIndex());
-				head.setIsValid(Constants.Status.N);
+				head.setIsValid(Constants.Status.E);
 				head.setRemarks(data + e.getMessage());
 				isSucc = false;
 			}finally{
@@ -200,11 +227,22 @@ public class OrderModleDataListener extends AnalysisEventListener<Map<Integer, S
 	 * @param express
 	 */
 	private void verifyOrderData(OrderHeader head, OrderDetail detail, OrderExpress express){
-		//如果校验不通过就设置order head头表的is_valid=N
+		//如果校验不通过就设置order head头表的is_valid=E
+		//对电话号码格式校验
+		String phone = express.getConsigneeTelphone();
+		if(!StringUtil.isMobile(phone)) {
+			head.setIsValid(Constants.Status.E);
+			head.setRemarks(phone+"电话号码不正确，请检查");
+		}
+		
+		if(StringUtil.isNullOrEmpty(express.getConsigneeAddress())) {
+			head.setIsValid(Constants.Status.E);
+			head.setRemarks("收件人详细地址为空，请检查");
+		}
 	}
 	
 	/**
-     * 封装数据
+     * 封装数据,转换为表对象字段对应的订单中的值
      * @param data
      * @return
      */
@@ -217,24 +255,7 @@ public class OrderModleDataListener extends AnalysisEventListener<Map<Integer, S
         	CustomerOrderExcelConfig excelConfig = relateMap.get(headName);
         	if(excelConfig != null){
         		String codeField = excelConfig.getCodeField();
-        		if(!contrastMap.containsKey(codeField)){
-        			String relatStr = excelConfig.getCodeRelation();
-            		if(!StringUtil.isNullOrEmpty(relatStr)){
-            			contrastMap.put(codeField, JSONObject.fromObject(relatStr));
-            		}
-        		}
-        		
-        		//如果有设置值对应关系就用指定值替换
-        		JSONObject json = contrastMap.get(codeField);
-        		if(json != null && json.containsKey(value)){
-        			dataMap.put(codeField, json.getString(value));
-        		}else{
-        			dataMap.put(codeField, value);
-        		}
-        		//这里原始的订单规格信息保存在订单行中
-        		if("itemSpecificId".equals(codeField)){
-        			dataMap.put("description", value);
-        		}
+        		dataMap.put(codeField, value);
         	}
         }
 		return dataMap;
@@ -248,30 +269,6 @@ public class OrderModleDataListener extends AnalysisEventListener<Map<Integer, S
         LOGGER.info("{}条数据，开始存储数据库！", headList.size());
         orderHeaderService.saveOrderInfos(headList, detailList, expressList);
         LOGGER.info("{}条数据，存储数据库成功！", headList.size());
-    }
-    
-    public static void main(String[] args) {
-    	OrderHeader bean = new OrderHeader();
-    	Map<String, String> properties = new HashMap<String, String>();
-    	properties.put("orderStatus", "N");
-    	properties.put("orderAmount", "15");
-    	properties.put("consigneeAddress", "中华网人玫瑰酥");
-    	properties.put("expressCreateTime", "2020-12-12 23:22:22");
-    	
-    	OrderExpress order = new OrderExpress();
-    	try {
-			BeanUtils.populate(bean, properties);
-			BeanUtils.populate(order, properties);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-    	System.out.println(bean.getOrderStatus());
-    	System.out.println(bean.getOrderAmount()+"==="+bean.getOrderCount());
-    	System.out.println(order.getConsigneeAddress());
-    	System.out.println(order.getExpressCreateTime());
-    	
-    	UUID uuid = UUID.randomUUID();
-        System.out.println(uuid.toString().replace("-", ""));
     }
 
 }

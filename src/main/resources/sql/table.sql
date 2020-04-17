@@ -261,19 +261,30 @@ create table io_type(
 
 create table order_header(
 	header_id varchar(32) primary key,
-	order_no varchar(100) comment '订单号，唯一',
+	record_id bigint comment '记录订单来源，download_records表主键ID', 
+	order_no varchar(100) comment '系统订单号，唯一',
 	order_type_id bigint comment '订单类型', 
-	order_status varchar(500) comment '订单状态,记录订单状态日志,未付款,已付款,已发货,已签收,退货申请,退货中,已退货,取消交易',
+	order_status varchar(200) DEFAULT NULL COMMENT '订单状态,记录订单状态:待审核，已审核，已生成单号，已打印，已出库，已撕单',
+	item_specific_id bigint(20) DEFAULT NULL COMMENT '订单规格ID，管理item_specfifc表主键ID',
+	customer_item_specific varchar(300) not null COMMENT '客户产品规则信息',
 	buyer_notes varchar(500) COMMENT '买家留言',
+	business_platform varchar(200) COMMENT '电商平台',
 	customer_id bigint COMMENT '客户ID，关联sys_dict_datas主键ID',
+	customer_order_no varchar(100) comment '客户订单号',
 	customer_name varchar(100) comment '店铺名称',
     customer_service_notes varchar(500) COMMENT '客服备注信息',
     order_count bigint COMMENT '订单数量,客户订单显示2，那么就要发2件货',
     order_amount double COMMENT '订单金额',
-    cancel_order char default 'N' COMMENT '取消订单，Y标识此单已取消，业务上表示撕单动作',
+    is_reviewed char default 'N' comment '订单是否已被审核',
+    is_generated_express_no  char default 'N' comment '订单是否已生成物流单号',
+    is_printed char default 'N' comment '订单是否已打印',
+    is_shipped char default 'N' comment '订单是否已发运',
+    is_created_express_info  char default 'N' comment '订单是否已生成物流信息',
+    is_canceled char default 'N' comment '订单是否已撕单',
+    is_completed char default 'N' comment '订单是否已完结',
     order_log varchar(2000) COMMENT '订单处理过程日志记录',
     remarks varchar(2000),
-    is_valid char default 'Y' COMMENT '是否有效，导入订单不满足设定规则此订单就会无效，比如地址写错了',
+    is_valid char NOT NULL COMMENT '是否有效，导入订单不满足设定规则此订单就会无效，比如地址写错了',
 	created_by varchar(64) NOT NULL COMMENT '创建者',
 	created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
 	last_updated_by varchar(64) NOT NULL COMMENT '更新者',
@@ -284,14 +295,13 @@ create table order_header(
 create table order_detail(
 	detail_id bigint primary key AUTO_INCREMENT,
 	header_id varchar(32) not null,
-	product_name varchar(500) COMMENT '商品名称',
 	item_id bigint,
 	item varchar(200),
 	item_specific_id bigint(20) DEFAULT NULL COMMENT '产品规格',
 	warehouse varchar(200) COMMENT '到货仓库',
 	weight double COMMENT '产品重量',
 	piece_num bigint COMMENT '件数',
-	remarks varchar(500),
+	description varchar(500),
 	created_by varchar(64) NOT NULL COMMENT '创建者',
 	created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
 	last_updated_by varchar(64) NOT NULL COMMENT '更新者',
@@ -304,8 +314,9 @@ create table order_detail(
 create table order_express(
 	id bigint primary key AUTO_INCREMENT,
 	header_id varchar(32) not null,
-	express_company varchar(500) comment '物流公司',
-	express_no varchar(200) comment '物流单号',
+	express_company varchar(500) comment '物流公司名称',
+	express_company_code varchar(300) comment '物流公司编码',
+	express_no varchar(1000) comment '物流单号',
 	express_status varchar(200) comment '物流状态',
 	net_name varchar(300) comment '网名',
 	consignee_realname varchar(300) comment '收件人',
@@ -315,6 +326,9 @@ create table order_express(
 	consignee_county varchar(50) comment '区',
 	consignee_address varchar(2000) comment '收件详细地址',
 	consignee_zip varchar(50) comment '邮编',
+	sending_address varchar(1000) DEFAULT NULL COMMENT '发件地址',
+    sender_name varchar(300) DEFAULT NULL COMMENT '发件人',
+    sender_phone varchar(50) DEFAULT NULL COMMENT '发件人电话',
 	delivery_conditions varchar(100) COMMENT '发货条件，比如款到发货',
 	delivery_amount double comment '实际支付给物流公司的金额',
 	express_result_last varchar(500) comment '物流最新状态描述',
@@ -385,13 +399,15 @@ create table item_specific(
 	id bigint primary key AUTO_INCREMENT,
 	item_id bigint not null,
 	item varchar(200) not null,
-	specific_id bigint(20) DEFAULT NULL COMMENT '产品规格,关联sys_dict_datas表主键',
-	remarks varchar(500),
+	standard_id bigint(20) DEFAULT NULL COMMENT '产品规格,关联sys_dict_datas表主键',
+	net_weight double DEFAULT NULL COMMENT '规格净重',
+    specific_code varchar(500) not null COMMENT '系统规格描述',
 	created_by varchar(64) NOT NULL COMMENT '创建者',
 	created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
 	last_updated_by varchar(64) NOT NULL COMMENT '更新者',
 	last_updated_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
 	organization_id bigint not null,
+	UNIQUE KEY `item_specific_u2` (`item_id`,`specific_code`,`organization_id`),
 	UNIQUE KEY `un_item_specific_index` (`item_id`,'grade_id',`specific_id`,`organization_id`)
 )COMMENT = '产品规格表';
 
@@ -404,3 +420,108 @@ create table error_data_log(
    created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
    organization_id bigint not null
 )comment '系统操作异常日志表';
+
+create table customer_archives(
+ id bigint primary key AUTO_INCREMENT,
+ customer_id bigint COMMENT '客户ID，关联customers表主键ID',
+ item_specific_id bigint COMMENT '系统产品规格，关联item_specific表主键ID',
+ customer_specific_code varchar(200) COMMENT '客户产品规格名称',
+ is_valid char(1) DEFAULT 'Y' NOT NULL COMMENT '状态是否有效',
+ created_by varchar(64) NOT NULL COMMENT '创建者',
+ created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+ last_updated_by varchar(64) NOT NULL COMMENT '更新者',
+ last_updated_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+ organization_id bigint not null,
+ UNIQUE KEY customer_archives_u1 (customer_id,customer_specific_code,organization_id),
+ UNIQUE KEY customer_archives_u2 (customer_id,item_specific_id,organization_id)
+)comment '客户产品编码档案表'
+
+create table customers(
+ id bigint primary KEY AUTO_INCREMENT,
+ customer_name varchar(500) not null,
+ customer_code varchar(500) not null,
+ customer_class CHAR COMMENT '客户等级A,B,C,D',
+ customer_score double COMMENT '客户评分',
+ customer_contacts varchar(200) COMMENT '联系人',
+ customer_phone varchar(100) COMMENT '联系人电话',
+ customer_address varchar(300) COMMENT '地区',
+ customer_email varchar(100) COMMENT '邮箱地址',
+ network varchar(200) COMMENT '网址',
+ facsimile varchar(200) COMMENT '传真',
+ expansion varchar(200) comment '扩展字段',
+ is_valid char(1) DEFAULT 'Y' NOT NULL COMMENT '状态是否有效',
+ remarks varchar(500) COMMENT '备注信息',
+ created_by varchar(64) NOT NULL COMMENT '创建者',
+ created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+ last_updated_by varchar(64) NOT NULL COMMENT '更新者',
+ last_updated_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+ organization_id bigint not null,
+ UNIQUE KEY u_customer_u1 (customer_name,customer_code,organization_id)
+)comment '系统客户表'
+
+create table vendors(
+ id bigint primary KEY AUTO_INCREMENT,
+ vendor_name varchar(500) not null,
+ vendor_code varchar(500) not null,
+ vendor_class char COMMENT '供应商等级A,B,C,D',
+ vendor_score double COMMENT '供应商评分',
+ vendor_contacts varchar(200) COMMENT '联系人',
+ vendor_phone varchar(100) COMMENT '联系人电话',
+ vendor_address varchar(300) COMMENT '地区',
+ vendor_email varchar(100) COMMENT '邮箱地址',
+ network varchar(200) COMMENT '网址',
+ facsimile varchar(200) COMMENT '传真',
+ expansion varchar(200) comment '扩展字段',
+ is_valid char(1) DEFAULT 'Y' NOT NULL COMMENT '状态是否有效',
+ remarks varchar(500) COMMENT '备注信息',
+ created_by varchar(64) NOT NULL COMMENT '创建者',
+ created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+ last_updated_by varchar(64) NOT NULL COMMENT '更新者',
+ last_updated_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+ organization_id bigint not null,
+ UNIQUE KEY u_vendor_u1 (vendor_name,vendor_code,organization_id)
+)comment '系统供应商表'
+
+create table vendor_warehouse(
+   id bigint primary key AUTO_INCREMENT,
+   vendor_id bigint COMMENT 'vendors表主键ID',
+   warehouse varchar(100)comment '仓库',
+   warehouse_address varchar(200) comment '仓库地址',
+   warehouse_type int comment '仓库类别，0内库；1外库',
+   is_valid char(1) DEFAULT 'Y' NOT NULL COMMENT '状态是否有效',
+   created_by varchar(64) NOT NULL COMMENT '创建者',
+   created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+   last_updated_by varchar(64) NOT NULL COMMENT '更新者',
+   last_updated_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+   organization_id bigint not null
+)comment '供应商仓库配置表'
+
+create table vendor_archives(
+ id bigint primary key AUTO_INCREMENT,
+ item_specific_id bigint COMMENT '系统产品规格，关联item_specific表主键ID',
+ vendor_id bigint COMMENT 'vendors表主键ID',
+ vendor_warehouse_id bigint COMMENT '系统产品规格，关联vendor_warehouse表主键ID,如果等于-1，适配于所有此供应商对应的仓库',
+ vendor_specific_code varchar(200) COMMENT '供应商产品规格名称',
+ is_valid char(1) DEFAULT 'Y' NOT NULL COMMENT '状态是否有效',
+ created_by varchar(64) NOT NULL COMMENT '创建者',
+ created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+ last_updated_by varchar(64) NOT NULL COMMENT '更新者',
+ last_updated_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+ organization_id bigint not null,
+ UNIQUE KEY vendor_archives_u1 (vendor_id,vendor_warehouse_id,vendor_specific_code,organization_id)
+)comment '供应商档案表'
+
+create table customer_order_field_config(
+  config_id bigint primary key AUTO_INCREMENT,
+  code_field varchar(200),
+  code_desc varchar(200),
+  position int,
+  created_by varchar(64) NOT NULL COMMENT '创建者',
+  created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  last_updated_by varchar(64) NOT NULL COMMENT '更新者',
+  last_updated_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  organization_id bigint not null,
+  UNIQUE KEY `U_customerOrderField1` (`code_field`),
+  UNIQUE KEY `U_customerOrderField2` (`code_desc`)
+)comment '客户订单导入字段配置合集，来源order_header,order_detail,order_express三张表字段'
+

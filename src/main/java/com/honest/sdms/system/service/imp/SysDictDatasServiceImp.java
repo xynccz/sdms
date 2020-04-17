@@ -33,13 +33,23 @@ public class SysDictDatasServiceImp extends BaseServiceImp<SysDictDatas, Long> i
 		return sysDictDatasMapper.getDictDatasByDictId(dictId,Constants.getCurrentOrganizationId());
 	}
 
+	/**
+	 * 修改或保存数据字典明细信息
+	 * 注意事项：字典键值和标签不允许更新，只能新增
+	 * 系统其它地方已保存了id，如果更新的话信息就不准确了。
+	 */
 	@Override
 	public void saveOrUpdateDictDatas(List<SysDictDatas> list) {
 		if(list != null && list.size() > 0){
 			for(SysDictDatas dictData : list) {
 				Long id = dictData.getId();
 				if(id != null){
-					this.updateByPrimaryKey(dictData);
+					//1、做此步骤的作用：预防前台做更新，就算前台做了更新，后台还是会把数据还原
+					SysDictDatas obj = this.selectByPrimaryKey(id);
+					dictData.setDictDataCode(obj.getDictDataCode());
+					dictData.setDictDataName(obj.getDictDataName());
+					//2、再对数据做更新
+					updateByPrimaryKey(dictData);
 				}else{
 					this.insert(dictData);
 				}

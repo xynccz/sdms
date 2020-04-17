@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.honest.sdms.system.dao.CustomersMapper">
+  <resultMap id="BaseResultMap" type="com.honest.sdms.system.entity.Customers">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
+    <result column="customer_code" jdbcType="VARCHAR" property="customerCode" />
+    <result column="customer_class" jdbcType="CHAR" property="customerClass" />
+    <result column="customer_score" jdbcType="DOUBLE" property="customerScore" />
+    <result column="customer_contacts" jdbcType="VARCHAR" property="customerContacts" />
+    <result column="customer_phone" jdbcType="VARCHAR" property="customerPhone" />
+    <result column="customer_address" jdbcType="VARCHAR" property="customerAddress" />
+    <result column="customer_email" jdbcType="VARCHAR" property="customerEmail" />
+    <result column="network" jdbcType="VARCHAR" property="network" />
+    <result column="facsimile" jdbcType="VARCHAR" property="facsimile" />
+    <result column="expansion" jdbcType="VARCHAR" property="expansion" />
+    <result column="is_valid" jdbcType="CHAR" property="isValid" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+    <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+    <result column="last_updated_by" jdbcType="VARCHAR" property="lastUpdatedBy" />
+    <result column="last_updated_date" jdbcType="TIMESTAMP" property="lastUpdatedDate" />
+    <result column="organization_id" jdbcType="BIGINT" property="organizationId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, customer_name, customer_code, customer_class, customer_score, customer_contacts, 
+    customer_phone, customer_address, customer_email, network, facsimile, expansion, 
+    is_valid, remarks, created_by, created_date, last_updated_by, last_updated_date, 
+    organization_id
+  </sql>
+  <sql id="Base_Where">
+	<trim prefix="WHERE" prefixOverrides="AND |OR ">
+	  <if test="customerName != null and customerName != '' ">
+        and customer_name = #{customerName,jdbcType=VARCHAR}
+      </if>
+      <if test="customerCode != null and customerCode != '' ">
+        and customer_code = #{customerCode,jdbcType=VARCHAR}
+      </if>
+      <if test="customerClass != null and customerClass != '' ">
+        and customer_class = #{customerClass,jdbcType=CHAR}
+      </if>
+      <if test="customerScore != null">
+        and customer_score = #{customerScore,jdbcType=DOUBLE}
+      </if>
+      <if test="customerContacts != null and customerContacts != '' ">
+        and customer_contacts = #{customerContacts,jdbcType=VARCHAR}
+      </if>
+      <if test="customerPhone != null and customerPhone != '' ">
+        and customer_phone = #{customerPhone,jdbcType=VARCHAR}
+      </if>
+      <if test="customerAddress != null and customerAddress != '' ">
+        and customer_address = #{customerAddress,jdbcType=VARCHAR}
+      </if>
+      <if test="customerEmail != null and customerEmail != '' ">
+        and customer_email = #{customerEmail,jdbcType=VARCHAR}
+      </if>
+      <if test="network != null and network != '' ">
+        and network = #{network,jdbcType=VARCHAR}
+      </if>
+      <if test="facsimile != null and facsimile != '' ">
+        and facsimile = #{facsimile,jdbcType=VARCHAR}
+      </if>
+      <if test="expansion != null and expansion != '' ">
+        and expansion = #{expansion,jdbcType=VARCHAR}
+      </if>
+      <if test="isValid != null and isValid != '' ">
+        and is_valid = #{isValid,jdbcType=VARCHAR}
+      </if>
+      <if test="organizationId != null">
+        and organization_id = #{organizationId,jdbcType=BIGINT}
+      </if>
+	</trim>
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from customers
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="getCustomerList" resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />
+    from customers
+    where customer_name like CONCAT('%',#{customerName,jdbcType=VARCHAR},'%') and organization_id = #{organizationId,jdbcType=BIGINT}
+  </select>
+  <select id="findByCond" parameterType="com.honest.sdms.system.entity.Customers" resultMap="BaseResultMap">
+	select
+	<include refid="Base_Column_List" />
+	from customers
+	<include refid="Base_Where"/>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from customers
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.honest.sdms.system.entity.Customers">
+    insert into customers (id, customer_name, customer_code, 
+      customer_class, customer_score, customer_contacts, 
+      customer_phone, customer_address, customer_email, 
+      network, facsimile, expansion, 
+      is_valid, remarks, created_by, 
+      created_date, last_updated_by, last_updated_date, 
+      organization_id)
+    values (#{id,jdbcType=BIGINT}, #{customerName,jdbcType=VARCHAR}, #{customerCode,jdbcType=VARCHAR}, 
+      #{customerClass,jdbcType=CHAR}, #{customerScore,jdbcType=DOUBLE}, #{customerContacts,jdbcType=VARCHAR}, 
+      #{customerPhone,jdbcType=VARCHAR}, #{customerAddress,jdbcType=VARCHAR}, #{customerEmail,jdbcType=VARCHAR}, 
+      #{network,jdbcType=VARCHAR}, #{facsimile,jdbcType=VARCHAR}, #{expansion,jdbcType=VARCHAR}, 
+      #{isValid,jdbcType=CHAR}, #{remarks,jdbcType=VARCHAR}, #{createdBy,jdbcType=VARCHAR}, 
+      #{createdDate,jdbcType=TIMESTAMP}, #{lastUpdatedBy,jdbcType=VARCHAR}, #{lastUpdatedDate,jdbcType=TIMESTAMP}, 
+      #{organizationId,jdbcType=BIGINT})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.honest.sdms.system.entity.Customers">
+    update customers
+    set customer_name = #{customerName,jdbcType=VARCHAR},
+      customer_code = #{customerCode,jdbcType=VARCHAR},
+      customer_class = #{customerClass,jdbcType=CHAR},
+      customer_score = #{customerScore,jdbcType=DOUBLE},
+      customer_contacts = #{customerContacts,jdbcType=VARCHAR},
+      customer_phone = #{customerPhone,jdbcType=VARCHAR},
+      customer_address = #{customerAddress,jdbcType=VARCHAR},
+      customer_email = #{customerEmail,jdbcType=VARCHAR},
+      network = #{network,jdbcType=VARCHAR},
+      facsimile = #{facsimile,jdbcType=VARCHAR},
+      expansion = #{expansion,jdbcType=VARCHAR},
+      is_valid = #{isValid,jdbcType=CHAR},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      created_by = #{createdBy,jdbcType=VARCHAR},
+      created_date = #{createdDate,jdbcType=TIMESTAMP},
+      last_updated_by = #{lastUpdatedBy,jdbcType=VARCHAR},
+      last_updated_date = #{lastUpdatedDate,jdbcType=TIMESTAMP},
+      organization_id = #{organizationId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

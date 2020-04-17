@@ -19,7 +19,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.honest.sdms.Constants;
 import com.honest.sdms.system.entity.SysLog;
 import com.honest.sdms.system.service.ISysLogService;
-import com.honest.sdms.tools.HttpUtil;
+import com.honest.sdms.tools.StringUtil;
 
 import net.sf.json.JSONObject;
 
@@ -64,7 +64,7 @@ public class SysLogAspect {
             sysLog.setOperateUrl(request.getRequestURI());
             sysLog.setOperateType(request.getMethod());
             sysLog.setOrganizationId(Constants.getCurrentOrganizationId());
-            sysLog.setIp(HttpUtil.getIpAddress(request));
+            sysLog.setIp(StringUtil.getIpAddress(request));
             sysLog.setContent(JSONObject.fromObject(request.getParameterMap()).toString());
             
             //从切面织入点处通过反射机制获取织入点处的方法

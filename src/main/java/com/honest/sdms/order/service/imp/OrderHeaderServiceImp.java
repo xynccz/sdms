@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.excel.EasyExcel;
+import com.github.pagehelper.PageInfo;
 import com.honest.sdms.Constants;
 import com.honest.sdms.basedata.APIResponse;
 import com.honest.sdms.basedata.ResultStatus;
@@ -26,12 +27,14 @@ import com.honest.sdms.order.service.IOrderExpressService;
 import com.honest.sdms.order.service.IOrderHeaderService;
 import com.honest.sdms.order.service.imp.promote.OrderModleDataListener;
 import com.honest.sdms.system.dao.IBaseMapper;
+import com.honest.sdms.system.entity.CustomerArchives;
 import com.honest.sdms.system.entity.CustomerOrderExcelConfig;
 import com.honest.sdms.system.entity.DownloadRecords;
 import com.honest.sdms.system.entity.ErrorDataLog;
 import com.honest.sdms.system.entity.ItemSpecific;
 import com.honest.sdms.system.entity.SysDictDatas;
 import com.honest.sdms.system.service.ICustomerOrderExcelConfigService;
+import com.honest.sdms.system.service.ICustomersService;
 import com.honest.sdms.system.service.IDownloadRecordsService;
 import com.honest.sdms.system.service.IErrorDataLogService;
 import com.honest.sdms.system.service.IItemSpecificService;
@@ -63,6 +66,8 @@ public class OrderHeaderServiceImp extends BaseServiceImp<OrderHeader, String> i
 	private ISysDictDatasService sysDictDatasService;
 	@Autowired
 	private IErrorDataLogService errorDataLogService;
+	@Autowired
+	private ICustomersService customersService;
 	
 	@Autowired
 	@Qualifier("orderHeaderMapper")
@@ -75,6 +80,18 @@ public class OrderHeaderServiceImp extends BaseServiceImp<OrderHeader, String> i
 	@Override
 	public ItemSpecific selectItemSpecificById(Long id) {
 		return itemSpecificService.selectByPrimaryKey(id);
+	}
+	
+	@Override
+	public PageInfo<OrderHeader> findByCondWithPage(OrderHeader cond, String sortName, String sortOrder, int pageNum, int pageSize) {
+		String selectData = cond.getSelectDatas();
+		if(!StringUtil.isNullOrEmpty(selectData)){
+			selectData = StringUtil.replace(selectData, new String[] {"[","]"}, new String[] {"",""});
+			String[] rangeDatas = Constants.SPLIT.split(selectData);
+			cond.setCreatedDateStart(new Date(Long.parseLong(rangeDatas[0])));
+			cond.setCreatedDateEnd(new Date(Long.parseLong(rangeDatas[1])));
+		}
+		return super.findByCondWithPage(cond, sortName, sortOrder, pageNum, pageSize);
 	}
 	
 	/**
@@ -102,7 +119,7 @@ public class OrderHeaderServiceImp extends BaseServiceImp<OrderHeader, String> i
 	}
 
 	/**
-	 * 解析订单
+	 * 解析订单,后期可以优化为多线程解析订单
 	 * @param file 上传附件
 	 * @param shopCode 商家类型
 	 */
@@ -134,7 +151,7 @@ public class OrderHeaderServiceImp extends BaseServiceImp<OrderHeader, String> i
 			Map<String,CustomerOrderExcelConfig> relateMap = new HashMap<String, CustomerOrderExcelConfig>();
 			List<CustomerOrderExcelConfig> list = customerOrderExcelConfigService.findCustomerOrderConfigByCustomerId(record.getCustomerId(), Constants.INPUT);
 			if(list == null || list.size() == 0){
-				throw new HSException(dictData.getDictDataName()+"未查询到订单字段配置，请检查");
+				throw new HSException("店铺:'"+dictData.getDictDataName()+"'未查询到订单字段配置，请检查");
 			}
 			for(CustomerOrderExcelConfig config : list){
 				String codeDesc = config.getCodeDesc();
@@ -144,8 +161,17 @@ public class OrderHeaderServiceImp extends BaseServiceImp<OrderHeader, String> i
 			//2、对订单信息进行解析
 			StringBuilder returnMsg = new StringBuilder();
 			record.setCustomerName(dictData.getDictDataName());
-			EasyExcel.read(record.getFilePath() + File.separator + record.getFileName(), new OrderModleDataListener(this, returnMsg, relateMap, record)).sheet().doRead();
-			//3、记录操作
+			
+			//3、封装当前客户档案信息
+			List<CustomerArchives> archivesList = customersService.getCustomerArchivesByCustomerId(record.getCustomerId());
+			Map<String, CustomerArchives> customerArchiveMap = new HashMap<String, CustomerArchives>();
+			if(archivesList != null && archivesList.size() > 0) {
+				archivesList.forEach(item->{
+					customerArchiveMap.put(item.getCustomerSpecificCode(), item);
+				});
+			}
+			EasyExcel.read(record.getFilePath() + File.separator + record.getFileName(), new OrderModleDataListener(this, returnMsg, customerArchiveMap, relateMap, record)).sheet().doRead();
+			//4、记录操作
 			record.setStatus(Constants.Status.Y);
 			record.setDescription(returnMsg.toString());
 			

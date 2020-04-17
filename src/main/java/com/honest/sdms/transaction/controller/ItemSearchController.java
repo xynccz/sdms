@@ -39,6 +39,12 @@ public class ItemSearchController {
 		return result;
 	}
 	
+	@RequestMapping(value = "/getItemSpecificByItemId",method = RequestMethod.GET)
+	public List<ItemSpecific> getItemSpecificByItemId(Long itemId){
+		List<ItemSpecific> result = itemSpecificService.getItemSpecificListByItemId(itemId);
+		return result;
+	}
+	
 	@SdmsLog(value = "新增产品")
 	@RequestMapping(value = "/saveItem",method = RequestMethod.POST)
 	public @ResponseBody APIResponse<String> saveItem(Item item)throws HSException{

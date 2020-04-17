@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 
+import com.honest.sdms.order.entity.OrderHeader;
 import com.honest.sdms.system.entity.SysUser;
 import com.honest.sdms.tools.DateTimeUtil;
 
@@ -22,14 +23,30 @@ public class Constants {
 	public static final Long DEFAULT_ORGANIZATIONID = 360L;
 	public static final Integer DEFAULT_ID = 1000;
 	
+	public static final String HM = "HM";
+	
 	//系统主目录
 	public static final String MAIN_PATH = "/Users/beisi/home" + File.separator + new DateTimeUtil().toString("yyyy") + File.separator;
 	public static final String ORDER_PATH_KEY = "orderAttachmentPath";//保存订单附件的服务器地址key值
 	
-	public static final int DEFAULT_PAGE_SIZE = 20;
+	public static final int DEFAULT_PAGE_SIZE = 30;
 	
 	public static class FileType{
 		public static final Long ORDER_TYPE = 1000L;//订单类型
+	}
+	
+	public static void setOrderLog(OrderHeader order, String msg){
+		order.setOrderLog(order.getOrderLog() == null?"":order.getOrderLog()+(";\n"+new DateTimeUtil().toString(DateTimeUtil.DATE_FORMAT)+","+msg));
+	}
+	
+	//订单流程状态
+	public static class OrderStatus{
+		public static final String UN_REVIEWED = "UN_REVIEWED";//待审核;
+		public static final String ALREADY_REVIEWED = "ALREADY_REVIEWED";//已审核;
+		public static final String ALREADY_CREATE_EXPROCESS_ORDER = "ALREADY_CREATE_EXPROCESS_ORDER";//已生成单号;
+		public static final String ALREADY_PRINTED_ORDER = "ALREADY_PRINTED_ORDER";//已打印;
+		public static final String ALREADY_OUT_STOCK = "ALREADY_OUT_STOCK";//已出库;
+		public static final String ALREADY_CANCEL_ORDER = "ALREADY_CANCEL_ORDER";//已撕单;
 	}
 	
 	public static class Status{
@@ -52,28 +69,29 @@ public class Constants {
 		public static final Long unqualified = 44L;//次品
 	}
 	 
-	 public static final String JWT_ERRCODE_EXPIRE = "TOKEN_ERRCODE_EXPIRE_TOKEN签名过期";//Token超时异常
-	 public static final String JWT_ERRCODE_FAIL = "JWT_ERRCODE_FAIL_TOKEN签名验证不通过";//token校验失败
+	public static final String JWT_ERRCODE_EXPIRE = "TOKEN_ERRCODE_EXPIRE_TOKEN签名过期";//Token超时异常
+	public static final String JWT_ERRCODE_FAIL = "JWT_ERRCODE_FAIL_TOKEN签名验证不通过";//token校验失败
 	 
-	 public static final String KAPTCHA_SESSION_KEY = "KAPTCHA_SESSION_KEY";//验证码id
+	public static final String KAPTCHA_SESSION_KEY = "KAPTCHA_SESSION_KEY";//验证码id
 	 
-	 public static final String TOKEN_NAME = "token";
-	 public static final String TOKEN_HEAD = "X-Token";
-	 public static final String SYS_USER = "sysuser";
+	public static final String TOKEN_NAME = "token";
+	public static final String TOKEN_HEAD = "X-Token";
+	public static final String SYS_USER = "sysuser";
 	 
-	 public static final String INPUT = "INPUT";
-	 public static final String OUTPUT = "OUTPUT";
+	public static final String INPUT = "INPUT";
+	public static final String OUTPUT = "OUTPUT";
 	 
-	 public static final String ORGANIZATIONID = "organizationId";
-	 public static final String DEFAULT_CAPTCHA_PARAM = "captcha"; //为的是页面表单提交验证码的参数
-	 public static final String USERNAME = "userName";
 	 
-	 public static final String ADMINISTRATR = "administrator";
+	public static final String ORGANIZATIONID = "organizationId";
+	public static final String DEFAULT_CAPTCHA_PARAM = "captcha"; //为的是页面表单提交验证码的参数
+	public static final String USERNAME = "userName";
 	 
-	 public static final Long MODIFY = 0L;
-	 public static final Long VIEW = 1L;
+	public static final String ADMINISTRATR = "administrator";
 	 
-	 public static final String ERROR_PAGE = "/jsp/error/error.jsp";
+	public static final Long MODIFY = 0L;
+	public static final Long VIEW = 1L;
+	 
+	public static final String ERROR_PAGE = "/jsp/error/error.jsp";
 	 
 	 /**
 	  * ehcache缓存分类

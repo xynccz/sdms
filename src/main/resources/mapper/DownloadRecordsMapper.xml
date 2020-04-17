@@ -20,7 +20,7 @@
     <result column="organization_id" jdbcType="BIGINT" property="organizationId" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, file_name, source_file_name, file_path, file_type, file_size, file_md5, customer_id, status, description
+    id, file_name, source_file_name, file_path, file_type, file_size, file_md5, customer_id, status, description, 
     operation_date, created_by, created_date, last_updated_by, last_updated_date, organization_id
   </sql>
   <sql id="Base_Where">

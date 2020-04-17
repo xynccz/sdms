@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.honest.sdms.system.dao.VendorWarehouseMapper">
+  <resultMap id="BaseResultMap" type="com.honest.sdms.system.entity.VendorWarehouse">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="vendor_id" jdbcType="BIGINT" property="vendorId" />
+    <result column="warehouse" jdbcType="VARCHAR" property="warehouse" />
+    <result column="warehouse_address" jdbcType="VARCHAR" property="warehouseAddress" />
+    <result column="warehouse_type" jdbcType="INTEGER" property="warehouseType" />
+    <result column="is_valid" jdbcType="CHAR" property="isValid" />
+    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+    <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+    <result column="last_updated_by" jdbcType="VARCHAR" property="lastUpdatedBy" />
+    <result column="last_updated_date" jdbcType="TIMESTAMP" property="lastUpdatedDate" />
+    <result column="organization_id" jdbcType="BIGINT" property="organizationId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, vendor_id, warehouse, warehouse_address, warehouse_type, is_valid, created_by, 
+    created_date, last_updated_by, last_updated_date, organization_id
+  </sql>
+  <sql id="Base_Where">
+	<trim prefix="WHERE" prefixOverrides="AND |OR ">
+	  <if test="vendorId != null">
+        and vendor_id = #{vendorId,jdbcType=BIGINT}
+      </if>
+      <if test="warehouse != null and warehouse != '' ">
+        and warehouse = #{warehouse,jdbcType=VARCHAR}
+      </if>
+      <if test="warehouseAddress != null and warehouseAddress != '' ">
+        and warehouse_address = #{warehouseAddress,jdbcType=VARCHAR}
+      </if>
+      <if test="warehouseType != null and warehouseType != '' ">
+        and warehouse_type = #{warehouseType,jdbcType=INTEGER}
+      </if>
+      <if test="isValid != null and isValid != '' ">
+        and is_valid = #{isValid,jdbcType=VARCHAR}
+      </if>
+      <if test="organizationId != null">
+        and organization_id = #{organizationId,jdbcType=BIGINT}
+      </if>
+	</trim>
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from vendor_warehouse
+    where vendor_id = #{vendorId,jdbcType=BIGINT} and organization_id = #{organizationId,jdbcType=BIGINT}
+  </select>
+  <select id="getVendorWarehouseListByVendorId" resultMap="BaseResultMap">
+  select 
+    <include refid="Base_Column_List" />
+    from vendor_warehouse
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from vendor_warehouse
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.honest.sdms.system.entity.VendorWarehouse">
+    insert into vendor_warehouse (id, vendor_id, warehouse, 
+      warehouse_address, warehouse_type, is_valid, 
+      created_by, created_date, last_updated_by, 
+      last_updated_date, organization_id)
+    values (#{id,jdbcType=BIGINT}, #{vendorId,jdbcType=BIGINT}, #{warehouse,jdbcType=VARCHAR}, 
+      #{warehouseAddress,jdbcType=VARCHAR}, #{warehouseType,jdbcType=INTEGER}, #{isValid,jdbcType=CHAR}, 
+      #{createdBy,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP}, #{lastUpdatedBy,jdbcType=VARCHAR}, 
+      #{lastUpdatedDate,jdbcType=TIMESTAMP}, #{organizationId,jdbcType=BIGINT})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.honest.sdms.system.entity.VendorWarehouse">
+    update vendor_warehouse
+    set vendor_id = #{vendorId,jdbcType=BIGINT},
+      warehouse = #{warehouse,jdbcType=VARCHAR},
+      warehouse_address = #{warehouseAddress,jdbcType=VARCHAR},
+      warehouse_type = #{warehouseType,jdbcType=INTEGER},
+      is_valid = #{isValid,jdbcType=CHAR},
+      created_by = #{createdBy,jdbcType=VARCHAR},
+      created_date = #{createdDate,jdbcType=TIMESTAMP},
+      last_updated_by = #{lastUpdatedBy,jdbcType=VARCHAR},
+      last_updated_date = #{lastUpdatedDate,jdbcType=TIMESTAMP},
+      organization_id = #{organizationId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

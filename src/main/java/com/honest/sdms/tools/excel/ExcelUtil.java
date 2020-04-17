@@ -14,7 +14,7 @@ public class ExcelUtil {
 		try {
 			// 这里 需要指定读用哪个class去读，然后读取第一个sheet 文件流会自动关闭,读取第一个sheet 同步读取会自动finish
 //		    EasyExcel.read(file, DemoData.class, new OrderExcelDataListener(null)).sheet().doRead();
-			EasyExcel.read(file, new OrderModleDataListener(null,null,null,null)).sheet().doRead();
+			EasyExcel.read(file, new OrderModleDataListener(null,null,null,null,null)).sheet().doRead();
 		    // 写法2：
 //		    ExcelReader excelReader = EasyExcel.read(file, DemoData.class, new OrderExcelDataListener()).build();
 //		    ReadSheet readSheet = EasyExcel.readSheet(0).build();

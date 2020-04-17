@@ -11,7 +11,6 @@ public class OrderDetail extends BaseVO{
     private String productName;
     private Long itemId;
     private String item;
-    private Long itemSpecificId;
     private String warehouse;
     private Double weight;
     private Long pieceNum;
@@ -56,14 +55,6 @@ public class OrderDetail extends BaseVO{
 
     public void setItem(String item) {
         this.item = item == null ? null : item.trim();
-    }
-
-    public Long getItemSpecificId() {
-        return itemSpecificId;
-    }
-
-    public void setItemSpecificId(Long itemSpecificId) {
-        this.itemSpecificId = itemSpecificId;
     }
 
     public String getWarehouse() {

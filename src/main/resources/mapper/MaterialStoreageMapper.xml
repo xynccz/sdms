@@ -76,7 +76,7 @@
 	(select ds.dict_data_name from sys_dict_datas ds where ds.id = ms.inventory_type_id and ds.organization_id = ms.organization_id and ds.dict_id = 9) as inventoryType
 	from material_storeage ms
 	<include refid="Base_Where" />
-	group by ms.item_id,ms.item,ms.specific_id,ms.warehouse,ms.inventory_type_id,net_weight_per_unit,ms.organization_id
+	group by ms.item_id,ms.item,ms.item_grade_id,ms.specific_id,ms.warehouse,ms.inventory_type_id,net_weight_per_unit,ms.organization_id
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

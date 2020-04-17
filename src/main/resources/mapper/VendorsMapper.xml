@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.honest.sdms.system.dao.VendorsMapper">
+  <resultMap id="BaseResultMap" type="com.honest.sdms.system.entity.Vendors">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="vendor_name" jdbcType="VARCHAR" property="vendorName" />
+    <result column="vendor_code" jdbcType="VARCHAR" property="vendorCode" />
+    <result column="vendor_class" jdbcType="CHAR" property="vendorClass" />
+    <result column="vendor_score" jdbcType="DOUBLE" property="vendorScore" />
+    <result column="vendor_contacts" jdbcType="VARCHAR" property="vendorContacts" />
+    <result column="vendor_phone" jdbcType="VARCHAR" property="vendorPhone" />
+    <result column="vendor_address" jdbcType="VARCHAR" property="vendorAddress" />
+    <result column="vendor_email" jdbcType="VARCHAR" property="vendorEmail" />
+    <result column="network" jdbcType="VARCHAR" property="network" />
+    <result column="facsimile" jdbcType="VARCHAR" property="facsimile" />
+    <result column="expansion" jdbcType="VARCHAR" property="expansion" />
+    <result column="is_valid" jdbcType="CHAR" property="isValid" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+    <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+    <result column="last_updated_by" jdbcType="VARCHAR" property="lastUpdatedBy" />
+    <result column="last_updated_date" jdbcType="TIMESTAMP" property="lastUpdatedDate" />
+    <result column="organization_id" jdbcType="BIGINT" property="organizationId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, vendor_name, vendor_code, vendor_class, vendor_score, vendor_contacts, vendor_phone, 
+    vendor_address, vendor_email, network, facsimile, expansion, is_valid, remarks, created_by, 
+    created_date, last_updated_by, last_updated_date, organization_id
+  </sql>
+  <sql id="Base_Where">
+	<trim prefix="WHERE" prefixOverrides="AND |OR ">
+	  <if test="vendorName != null and vendorName != '' ">
+        and vendor_name = #{vendorName,jdbcType=VARCHAR}
+      </if>
+      <if test="vendorCode != null and vendorCode != '' ">
+        and vendor_code = #{vendorCode,jdbcType=VARCHAR}
+      </if>
+      <if test="vendorClass != null and vendorClass != '' ">
+        and vendor_class = #{vendorClass,jdbcType=CHAR}
+      </if>
+      <if test="vendorScore != null">
+        and vendor_score = #{vendorScore,jdbcType=DOUBLE}
+      </if>
+      <if test="vendorContacts != null and vendorContacts != '' ">
+        and vendor_contacts = #{vendorContacts,jdbcType=VARCHAR}
+      </if>
+      <if test="vendorPhone != null and vendorPhone != '' ">
+        and vendor_phone = #{vendorPhone,jdbcType=VARCHAR}
+      </if>
+      <if test="vendorAddress != null and vendorAddress != '' ">
+        and vendor_address = #{vendorAddress,jdbcType=VARCHAR}
+      </if>
+      <if test="vendorEmail != null and vendorEmail != '' ">
+        and vendor_email = #{vendorEmail,jdbcType=VARCHAR}
+      </if>
+      <if test="network != null and network != '' ">
+        and network = #{network,jdbcType=VARCHAR}
+      </if>
+      <if test="facsimile != null and facsimile != '' ">
+        and facsimile = #{facsimile,jdbcType=VARCHAR}
+      </if>
+      <if test="expansion != null and expansion != '' ">
+        and expansion = #{expansion,jdbcType=VARCHAR}
+      </if>
+      <if test="isValid != null and isValid != '' ">
+        and is_valid = #{isValid,jdbcType=VARCHAR}
+      </if>
+      <if test="organizationId != null">
+        and organization_id = #{organizationId,jdbcType=BIGINT}
+      </if>
+	</trim>
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from vendors
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="findByCond" parameterType="com.honest.sdms.system.entity.Vendors" resultMap="BaseResultMap">
+	select
+	<include refid="Base_Column_List" />
+	from vendors
+	<include refid="Base_Where"/>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from vendors
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <select id="getVendorList" resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />
+    from vendors
+    where vendor_name like CONCAT('%',#{vendorName,jdbcType=VARCHAR},'%') and organization_id = #{organizationId,jdbcType=BIGINT}
+  </select>
+  <insert id="insert" parameterType="com.honest.sdms.system.entity.Vendors">
+    insert into vendors (id, vendor_name, vendor_code, 
+      vendor_class, vendor_score, vendor_contacts, 
+      vendor_phone, vendor_address, vendor_email, 
+      network, facsimile, expansion, 
+      is_valid, remarks, created_by, 
+      created_date, last_updated_by, last_updated_date, 
+      organization_id)
+    values (#{id,jdbcType=BIGINT}, #{vendorName,jdbcType=VARCHAR}, #{vendorCode,jdbcType=VARCHAR}, 
+      #{vendorClass,jdbcType=CHAR}, #{vendorScore,jdbcType=DOUBLE}, #{vendorContacts,jdbcType=VARCHAR}, 
+      #{vendorPhone,jdbcType=VARCHAR}, #{vendorAddress,jdbcType=VARCHAR}, #{vendorEmail,jdbcType=VARCHAR}, 
+      #{network,jdbcType=VARCHAR}, #{facsimile,jdbcType=VARCHAR}, #{expansion,jdbcType=VARCHAR}, 
+      #{isValid,jdbcType=CHAR}, #{remarks,jdbcType=VARCHAR}, #{createdBy,jdbcType=VARCHAR}, 
+      #{createdDate,jdbcType=TIMESTAMP}, #{lastUpdatedBy,jdbcType=VARCHAR}, #{lastUpdatedDate,jdbcType=TIMESTAMP}, 
+      #{organizationId,jdbcType=BIGINT})
+  </insert>
+  
+  <update id="updateByPrimaryKey" parameterType="com.honest.sdms.system.entity.Vendors">
+    update vendors
+    set vendor_name = #{vendorName,jdbcType=VARCHAR},
+      vendor_code = #{vendorCode,jdbcType=VARCHAR},
+      vendor_class = #{vendorClass,jdbcType=CHAR},
+      vendor_score = #{vendorScore,jdbcType=DOUBLE},
+      vendor_contacts = #{vendorContacts,jdbcType=VARCHAR},
+      vendor_phone = #{vendorPhone,jdbcType=VARCHAR},
+      vendor_address = #{vendorAddress,jdbcType=VARCHAR},
+      vendor_email = #{vendorEmail,jdbcType=VARCHAR},
+      network = #{network,jdbcType=VARCHAR},
+      facsimile = #{facsimile,jdbcType=VARCHAR},
+      expansion = #{expansion,jdbcType=VARCHAR},
+      is_valid = #{isValid,jdbcType=CHAR},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      created_by = #{createdBy,jdbcType=VARCHAR},
+      created_date = #{createdDate,jdbcType=TIMESTAMP},
+      last_updated_by = #{lastUpdatedBy,jdbcType=VARCHAR},
+      last_updated_date = #{lastUpdatedDate,jdbcType=TIMESTAMP},
+      organization_id = #{organizationId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

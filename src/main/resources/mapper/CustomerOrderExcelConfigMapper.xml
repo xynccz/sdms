@@ -57,7 +57,7 @@
   	select 
     <include refid="Base_Column_List" />
     from customer_order_excel_config
-    where customer_id = #{customerId,jdbcType=BIGINT} and operate_type = #{operateType}
+    where customer_id = #{customerId,jdbcType=BIGINT} and operate_type = #{operateType} and is_valid = 'Y'
   </select>
   <select id="findByCond" parameterType="com.honest.sdms.system.entity.CustomerOrderExcelConfig" resultMap="BaseResultMap">
 	select

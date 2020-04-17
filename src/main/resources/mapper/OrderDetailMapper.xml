@@ -7,7 +7,6 @@
     <result column="product_name" jdbcType="VARCHAR" property="productName" />
     <result column="item_id" jdbcType="BIGINT" property="itemId" />
     <result column="item" jdbcType="VARCHAR" property="item" />
-    <result column="item_specific_id" jdbcType="BIGINT" property="itemSpecificId" />
     <result column="warehouse" jdbcType="VARCHAR" property="warehouse" />
     <result column="weight" jdbcType="DOUBLE" property="weight" />
     <result column="piece_num" jdbcType="BIGINT" property="pieceNum" />
@@ -19,7 +18,7 @@
     <result column="organization_id" jdbcType="BIGINT" property="organizationId" />
   </resultMap>
   <sql id="Base_Column_List">
-    detail_id, header_id, product_name, item_id, item, item_specific_id, warehouse, weight, 
+    detail_id, header_id, product_name, item_id, item, warehouse, weight, 
     piece_num, description, created_by, created_date, last_updated_by, last_updated_date, 
     organization_id
   </sql>
@@ -35,7 +34,7 @@
   </delete>
   <insert id="saveList" parameterType="list">
 	INSERT INTO order_detail (header_id, product_name,
-	item_id, item, item_specific_id,
+	item_id, item, 
 	warehouse, weight, piece_num,
 	description, created_by, created_date,
 	last_updated_by, last_updated_date, organization_id)
@@ -43,7 +42,6 @@
 	<foreach collection="list" item="item" separator=",">
 		(#{item.headerId,jdbcType=VARCHAR}, #{item.productName,jdbcType=VARCHAR},
 		#{item.itemId,jdbcType=BIGINT}, #{item.item,jdbcType=VARCHAR},
-		#{item.itemSpecificId,jdbcType=BIGINT},
 		#{item.warehouse,jdbcType=VARCHAR}, #{item.weight,jdbcType=DOUBLE}, #{item.pieceNum,jdbcType=BIGINT},
 		#{item.description,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=VARCHAR},
 		#{item.createdDate,jdbcType=TIMESTAMP},
@@ -53,13 +51,12 @@
   </insert>
   <insert id="insert" parameterType="com.honest.sdms.order.entity.OrderDetail">
 	insert into order_detail (header_id, product_name,
-	item_id, item, item_specific_id,
+	item_id, item,
 	warehouse, weight, piece_num,
 	description, created_by, created_date,
 	last_updated_by, last_updated_date, organization_id)
 	values (#{headerId,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR},
 	#{itemId,jdbcType=BIGINT}, #{item,jdbcType=VARCHAR},
-	#{itemSpecificId,jdbcType=BIGINT},
 	#{warehouse,jdbcType=VARCHAR}, #{weight,jdbcType=DOUBLE}, #{pieceNum,jdbcType=BIGINT},
 	#{description,jdbcType=VARCHAR}, #{createdBy,jdbcType=VARCHAR},
 	#{createdDate,jdbcType=TIMESTAMP},
@@ -73,7 +70,6 @@
       product_name = #{productName,jdbcType=VARCHAR},
       item_id = #{itemId,jdbcType=BIGINT},
       item = #{item,jdbcType=VARCHAR},
-      item_specific_id = #{itemSpecificId,jdbcType=BIGINT},
       warehouse = #{warehouse,jdbcType=VARCHAR},
       weight = #{weight,jdbcType=DOUBLE},
       piece_num = #{pieceNum,jdbcType=BIGINT},

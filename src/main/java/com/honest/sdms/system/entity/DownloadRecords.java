@@ -18,7 +18,11 @@ public class DownloadRecords extends BaseVO{
     private String customerName;
     private Date operationDate;
     
-    public String getCustomerName() {
+    public DownloadRecords() {
+		super();
+	}
+
+	public String getCustomerName() {
 		return customerName;
 	}
 

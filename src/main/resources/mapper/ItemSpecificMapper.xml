@@ -6,8 +6,9 @@
     <result column="item_id" jdbcType="BIGINT" property="itemId" />
     <result column="item" jdbcType="VARCHAR" property="item" />
     <result column="grade_id" jdbcType="BIGINT" property="gradeId" />
-    <result column="specific_id" jdbcType="BIGINT" property="specificId" />
-    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="net_weight" jdbcType="DOUBLE" property="netWeight" />
+    <result column="standard_id" jdbcType="BIGINT" property="standardId" />
+    <result column="specific_code" jdbcType="VARCHAR" property="specificCode" />
     <result column="is_valid" jdbcType="CHAR" property="isValid" />
     <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
     <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
@@ -16,13 +17,16 @@
     <result column="organization_id" jdbcType="BIGINT" property="organizationId" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, item_id, item, grade_id, specific_id, remarks, is_valid, created_by, created_date, last_updated_by, last_updated_date, 
+    id, item_id, item, grade_id, standard_id, specific_code, net_weight, is_valid, created_by, created_date, last_updated_by, last_updated_date, 
     organization_id
   </sql>
   <sql id="Base_Where">
 	<trim prefix="WHERE" prefixOverrides="AND |OR ">
 	  <if test="item != null and item != '' ">
         and item = #{item,jdbcType=VARCHAR}
+      </if>
+      <if test="specificCode != null and specificCode != '' ">
+        and specific_code = #{specificCode,jdbcType=VARCHAR}
       </if>
       <if test="isValid != null and isValid != '' ">
         and is_valid = #{isValid,jdbcType=CHAR}
@@ -33,8 +37,8 @@
       <if test="gradeId != null">
         and grade_id = #{gradeId,jdbcType=BIGINT}
       </if>
-      <if test="specificId != null">
-        and specific_id = #{specificId,jdbcType=BIGINT}
+      <if test="standardId != null">
+        and standard_id = #{standardId,jdbcType=BIGINT}
       </if>
       <if test="organizationId != null">
         and organization_id = #{organizationId,jdbcType=BIGINT}
@@ -47,6 +51,11 @@
 		from item_specific
 	<include refid="Base_Where"/>
   </select>
+  <select id="getItemSpecificListByItemId" resultMap="BaseResultMap">
+  	select
+	<include refid="Base_Column_List" />
+		from item_specific where item_id = #{itemId,jdbcType=BIGINT} and organization_id = #{organizationId,jdbcType=BIGINT} 
+  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
@@ -58,12 +67,12 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.honest.sdms.system.entity.ItemSpecific">
-		insert into item_specific (id, item_id, item, grade_id, specific_id,
-		remarks, is_valid, created_by, created_date,
+		insert into item_specific (id, item_id, item, grade_id, standard_id,
+		specific_code, net_weight, is_valid, created_by, created_date,
 		last_updated_by, last_updated_date, organization_id)
 		values (#{id,jdbcType=BIGINT}, #{itemId,jdbcType=BIGINT},#{item,jdbcType=VARCHAR},
-		#{gradeId,jdbcType=BIGINT},#{specificId,jdbcType=BIGINT},
-		#{remarks,jdbcType=VARCHAR}, #{isValid,jdbcType=CHAR}, 
+		#{gradeId,jdbcType=BIGINT},#{standardId,jdbcType=BIGINT},
+		#{specificCode,jdbcType=VARCHAR},#{netWeight,jdbcType=DOUBLE}, #{isValid,jdbcType=CHAR}, 
 		#{createdBy,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP},
 		#{lastUpdatedBy,jdbcType=VARCHAR},
 		#{lastUpdatedDate,jdbcType=TIMESTAMP},
@@ -73,9 +82,10 @@
     update item_specific
     set item_id = #{itemId,jdbcType=BIGINT},
       grade_id = #{gradeId,jdbcType=BIGINT},
-      specific_id = #{specificId,jdbcType=BIGINT},
-      remarks = #{item,jdbcType=VARCHAR},
-      remarks = #{remarks,jdbcType=VARCHAR},
+      standard_id = #{standardId,jdbcType=BIGINT},
+      item = #{item,jdbcType=VARCHAR},
+      specific_code = #{specificCode,jdbcType=VARCHAR},
+      net_weight = #{netWeight,jdbcType=DOUBLE},
       is_valid = #{isValid,jdbcType=CHAR},
       created_by = #{createdBy,jdbcType=VARCHAR},
       created_date = #{createdDate,jdbcType=TIMESTAMP},

@@ -6,7 +6,10 @@ import java.io.StringWriter;
 import java.math.BigInteger;
 import java.util.Random;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 
@@ -19,7 +22,53 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 
 @SuppressWarnings("restriction")
-public class StringUtil {   
+public class StringUtil { 
+	
+	//电话号码匹配正则表达式
+	public static final String REGEX_MOBILE = "^[1](([0|3|4|5|6|7|8|9][\\d])|([4][5,6,7,8,9])|([6][5,6])|([7][3,4,5,6,7,8])|([9][8,9]))[\\d]{8}$";
+		
+	/**
+	 * 获取用户真实IP地址
+	 * @param request
+	 * @return
+	 */
+	public static String getIpAddress(HttpServletRequest request) {
+        String ip = request.getHeader("X-forwarded-for");
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        return ip;
+    }
+	
+	/**
+	 * 电话号码匹配
+	 * @param phoneNum
+	 * @return
+	 */
+	public static boolean isMobile(String phoneNum) {
+        Pattern p = null;
+        Matcher m = null;
+        boolean b = false;
+        if(!StringUtil.isNullOrEmpty(phoneNum)){      
+            p = Pattern.compile(REGEX_MOBILE);
+            m = p.matcher(phoneNum);
+            b = m.matches();
+        }
+        return b;
+    }
+	
     /**  
      * replace s1 with s2 in source String  
      * @param source in which to find s1  
@@ -192,9 +241,7 @@ public class StringUtil {
         return buf.toString();   
     }   
     
-    
 	private static sun.misc.BASE64Encoder base64Encoder = new sun.misc.BASE64Encoder(); 
-    
     
 	public static String base64Encode(byte[] buf){   
         return base64Encoder.encode(buf);   
@@ -340,6 +387,8 @@ public class StringUtil {
         System.out.println("new:" + StringUtil.replace(title,strSrc,strDist));  
         
         System.out.println(StringUtil.ToPinyin("苹果"));
+        
+        System.out.println(StringUtil.isMobile("17154201111"));
     }   
   
   

@@ -25,6 +25,9 @@ public class CustomerOrderExcelConfigServiceImp extends BaseServiceImp<CustomerO
 		customerOrderExcelConfigMapper = (CustomerOrderExcelConfigMapper)baseMapper;
 	}
 
+	/**
+	 * 获取有效的客户对于订单字段配置信息,此方法默认取有效配置既is_vaild=Y
+	 */
 	@Override
 	public List<CustomerOrderExcelConfig> findCustomerOrderConfigByCustomerId(Long customerId, String operateType) {
 		return customerOrderExcelConfigMapper.findCustomerOrderConfigByCustomerId(customerId, operateType);

@@ -8,4 +8,6 @@ import com.honest.sdms.system.entity.ItemSpecific;
 public interface IItemSpecificService extends IBaseService<ItemSpecific, Long>{
 
 	abstract void saveOrUpdateItemSpecificConfigs(List<ItemSpecific> list)throws HSException;
+	
+	abstract List<ItemSpecific> getItemSpecificListByItemId(Long itemId);
 }

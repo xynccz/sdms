@@ -5,6 +5,7 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="header_id" jdbcType="VARCHAR" property="headerId" />
     <result column="express_company" jdbcType="VARCHAR" property="expressCompany" />
+    <result column="express_company_code" jdbcType="VARCHAR" property="expressCompanyCode" />
     <result column="express_no" jdbcType="VARCHAR" property="expressNo" />
     <result column="express_status" jdbcType="VARCHAR" property="expressStatus" />
     <result column="net_name" jdbcType="VARCHAR" property="netName" />
@@ -15,6 +16,9 @@
     <result column="consignee_county" jdbcType="VARCHAR" property="consigneeCounty" />
     <result column="consignee_address" jdbcType="VARCHAR" property="consigneeAddress" />
     <result column="consignee_zip" jdbcType="VARCHAR" property="consigneeZip" />
+    <result column="sending_address" jdbcType="VARCHAR" property="sendingAddress" />
+    <result column="sender_name" jdbcType="VARCHAR" property="senderName" />
+    <result column="sender_phone" jdbcType="VARCHAR" property="senderPhone" />
     <result column="delivery_conditions" jdbcType="VARCHAR" property="deliveryConditions" />
     <result column="delivery_amount" jdbcType="DOUBLE" property="deliveryAmount" />
     <result column="express_result_last" jdbcType="VARCHAR" property="expressResultLast" />
@@ -28,9 +32,9 @@
     <result column="organization_id" jdbcType="BIGINT" property="organizationId" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, header_id, express_company, express_no, express_status, net_name, consignee_realname, 
+    id, header_id, express_company, express_company_code, express_no, express_status, net_name, consignee_realname, 
     consignee_telphone, consignee_province, consignee_city, consignee_county, consignee_address, 
-    consignee_zip, delivery_conditions, delivery_amount, express_result_last, express_result, 
+    consignee_zip, sending_address, sender_name, sender_phone, delivery_conditions, delivery_amount, express_result_last, express_result, 
     express_create_time, express_update_time, created_by, created_date, last_updated_by, 
     last_updated_date, organization_id
   </sql>
@@ -45,40 +49,42 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="saveList" parameterType="list">
-	INSERT INTO order_express (header_id, express_company, 
+	INSERT INTO order_express (header_id, express_company, express_company_code,
       express_no, express_status, net_name, 
       consignee_realname, consignee_telphone, consignee_province, 
       consignee_city, consignee_county, consignee_address, 
-      consignee_zip, delivery_conditions, delivery_amount, 
+      consignee_zip, sending_address, sender_name, sender_phone, delivery_conditions, delivery_amount, 
       express_result_last, express_result, express_create_time, 
       express_update_time, created_by, created_date, 
       last_updated_by, last_updated_date, organization_id)
 	VALUES
 	<foreach collection="list" item="item" separator=",">
-		(#{item.headerId,jdbcType=VARCHAR}, #{item.expressCompany,jdbcType=VARCHAR}, 
+		(#{item.headerId,jdbcType=VARCHAR}, #{item.expressCompany,jdbcType=VARCHAR}, #{item.expressCompanyCode,jdbcType=VARCHAR}, 
       #{item.expressNo,jdbcType=VARCHAR}, #{item.expressStatus,jdbcType=VARCHAR}, #{item.netName,jdbcType=VARCHAR}, 
       #{item.consigneeRealname,jdbcType=VARCHAR}, #{item.consigneeTelphone,jdbcType=VARCHAR}, #{item.consigneeProvince,jdbcType=VARCHAR}, 
       #{item.consigneeCity,jdbcType=VARCHAR}, #{item.consigneeCounty,jdbcType=VARCHAR}, #{item.consigneeAddress,jdbcType=VARCHAR}, 
-      #{item.consigneeZip,jdbcType=VARCHAR}, #{item.deliveryConditions,jdbcType=VARCHAR}, #{item.deliveryAmount,jdbcType=DOUBLE}, 
+      #{item.consigneeZip,jdbcType=VARCHAR},#{item.sendingAddress,jdbcType=VARCHAR},#{item.senderName,jdbcType=VARCHAR},#{item.senderPhone,jdbcType=VARCHAR},
+      #{item.deliveryConditions,jdbcType=VARCHAR}, #{item.deliveryAmount,jdbcType=DOUBLE}, 
       #{item.expressResultLast,jdbcType=VARCHAR}, #{item.expressResult,jdbcType=VARCHAR}, #{item.expressCreateTime,jdbcType=TIMESTAMP}, 
       #{item.expressUpdateTime,jdbcType=TIMESTAMP}, #{item.createdBy,jdbcType=VARCHAR}, #{item.createdDate,jdbcType=TIMESTAMP}, 
       #{item.lastUpdatedBy,jdbcType=VARCHAR}, #{item.lastUpdatedDate,jdbcType=TIMESTAMP}, #{item.organizationId,jdbcType=BIGINT})
 	</foreach>
   </insert>
   <insert id="insert" parameterType="com.honest.sdms.order.entity.OrderExpress">
-    insert into order_express (header_id, express_company, 
+    insert into order_express (header_id, express_company, express_company_code,
       express_no, express_status, net_name, 
       consignee_realname, consignee_telphone, consignee_province, 
       consignee_city, consignee_county, consignee_address, 
-      consignee_zip, delivery_conditions, delivery_amount, 
+      consignee_zip, sending_address, sender_name, sender_phone, delivery_conditions, delivery_amount, 
       express_result_last, express_result, express_create_time, 
       express_update_time, created_by, created_date, 
       last_updated_by, last_updated_date, organization_id)
-    values (#{headerId,jdbcType=VARCHAR}, #{expressCompany,jdbcType=VARCHAR}, 
+    values (#{headerId,jdbcType=VARCHAR}, #{expressCompany,jdbcType=VARCHAR}, #{expressCompanyCode,jdbcType=VARCHAR}, 
       #{expressNo,jdbcType=VARCHAR}, #{expressStatus,jdbcType=VARCHAR}, #{netName,jdbcType=VARCHAR}, 
       #{consigneeRealname,jdbcType=VARCHAR}, #{consigneeTelphone,jdbcType=VARCHAR}, #{consigneeProvince,jdbcType=VARCHAR}, 
       #{consigneeCity,jdbcType=VARCHAR}, #{consigneeCounty,jdbcType=VARCHAR}, #{consigneeAddress,jdbcType=VARCHAR}, 
-      #{consigneeZip,jdbcType=VARCHAR}, #{deliveryConditions,jdbcType=VARCHAR}, #{deliveryAmount,jdbcType=DOUBLE}, 
+      #{consigneeZip,jdbcType=VARCHAR}, #{sendingAddress,jdbcType=VARCHAR}, #{senderName,jdbcType=VARCHAR}, #{senderPhone,jdbcType=VARCHAR}, 
+      #{deliveryConditions,jdbcType=VARCHAR}, #{deliveryAmount,jdbcType=DOUBLE}, 
       #{expressResultLast,jdbcType=VARCHAR}, #{expressResult,jdbcType=VARCHAR}, #{expressCreateTime,jdbcType=TIMESTAMP}, 
       #{expressUpdateTime,jdbcType=TIMESTAMP}, #{createdBy,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP}, 
       #{lastUpdatedBy,jdbcType=VARCHAR}, #{lastUpdatedDate,jdbcType=TIMESTAMP}, #{organizationId,jdbcType=BIGINT})
@@ -88,6 +94,7 @@
     update order_express
     set header_id = #{headerId,jdbcType=VARCHAR},
       express_company = #{expressCompany,jdbcType=VARCHAR},
+      express_company_code = #{expressCompanyCode,jdbcType=VARCHAR},
       express_no = #{expressNo,jdbcType=VARCHAR},
       express_status = #{expressStatus,jdbcType=VARCHAR},
       net_name = #{netName,jdbcType=VARCHAR},
@@ -98,6 +105,9 @@
       consignee_county = #{consigneeCounty,jdbcType=VARCHAR},
       consignee_address = #{consigneeAddress,jdbcType=VARCHAR},
       consignee_zip = #{consigneeZip,jdbcType=VARCHAR},
+      sending_address = #{sendingAddress,jdbcType=VARCHAR},
+      sender_name = #{senderName,jdbcType=VARCHAR},
+      sender_phone = #{senderPhone,jdbcType=VARCHAR},
       delivery_conditions = #{deliveryConditions,jdbcType=VARCHAR},
       delivery_amount = #{deliveryAmount,jdbcType=DOUBLE},
       express_result_last = #{expressResultLast,jdbcType=VARCHAR},

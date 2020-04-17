@@ -10,6 +10,7 @@ public class OrderExpress extends BaseVO{
 	private Long id;
     private String headerId;
     private String expressCompany;
+    private String expressCompanyCode;
     private String expressNo;
     private String expressStatus;
     private String netName;
@@ -20,6 +21,9 @@ public class OrderExpress extends BaseVO{
     private String consigneeCounty;
     private String consigneeAddress;
     private String consigneeZip;
+    private String sendingAddress;
+    private String senderName;
+    private String senderPhone;
     private String deliveryConditions;
     private Double deliveryAmount;
     private String expressResultLast;
@@ -27,7 +31,39 @@ public class OrderExpress extends BaseVO{
     private Timestamp expressCreateTime;
     private Timestamp expressUpdateTime;
 
-    public Long getId() {
+    public String getExpressCompanyCode() {
+		return expressCompanyCode;
+	}
+
+	public void setExpressCompanyCode(String expressCompanyCode) {
+		this.expressCompanyCode = expressCompanyCode;
+	}
+
+	public String getSendingAddress() {
+		return sendingAddress;
+	}
+
+	public void setSendingAddress(String sendingAddress) {
+		this.sendingAddress = sendingAddress;
+	}
+
+	public String getSenderName() {
+		return senderName;
+	}
+
+	public void setSenderName(String senderName) {
+		this.senderName = senderName;
+	}
+
+	public String getSenderPhone() {
+		return senderPhone;
+	}
+
+	public void setSenderPhone(String senderPhone) {
+		this.senderPhone = senderPhone;
+	}
+
+	public Long getId() {
         return id;
     }
 
