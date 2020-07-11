@@ -81,7 +81,10 @@
   	select 
     <include refid="Base_Column_List" />
     from customers
-    where customer_name like CONCAT('%',#{customerName,jdbcType=VARCHAR},'%') and organization_id = #{organizationId,jdbcType=BIGINT}
+    where organization_id = #{organizationId,jdbcType=BIGINT}
+  	<if test="customerName != null and customerName != '' ">
+    	and customer_name like CONCAT('%',#{customerName,jdbcType=VARCHAR},'%')
+    </if>
   </select>
   <select id="findByCond" parameterType="com.honest.sdms.system.entity.Customers" resultMap="BaseResultMap">
 	select

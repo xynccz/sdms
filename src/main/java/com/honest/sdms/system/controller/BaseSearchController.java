@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.honest.sdms.Constants;
 import com.honest.sdms.basedata.APIResponse;
 import com.honest.sdms.basedata.ResultStatus;
+import com.honest.sdms.system.entity.CustomerArchives;
 import com.honest.sdms.system.entity.Customers;
 import com.honest.sdms.system.entity.Role;
 import com.honest.sdms.system.entity.RoleResource;
@@ -77,6 +78,11 @@ public class BaseSearchController {
 	@RequestMapping(value="/getCustomerList", method = RequestMethod.GET,produces= {"application/json;charset=UTF-8;"})
 	public @ResponseBody List<Customers> getCustomerList(String customerName) {
 		return customersService.getCustomerList(customerName);
+	}
+	
+	@RequestMapping(value="/getDistinctCustomerSpecific", method = RequestMethod.GET,produces= {"application/json;charset=UTF-8;"})
+	public @ResponseBody List<CustomerArchives> getDistinctCustomerSpecific() {
+		return customersService.getDistinctCustomerSpecificCode();
 	}
 	
 	@RequestMapping(value="/getVendorList", method = RequestMethod.GET,produces= {"application/json;charset=UTF-8;"})

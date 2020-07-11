@@ -41,11 +41,11 @@
     last_updated_date, organization_id
   </sql>
   <sql id="Deatil_Base_Column_List">
-    detail_id, item_id, item, warehouse, weight, 
+    detail_id, item_id, item, warehouse_id, weight, 
     piece_num, description
   </sql>
   <sql id="Express_Base_Column_List">
-    id, express_company as expressCompany, express_company_code, express_no, express_status, net_name, consignee_realname as consigneeRealname, 
+    id, express_company as expressCompany, express_company_id, express_no, express_status, net_name, consignee_realname as consigneeRealname, 
     consignee_telphone as consigneeTelphone, concat_ws(',',consignee_province,consignee_city,consignee_county,consignee_address) as consigneeAddress, 
     consignee_zip, sending_address, sender_name, sender_phone, delivery_conditions, delivery_amount, express_result_last, express_result, 
     express_create_time, express_update_time
@@ -124,6 +124,16 @@
       <if test="organizationId != null">
         and p.organization_id = #{organizationId,jdbcType=BIGINT}
       </if>
+      
+      <if test="consigneeProvince != null and consigneeProvince !=''">
+        and s.consignee_province = #{consigneeProvince,jdbcType=VARCHAR}
+      </if>
+      <if test="consigneeCity != null and consigneeCity != ''">
+        and s.consignee_city = #{consigneeCity,jdbcType=VARCHAR}
+      </if>
+      <if test="consigneeCounty != null and consigneeCounty != ''">
+        and s.consignee_county = #{consigneeCounty,jdbcType=VARCHAR}
+      </if>
 	</trim>
   </sql>
   <select id="findByCond" parameterType="com.honest.sdms.order.entity.OrderHeader" resultMap="BaseResultMap">
@@ -134,6 +144,8 @@
 	(select ds.dict_data_name from sys_dict_datas ds,item_specific ic where p.item_specific_id = ic.id and ds.id = ic.grade_id and p.organization_id=ic.organization_id and ds.organization_id = ic.organization_id and ds.dict_id = 13) as itemGrade,
 	(select ds.dict_data_name from sys_dict_datas ds,item_specific ic where p.item_specific_id = ic.id and ds.id = ic.standard_id and p.organization_id=ic.organization_id and ds.organization_id = ic.organization_id and ds.dict_id = 3) as itemStandards,
 	(select ic.specific_code from item_specific ic where p.item_specific_id = ic.id and p.organization_id=ic.organization_id ) as itemSpecificCode,
+	(select ds.dict_data_name from sys_dict_datas ds where d.warehouse_id = ds.id and d.organization_id=ds.organization_id ) as warehouse,
+	(select ds.dict_data_name from sys_dict_datas ds where s.express_company_id = ds.id and s.organization_id=ds.organization_id ) as expressCompanyName,
 	CASE p.order_status
 		when 'UN_REVIEWED' THEN '待审核'
 		when 'ALREADY_REVIEWED' THEN '已审核'
@@ -154,6 +166,16 @@
     <include refid="Base_Column_List" />
     from order_header
     where header_id = #{headerId,jdbcType=VARCHAR}
+  </select>
+  <select id="getOrderHeadsByHeaderIds" resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />
+    from order_header 
+    where header_id in 
+     	<foreach collection="headerIds" item="headerId" index="index" open="(" separator="," close=")">
+            #{headerId}
+        </foreach> 
+     and organization_id = #{organizationId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from order_header
@@ -211,7 +233,42 @@
       #{lastUpdatedBy,jdbcType=VARCHAR}, #{lastUpdatedDate,jdbcType=TIMESTAMP}, #{organizationId,jdbcType=BIGINT}
       )
   </insert>
-  
+  <update id="updateList" parameterType="list">
+  	<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+       update order_header 
+       <set>
+          record_id = #{item.recordId,jdbcType=BIGINT},
+	      order_no = #{item.orderNo,jdbcType=VARCHAR},
+	      order_type_id = #{item.orderTypeId,jdbcType=BIGINT},
+	      order_status = #{item.orderStatus,jdbcType=VARCHAR},
+	      item_specific_id = #{item.itemSpecificId,jdbcType=BIGINT},
+	      customer_item_specific = #{item.customerItemSpecific,jdbcType=VARCHAR}, 
+	      buyer_notes = #{item.buyerNotes,jdbcType=VARCHAR},
+	      customer_id = #{item.customerId,jdbcType=BIGINT},
+	      customer_order_no = #{item.customerOrderNo,jdbcType=VARCHAR},
+	      customer_name = #{item.customerName,jdbcType=VARCHAR},
+	      customer_service_notes = #{item.customerServiceNotes,jdbcType=VARCHAR},
+	      order_count = #{item.orderCount,jdbcType=BIGINT},
+	      order_amount = #{item.orderAmount,jdbcType=DOUBLE},
+	      is_reviewed = #{item.isReviewed,jdbcType=CHAR},
+	      is_generated_express_no = #{item.isGeneratedExpressNo,jdbcType=CHAR},
+	      is_printed = #{item.isPrinted,jdbcType=CHAR},
+	      is_shipped = #{item.isShipped,jdbcType=CHAR},
+	      is_completed = #{item.isCompleted,jdbcType=CHAR},
+	      is_created_express_info = #{item.isCreatedExpressInfo,jdbcType=CHAR},
+	      is_canceled = #{item.isCanceled,jdbcType=CHAR},
+	      order_log = #{item.orderLog,jdbcType=VARCHAR},
+	      remarks = #{item.remarks,jdbcType=VARCHAR},
+	      is_valid = #{item.isValid,jdbcType=CHAR},
+	      created_by = #{item.createdBy,jdbcType=VARCHAR},
+	      created_date = #{item.createdDate,jdbcType=TIMESTAMP},
+	      last_updated_by = #{item.lastUpdatedBy,jdbcType=VARCHAR},
+	      last_updated_date = #{item.lastUpdatedDate,jdbcType=TIMESTAMP},
+	      organization_id = #{item.organizationId,jdbcType=BIGINT}
+        </set>
+        where header_id = #{item.headerId,jdbcType=VARCHAR}
+    </foreach>   
+  </update>
   <update id="updateByPrimaryKey" parameterType="com.honest.sdms.order.entity.OrderHeader">
     update order_header
     set record_id = #{recordId,jdbcType=BIGINT},

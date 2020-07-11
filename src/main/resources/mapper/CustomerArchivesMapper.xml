@@ -50,9 +50,11 @@
     (select item_id from item_specific sc where sc.id = item_specific_id and sc.organization_id = organization_id ) as itemId,
     (select specific_code from item_specific sc where sc.id = item_specific_id and sc.organization_id = organization_id) as specificCode
     from customer_archives
-    where customer_id = #{customerId,jdbcType=BIGINT} and organization_id = #{organizationId,jdbcType=BIGINT}
+    where customer_id = #{customerId,jdbcType=BIGINT} and organization_id = #{organizationId,jdbcType=BIGINT} and is_valid = 'Y'
   </select>
-  
+  <select id="getDistinctCustomerSpecificCode" resultMap="BaseResultMap">
+  	select distinct customer_specific_code from customer_archives where organization_id = #{organizationId,jdbcType=BIGINT} and is_valid = 'Y' order by customer_specific_code desc
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from customer_archives
     where id = #{id,jdbcType=BIGINT}

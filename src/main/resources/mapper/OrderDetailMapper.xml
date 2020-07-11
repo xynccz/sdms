@@ -4,10 +4,9 @@
   <resultMap id="BaseResultMap" type="com.honest.sdms.order.entity.OrderDetail">
     <id column="detail_id" jdbcType="BIGINT" property="detailId" />
     <result column="header_id" jdbcType="VARCHAR" property="headerId" />
-    <result column="product_name" jdbcType="VARCHAR" property="productName" />
     <result column="item_id" jdbcType="BIGINT" property="itemId" />
     <result column="item" jdbcType="VARCHAR" property="item" />
-    <result column="warehouse" jdbcType="VARCHAR" property="warehouse" />
+    <result column="warehouse_id" jdbcType="BIGINT" property="warehouseId" />
     <result column="weight" jdbcType="DOUBLE" property="weight" />
     <result column="piece_num" jdbcType="BIGINT" property="pieceNum" />
     <result column="description" jdbcType="VARCHAR" property="description" />
@@ -18,10 +17,35 @@
     <result column="organization_id" jdbcType="BIGINT" property="organizationId" />
   </resultMap>
   <sql id="Base_Column_List">
-    detail_id, header_id, product_name, item_id, item, warehouse, weight, 
+    detail_id, header_id, item_id, item, warehouse_id, weight, 
     piece_num, description, created_by, created_date, last_updated_by, last_updated_date, 
     organization_id
   </sql>
+  <select id="findOrderDetailsByHeadId" parameterType="java.lang.String" resultMap="BaseResultMap">
+  	select 
+    <include refid="Base_Column_List" />
+    from order_detail
+    where header_id = #{headerId}
+    and organization_id = #{organizationId,jdbcType=BIGINT}
+  </select>
+  <update id="updateOrderDetailsByHeadIds" parameterType="java.lang.Long">
+  	update order_detail set last_updated_date = SYSDATE(), warehouse_id = #{warehouseId,jdbcType=BIGINT}
+	    where header_id in 
+	    <foreach collection="headerIds" item="headerId" index="index" open="(" separator="," close=")">
+	       #{headerId}
+	    </foreach>
+	    and organization_id = #{organizationId,jdbcType=BIGINT}
+  </update>
+  <select id="findOrderDetailsByHeadIds" resultMap="BaseResultMap">
+	  select 
+	    <include refid="Base_Column_List" />
+	    from order_detail 
+	    where header_id in 
+	    <foreach collection="headerIds" item="headerId" index="index" open="(" separator="," close=")">
+	         #{headerId}
+	    </foreach>
+	    and organization_id = #{organizationId,jdbcType=BIGINT}
+  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
@@ -33,16 +57,16 @@
     where detail_id = #{detailId,jdbcType=BIGINT}
   </delete>
   <insert id="saveList" parameterType="list">
-	INSERT INTO order_detail (header_id, product_name,
+	INSERT INTO order_detail (header_id,
 	item_id, item, 
-	warehouse, weight, piece_num,
+	warehouse_id, weight, piece_num,
 	description, created_by, created_date,
 	last_updated_by, last_updated_date, organization_id)
 	VALUES
 	<foreach collection="list" item="item" separator=",">
-		(#{item.headerId,jdbcType=VARCHAR}, #{item.productName,jdbcType=VARCHAR},
+		(#{item.headerId,jdbcType=VARCHAR},
 		#{item.itemId,jdbcType=BIGINT}, #{item.item,jdbcType=VARCHAR},
-		#{item.warehouse,jdbcType=VARCHAR}, #{item.weight,jdbcType=DOUBLE}, #{item.pieceNum,jdbcType=BIGINT},
+		#{item.warehouseId,jdbcType=BIGINT}, #{item.weight,jdbcType=DOUBLE}, #{item.pieceNum,jdbcType=BIGINT},
 		#{item.description,jdbcType=VARCHAR}, #{item.createdBy,jdbcType=VARCHAR},
 		#{item.createdDate,jdbcType=TIMESTAMP},
 		#{item.lastUpdatedBy,jdbcType=VARCHAR}, #{item.lastUpdatedDate,jdbcType=TIMESTAMP},
@@ -50,27 +74,45 @@
 	</foreach>
   </insert>
   <insert id="insert" parameterType="com.honest.sdms.order.entity.OrderDetail">
-	insert into order_detail (header_id, product_name,
+	insert into order_detail (header_id,
 	item_id, item,
-	warehouse, weight, piece_num,
+	warehouse_id, weight, piece_num,
 	description, created_by, created_date,
 	last_updated_by, last_updated_date, organization_id)
-	values (#{headerId,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR},
+	values (#{headerId,jdbcType=VARCHAR},
 	#{itemId,jdbcType=BIGINT}, #{item,jdbcType=VARCHAR},
-	#{warehouse,jdbcType=VARCHAR}, #{weight,jdbcType=DOUBLE}, #{pieceNum,jdbcType=BIGINT},
+	#{warehouseId,jdbcType=BIGINT}, #{weight,jdbcType=DOUBLE}, #{pieceNum,jdbcType=BIGINT},
 	#{description,jdbcType=VARCHAR}, #{createdBy,jdbcType=VARCHAR},
 	#{createdDate,jdbcType=TIMESTAMP},
 	#{lastUpdatedBy,jdbcType=VARCHAR}, #{lastUpdatedDate,jdbcType=TIMESTAMP},
 	#{organizationId,jdbcType=BIGINT})
   </insert>
-
+  <update id="updateList" parameterType="list">
+  	<foreach collection="list" item="item" index="index" open="" close="" separator=";">
+       update order_detail
+       <set>
+          header_id = #{item.headerId,jdbcType=VARCHAR},
+	      item_id = #{item.itemId,jdbcType=BIGINT},
+	      item = #{item.item,jdbcType=VARCHAR},
+	      warehouse_id = #{item.warehouseId,jdbcType=BIGINT},
+	      weight = #{item.weight,jdbcType=DOUBLE},
+	      piece_num = #{item.pieceNum,jdbcType=BIGINT},
+	      description = #{item.description,jdbcType=VARCHAR},
+	      created_by = #{item.createdBy,jdbcType=VARCHAR},
+	      created_date = #{item.createdDate,jdbcType=TIMESTAMP},
+	      last_updated_by = #{item.lastUpdatedBy,jdbcType=VARCHAR},
+	      last_updated_date = #{item.lastUpdatedDate,jdbcType=TIMESTAMP},
+	      organization_id = #{item.organizationId,jdbcType=BIGINT}
+        </set>
+        where detail_id = #{item.detailId,jdbcType=BIGINT}
+    </foreach>
+  </update>
   <update id="updateByPrimaryKey" parameterType="com.honest.sdms.order.entity.OrderDetail">
     update order_detail
     set header_id = #{headerId,jdbcType=VARCHAR},
-      product_name = #{productName,jdbcType=VARCHAR},
       item_id = #{itemId,jdbcType=BIGINT},
       item = #{item,jdbcType=VARCHAR},
-      warehouse = #{warehouse,jdbcType=VARCHAR},
+      warehouse_id = #{warehouseId,jdbcType=BIGINT},
       weight = #{weight,jdbcType=DOUBLE},
       piece_num = #{pieceNum,jdbcType=BIGINT},
       description = #{description,jdbcType=VARCHAR},

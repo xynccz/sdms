@@ -17,6 +17,8 @@ public interface IBaseMapper<T extends BaseVO, PK extends Serializable>{
     int insert(T model);
     
     void saveList(List<T> list);
+    
+    void updateList(List<T> list);
 
     int updateByPrimaryKey(T model);
     

@@ -90,7 +90,10 @@
   	select 
     <include refid="Base_Column_List" />
     from vendors
-    where vendor_name like CONCAT('%',#{vendorName,jdbcType=VARCHAR},'%') and organization_id = #{organizationId,jdbcType=BIGINT}
+    where organization_id = #{organizationId,jdbcType=BIGINT} 
+    <if test="vendorName != null and vendorName != '' ">
+    	and vendor_name like CONCAT('%',#{vendorName,jdbcType=VARCHAR},'%')
+    </if>
   </select>
   <insert id="insert" parameterType="com.honest.sdms.system.entity.Vendors">
     insert into vendors (id, vendor_name, vendor_code, 

@@ -8,6 +8,7 @@ public class OrderHeader extends BaseVO{
 	private static final long serialVersionUID = 1L;
 	
     private String headerId;
+    private String headerIds;
     private Long recordId;
     private String orderNo;
     private Long orderTypeId;
@@ -33,6 +34,7 @@ public class OrderHeader extends BaseVO{
     private String orderLog;
     private String remarks;
     private String isValid;
+    private String isValidSet;
     
     private Date createdDateStart;
     private Date createdDateEnd;
@@ -43,11 +45,110 @@ public class OrderHeader extends BaseVO{
     private String itemSpecificCode;//系统产品牌规格信息
     private String description;
 
+    private String consigneeProvince;//省
+    private String consigneeCity;//市
+    private String consigneeCounty;//区
     private String consigneeRealname;
     private String consigneeTelphone;
     private String consigneeAddress;
     
-    public String getItemSpecificCode() {
+    private String warehouse;
+    private String expressCompany;//这个是客户导入订单指定的快递公司
+    private String expressCompanyName;//这个是系统设定的快递公司
+    
+    private String areas;
+    private Long expressCompanyId;
+    private Long warehouseId;
+    
+	public Long getExpressCompanyId() {
+		return expressCompanyId;
+	}
+
+	public void setExpressCompanyId(Long expressCompanyId) {
+		this.expressCompanyId = expressCompanyId;
+	}
+
+	public Long getWarehouseId() {
+		return warehouseId;
+	}
+
+	public void setWarehouseId(Long warehouseId) {
+		this.warehouseId = warehouseId;
+	}
+
+	public String getExpressCompanyName() {
+		return expressCompanyName;
+	}
+
+	public void setExpressCompanyName(String expressCompanyName) {
+		this.expressCompanyName = expressCompanyName;
+	}
+
+	public String getWarehouse() {
+		return warehouse;
+	}
+
+	public void setWarehouse(String warehouse) {
+		this.warehouse = warehouse;
+	}
+
+	public String getExpressCompany() {
+		return expressCompany;
+	}
+
+	public void setExpressCompany(String expressCompany) {
+		this.expressCompany = expressCompany;
+	}
+
+	public String getIsValidSet() {
+		return isValidSet;
+	}
+
+	public void setIsValidSet(String isValidSet) {
+		this.isValidSet = isValidSet;
+	}
+
+	public String getHeaderIds() {
+		return headerIds;
+	}
+
+	public void setHeaderIds(String headerIds) {
+		this.headerIds = headerIds;
+	}
+
+	public String getConsigneeProvince() {
+		return consigneeProvince;
+	}
+
+	public void setConsigneeProvince(String consigneeProvince) {
+		this.consigneeProvince = consigneeProvince;
+	}
+
+	public String getConsigneeCity() {
+		return consigneeCity;
+	}
+
+	public void setConsigneeCity(String consigneeCity) {
+		this.consigneeCity = consigneeCity;
+	}
+
+	public String getConsigneeCounty() {
+		return consigneeCounty;
+	}
+
+	public void setConsigneeCounty(String consigneeCounty) {
+		this.consigneeCounty = consigneeCounty;
+	}
+
+	public String getAreas() {
+		return areas;
+	}
+
+	public void setAreas(String areas) {
+		this.areas = areas;
+	}
+
+	public String getItemSpecificCode() {
 		return itemSpecificCode;
 	}
 
@@ -346,6 +447,4 @@ public class OrderHeader extends BaseVO{
     public void setIsValid(String isValid) {
         this.isValid = isValid == null ? null : isValid.trim();
     }
-
-    
 }

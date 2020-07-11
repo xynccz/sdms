@@ -9,4 +9,6 @@ import com.honest.sdms.system.entity.CustomerArchives;
 public interface CustomerArchivesMapper extends IBaseMapper<CustomerArchives, Long>{
 
 	abstract List<CustomerArchives> getCustomerArchivesByCustomerId(@Param("customerId")Long customerId, @Param("organizationId")Long organizationId);
+	
+	abstract List<CustomerArchives> getDistinctCustomerSpecificCode(@Param("organizationId")Long organizationId);
 }

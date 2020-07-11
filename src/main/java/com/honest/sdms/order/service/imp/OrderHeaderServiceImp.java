@@ -1,6 +1,7 @@
 package com.honest.sdms.order.service.imp;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -29,16 +30,15 @@ import com.honest.sdms.order.service.imp.promote.OrderModleDataListener;
 import com.honest.sdms.system.dao.IBaseMapper;
 import com.honest.sdms.system.entity.CustomerArchives;
 import com.honest.sdms.system.entity.CustomerOrderExcelConfig;
+import com.honest.sdms.system.entity.Customers;
 import com.honest.sdms.system.entity.DownloadRecords;
 import com.honest.sdms.system.entity.ErrorDataLog;
 import com.honest.sdms.system.entity.ItemSpecific;
-import com.honest.sdms.system.entity.SysDictDatas;
 import com.honest.sdms.system.service.ICustomerOrderExcelConfigService;
 import com.honest.sdms.system.service.ICustomersService;
 import com.honest.sdms.system.service.IDownloadRecordsService;
 import com.honest.sdms.system.service.IErrorDataLogService;
 import com.honest.sdms.system.service.IItemSpecificService;
-import com.honest.sdms.system.service.ISysDictDatasService;
 import com.honest.sdms.system.service.imp.BaseServiceImp;
 import com.honest.sdms.tools.DateTimeUtil;
 import com.honest.sdms.tools.StringUtil;
@@ -63,8 +63,6 @@ public class OrderHeaderServiceImp extends BaseServiceImp<OrderHeader, String> i
 	@Autowired
 	private IDownloadRecordsService downloadRecordsService;
 	@Autowired
-	private ISysDictDatasService sysDictDatasService;
-	@Autowired
 	private IErrorDataLogService errorDataLogService;
 	@Autowired
 	private ICustomersService customersService;
@@ -78,10 +76,25 @@ public class OrderHeaderServiceImp extends BaseServiceImp<OrderHeader, String> i
 	}
 
 	@Override
+	public List<OrderHeader> getOrderHeadsByHeaderIds(String[] headerIds) {
+		return orderHeaderMapper.getOrderHeadsByHeaderIds(headerIds,Constants.getCurrentOrganizationId());
+	}
+	
+	@Override
 	public ItemSpecific selectItemSpecificById(Long id) {
 		return itemSpecificService.selectByPrimaryKey(id);
 	}
 	
+	@Override
+	public void updateOrderHeaders(List<OrderHeader> orderHeaders) throws HSException {
+		orderHeaderMapper.updateList(orderHeaders);
+	}
+
+	@Override
+	public void updateOrderDetails(List<OrderDetail> orderDetails) throws HSException {
+		orderDetailMapper.updateList(orderDetails);
+	}
+
 	@Override
 	public PageInfo<OrderHeader> findByCondWithPage(OrderHeader cond, String sortName, String sortOrder, int pageNum, int pageSize) {
 		String selectData = cond.getSelectDatas();
@@ -125,7 +138,7 @@ public class OrderHeaderServiceImp extends BaseServiceImp<OrderHeader, String> i
 	 */
 	@Override
 	public APIResponse<String> saveOrdersFromFiles(List<DownloadRecords> records) {
-		APIResponse<String> result = new APIResponse<String>(ResultStatus.DEFAULT);
+		APIResponse<String> result = new APIResponse<String>(ResultStatus.OK);
 		StringBuilder message = new StringBuilder();
 		if(records != null && records.size() > 0){
 			for(DownloadRecords record : records){
@@ -146,12 +159,12 @@ public class OrderHeaderServiceImp extends BaseServiceImp<OrderHeader, String> i
 	private void saveOrderFile(DownloadRecords record, StringBuilder message) {
 		try{
 			//获取客户信息
-			SysDictDatas dictData = sysDictDatasService.selectByPrimaryKey(record.getCustomerId());
+			Customers customer = customersService.selectByPrimaryKey(record.getCustomerId());
 			//1、对订单字段配置数据进行封装
 			Map<String,CustomerOrderExcelConfig> relateMap = new HashMap<String, CustomerOrderExcelConfig>();
 			List<CustomerOrderExcelConfig> list = customerOrderExcelConfigService.findCustomerOrderConfigByCustomerId(record.getCustomerId(), Constants.INPUT);
 			if(list == null || list.size() == 0){
-				throw new HSException("店铺:'"+dictData.getDictDataName()+"'未查询到订单字段配置，请检查");
+				throw new HSException("店铺:'"+customer.getCustomerName()+"'未查询到订单字段配置，请检查");
 			}
 			for(CustomerOrderExcelConfig config : list){
 				String codeDesc = config.getCodeDesc();
@@ -160,7 +173,7 @@ public class OrderHeaderServiceImp extends BaseServiceImp<OrderHeader, String> i
 			
 			//2、对订单信息进行解析
 			StringBuilder returnMsg = new StringBuilder();
-			record.setCustomerName(dictData.getDictDataName());
+			record.setCustomerName(customer.getCustomerName());
 			
 			//3、封装当前客户档案信息
 			List<CustomerArchives> archivesList = customersService.getCustomerArchivesByCustomerId(record.getCustomerId());
@@ -194,4 +207,126 @@ public class OrderHeaderServiceImp extends BaseServiceImp<OrderHeader, String> i
 		errorDataLogService.insert(errorLog);
 	}
 
+	/**
+	 * 重新匹配客户失效订单，使用场景：客户导入订单的时候未设置产品规则信息导致订单匹配失败，
+	 * 用户在客户档案信息中维护好规则信息后，点击刷新订单后会请求此方法
+	 */
+	@Override
+	public String updateMatchOrdersByCustomerId(Long customerId) throws HSException {
+		String msg = null;
+		try{
+			//获取当前用户匹配失败的订单
+			OrderHeader cond = new OrderHeader();
+			cond.setCustomerId(customerId);
+			cond.setIsValid(Constants.Status.N);
+			List<OrderHeader> orderHeads = findByCond(cond);
+			if(orderHeads != null && orderHeads.size() > 0){
+				//获取当前客户档案信息
+				List<CustomerArchives> archives = customersService.getCustomerArchivesByCustomerId(customerId);
+				if(archives != null && archives.size() > 0){
+					Map<Long, ItemSpecific> itemSpecificMap = new HashMap<Long, ItemSpecific>();
+					Map<String, CustomerArchives> archiveMap = new HashMap<String, CustomerArchives>();
+					
+					archives.forEach(archive->{
+						//封装产品规格信息
+						Long itemSpecificId = archive.getItemSpecificId();
+						ItemSpecific itemSpecific = null;
+						if(itemSpecificMap.containsKey(itemSpecificId)){
+							itemSpecific = itemSpecificMap.get(itemSpecificId);
+						}else {
+							itemSpecific = selectItemSpecificById(itemSpecificId);
+							itemSpecificMap.put(itemSpecificId, itemSpecific);
+						}
+						//封装产品规格字典信息
+						archiveMap.put(archive.getCustomerSpecificCode(), archive);
+					});
+					
+					List<OrderHeader> updateHeadList = new ArrayList<OrderHeader>();
+					List<OrderDetail> updateDetailList = new ArrayList<OrderDetail>();
+					orderHeads.forEach(orderHead->{
+						String customerItemSpec = orderHead.getCustomerItemSpecific();
+						if(archiveMap.containsKey(customerItemSpec)){
+							CustomerArchives archive = archiveMap.get(customerItemSpec);
+							Long itemSpecificId = archive.getItemSpecificId();
+							ItemSpecific itemSpecific = itemSpecificMap.get(itemSpecificId);
+							
+							orderHead.setItemSpecificId(itemSpecificId);
+							orderHead.setIsValid(Constants.Status.Y);
+							orderHead.setRemarks(null);
+							orderHead.setLastUpdatedBy(Constants.getCurrentSysUser().getLoginName());
+							orderHead.setLastUpdatedDate(new DateTimeUtil().toTimestamp());
+							
+							List<OrderDetail> orderDetails = orderDetailMapper.findOrderDetailsByHeadId(orderHead.getHeaderId(),Constants.getCurrentOrganizationId());
+							orderDetails.forEach(orderDetail->{
+								orderDetail.setItem(itemSpecific.getItem());
+								orderDetail.setItemId(itemSpecific.getItemId());
+								orderDetail.setLastUpdatedBy(Constants.getCurrentSysUser().getLoginName());
+								orderDetail.setLastUpdatedDate(new DateTimeUtil().toTimestamp());
+								updateDetailList.add(orderDetail);
+							});
+							updateHeadList.add(orderHead);
+						}
+					});
+					this.updateOrderHeaders(updateHeadList);
+					this.updateOrderDetails(updateDetailList);
+					msg = "订单匹配成功，共成功匹配"+updateHeadList.size();
+				}
+			}
+		}catch(Exception e){
+			StringUtil.writeStackTraceToLog(logger, e);
+			throw new HSException("刷新订单信息失败，"+ e.getMessage());
+		}
+		return msg;
+	}
+
+	/**
+	 * 订单审核,分两种情况：
+	 * 1、用户选择指定行进行审核，那么HeaderId不为空，为一组id
+	 * 2、用户没有选择指定行进行审核，那么系统会判断为按界面中查询条件查询到的所有订单进行审核，那么HeaderId为空
+	 */
+	@Override
+	public String updateReviewOrders(OrderHeader record) throws HSException {
+		List<OrderHeader> list = null;
+		List<String> headerIdList = new ArrayList<String>();;
+		try{
+			String headerId = record.getHeaderIds();
+			//情况1,选中指定订单行进行审核
+			if(!StringUtil.isNullOrEmpty(headerId)){
+				String[] headerIds = StringUtil.stringToArray(headerId);
+				list = getOrderHeadsByHeaderIds(headerIds);
+			}
+			//情况2，全部审核，按查询条件查出所有订单进行审核
+			else{
+				list = findByCond(record);
+			}
+			if(list != null){
+				list.forEach(item->{
+					//如果用户驳回订单，那么设置isValid=N
+					item.setIsValid(record.getIsValidSet());
+					item.setRemarks(record.getRemarks());
+					item.setIsReviewed(Constants.Status.Y);
+					item.setOrderStatus(Constants.OrderStatus.ALREADY_REVIEWED);
+					item.setLastUpdatedBy(Constants.getCurrentSysUser().getLoginName());
+					item.setLastUpdatedDate(new DateTimeUtil().toTimestamp());
+					Constants.setOrderOperatorLog(item, "订单审核");
+					
+					headerIdList.add(item.getHeaderId());
+				});
+				updateOrderHeaders(list);
+				
+				//只有审核通过的订单前台才分配仓库和快递公司
+				if(Constants.Status.Y.equals(record.getIsValidSet())) {
+					String[] headerIds = headerIdList.toArray(new String[headerIdList.size()]);
+					//订单明细表存放仓库信息
+					orderDetailMapper.updateOrderDetailsByHeadIds(record.getWarehouseId(), headerIds,Constants.getCurrentOrganizationId());
+					//订单物流表存放快递信息
+					orderExpressService.updateOrderExpressByHeadIds(record.getExpressCompanyId(), headerIds);
+				}
+			}
+		}catch(Exception e){
+			StringUtil.writeStackTraceToLog(logger, e);
+			throw new HSException("订单审核异常，"+e.getMessage());
+		}
+		return "共成功审核"+list.size()+"条订单";
+	}
 }

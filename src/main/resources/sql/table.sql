@@ -297,8 +297,7 @@ create table order_detail(
 	header_id varchar(32) not null,
 	item_id bigint,
 	item varchar(200),
-	item_specific_id bigint(20) DEFAULT NULL COMMENT '产品规格',
-	warehouse varchar(200) COMMENT '到货仓库',
+	warehouse varchar(200) COMMENT '发货仓库',
 	weight double COMMENT '产品重量',
 	piece_num bigint COMMENT '件数',
 	description varchar(500),
@@ -314,8 +313,8 @@ create table order_detail(
 create table order_express(
 	id bigint primary key AUTO_INCREMENT,
 	header_id varchar(32) not null,
-	express_company varchar(500) comment '物流公司名称',
-	express_company_code varchar(300) comment '物流公司编码',
+	express_company varchar(500) comment '物流公司名称，客户订单导入时指定的',
+	express_company_id bigint comment '物流公司ID，关联数据字典表，在订单审核时系统分配的快递公司',
 	express_no varchar(1000) comment '物流单号',
 	express_status varchar(200) comment '物流状态',
 	net_name varchar(300) comment '网名',
@@ -378,8 +377,7 @@ create table customer_order_excel_config(
 	created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
 	last_updated_by varchar(64) NOT NULL COMMENT '更新者',
 	last_updated_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
-  	organization_id bigint not null,
-  	foreign key (customer_id) references sys_dict_datas(id) on delete cascade on update cascade
+  	organization_id bigint not null
 ) comment '订单excel导入导出配置表';
 
 create table customer_order_relation(
@@ -488,6 +486,7 @@ create table vendor_warehouse(
    warehouse varchar(100)comment '仓库',
    warehouse_address varchar(200) comment '仓库地址',
    warehouse_type int comment '仓库类别，0内库；1外库',
+   express_company_id bigint comment '物流公司ID,管理数据字典表',
    is_valid char(1) DEFAULT 'Y' NOT NULL COMMENT '状态是否有效',
    created_by varchar(64) NOT NULL COMMENT '创建者',
    created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
@@ -521,7 +520,6 @@ create table customer_order_field_config(
   last_updated_by varchar(64) NOT NULL COMMENT '更新者',
   last_updated_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
   organization_id bigint not null,
-  UNIQUE KEY `U_customerOrderField1` (`code_field`),
-  UNIQUE KEY `U_customerOrderField2` (`code_desc`)
+  UNIQUE KEY U_order_field1 (code_field,code_desc)
 )comment '客户订单导入字段配置合集，来源order_header,order_detail,order_express三张表字段'
 

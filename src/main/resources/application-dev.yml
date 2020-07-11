@@ -10,13 +10,14 @@ spring:
         #JDBC配置druid数据源
         type: com.alibaba.druid.pool.DruidDataSource
         driver-class-name: com.mysql.cj.jdbc.Driver
-        url: jdbc:mysql://localhost:3306/sdms_db?useUnicode=true&characterEncoding=UTF8&serverTimezone=Asia/Shanghai&useSSL=false
+        url: jdbc:mysql://localhost:3306/sdms_db?useUnicode=true&characterEncoding=UTF8&allowMultiQueries=true&serverTimezone=Asia/Shanghai&useSSL=false
         username: scdp
         password: ccz@dbt888
         
         #druid连接池配置
         druid: 
-            filters: config,stat,wall
+            filters: config,stat
+            wall.config.multi-statement-allow: true
             initial-size: 3
             min-idle: 3
             max-active: 30
@@ -57,8 +58,7 @@ spring:
 mybatis:
   mapper-locations: classpath:mapper/*.xml  #注意：一定要对应mapper映射xml文件的所在路径
   type-aliases-package: com.honest.sdms.*.entity  # 注意：对应实体类的路径
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  ## configuration: log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 #pagehelper分页插件
 pagehelper:

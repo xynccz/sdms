@@ -11,6 +11,7 @@ public class OrderExpress extends BaseVO{
     private String headerId;
     private String expressCompany;
     private String expressCompanyCode;
+    private Long expressCompanyId;
     private String expressNo;
     private String expressStatus;
     private String netName;
@@ -31,7 +32,15 @@ public class OrderExpress extends BaseVO{
     private Timestamp expressCreateTime;
     private Timestamp expressUpdateTime;
 
-    public String getExpressCompanyCode() {
+    public Long getExpressCompanyId() {
+		return expressCompanyId;
+	}
+
+	public void setExpressCompanyId(Long expressCompanyId) {
+		this.expressCompanyId = expressCompanyId;
+	}
+
+	public String getExpressCompanyCode() {
 		return expressCompanyCode;
 	}
 

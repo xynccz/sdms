@@ -35,8 +35,8 @@ public class Constants {
 		public static final Long ORDER_TYPE = 1000L;//订单类型
 	}
 	
-	public static void setOrderLog(OrderHeader order, String msg){
-		order.setOrderLog(order.getOrderLog() == null?"":order.getOrderLog()+(";\n"+new DateTimeUtil().toString(DateTimeUtil.DATE_FORMAT)+","+msg));
+	public static void setOrderOperatorLog(OrderHeader order, String msg){
+		order.setOrderLog(order.getOrderLog() == null?"":order.getOrderLog()+("\n"+new DateTimeUtil().toString(DateTimeUtil.DATE_FORMAT)+","+msg+";"));
 	}
 	
 	//订单流程状态

@@ -5,7 +5,7 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="header_id" jdbcType="VARCHAR" property="headerId" />
     <result column="express_company" jdbcType="VARCHAR" property="expressCompany" />
-    <result column="express_company_code" jdbcType="VARCHAR" property="expressCompanyCode" />
+    <result column="express_company_id" jdbcType="BIGINT" property="expressCompanyId" />
     <result column="express_no" jdbcType="VARCHAR" property="expressNo" />
     <result column="express_status" jdbcType="VARCHAR" property="expressStatus" />
     <result column="net_name" jdbcType="VARCHAR" property="netName" />
@@ -32,12 +32,53 @@
     <result column="organization_id" jdbcType="BIGINT" property="organizationId" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, header_id, express_company, express_company_code, express_no, express_status, net_name, consignee_realname, 
+    id, header_id, express_company, express_company_id, express_no, express_status, net_name, consignee_realname, 
     consignee_telphone, consignee_province, consignee_city, consignee_county, consignee_address, 
     consignee_zip, sending_address, sender_name, sender_phone, delivery_conditions, delivery_amount, express_result_last, express_result, 
     express_create_time, express_update_time, created_by, created_date, last_updated_by, 
     last_updated_date, organization_id
   </sql>
+  <sql id="Base_Where">
+	<trim prefix="WHERE" prefixOverrides="AND |OR ">	  
+      <if test="expressCompanyId != null">
+        and express_company_id = #{expressCompanyId,jdbcType=BIGINT}
+      </if>
+      <if test="expressNo != null and expressNo != '' ">
+        and express_no = #{expressNo,jdbcType=VARCHAR}
+      </if>
+      <if test="isValid != null and isValid != '' ">
+        and is_valid = #{isValid,jdbcType=VARCHAR}
+      </if>
+      <if test="organizationId != null">
+        and organization_id = #{organizationId,jdbcType=BIGINT}
+      </if>
+	</trim>
+  </sql>
+  <select id="findByCond" parameterType="com.honest.sdms.order.entity.OrderExpress" resultMap="BaseResultMap">
+	select
+	<include refid="Base_Column_List" />,
+	(select ds.dict_data_code from sys_dict_datas ds where ds.id = p.express_company_id and ds.organization_id = p.organization_id and ds.dict_id = 2) as expressCompanyCode
+	from order_express p
+	<include refid="Base_Where" />
+  </select>
+  <select id="findOrderExpressByHeadIds" resultMap="BaseResultMap">
+	  select 
+	    <include refid="Base_Column_List" />
+	    from order_express 
+	    where header_id in 
+	    <foreach collection="headerIds" item="headerId" index="index" open="(" separator="," close=")">
+	       #{headerId}
+	    </foreach>
+	    and organization_id = #{organizationId,jdbcType=BIGINT}
+  </select>
+  <update id="updateOrderExpressByHeadIds" parameterType="java.lang.Long">
+  	update order_express set last_updated_date = SYSDATE(), express_company_id = #{expressCompanyId,jdbcType=BIGINT}
+	    where header_id in 
+	    <foreach collection="headerIds" item="headerId" index="index" open="(" separator="," close=")">
+	       #{headerId}
+	    </foreach>
+	    and organization_id = #{organizationId,jdbcType=BIGINT}
+  </update>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
@@ -49,7 +90,7 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="saveList" parameterType="list">
-	INSERT INTO order_express (header_id, express_company, express_company_code,
+	INSERT INTO order_express (header_id, express_company, express_company_id,
       express_no, express_status, net_name, 
       consignee_realname, consignee_telphone, consignee_province, 
       consignee_city, consignee_county, consignee_address, 
@@ -59,7 +100,7 @@
       last_updated_by, last_updated_date, organization_id)
 	VALUES
 	<foreach collection="list" item="item" separator=",">
-		(#{item.headerId,jdbcType=VARCHAR}, #{item.expressCompany,jdbcType=VARCHAR}, #{item.expressCompanyCode,jdbcType=VARCHAR}, 
+		(#{item.headerId,jdbcType=VARCHAR}, #{item.expressCompany,jdbcType=VARCHAR}, #{item.expressCompanyId,jdbcType=BIGINT}, 
       #{item.expressNo,jdbcType=VARCHAR}, #{item.expressStatus,jdbcType=VARCHAR}, #{item.netName,jdbcType=VARCHAR}, 
       #{item.consigneeRealname,jdbcType=VARCHAR}, #{item.consigneeTelphone,jdbcType=VARCHAR}, #{item.consigneeProvince,jdbcType=VARCHAR}, 
       #{item.consigneeCity,jdbcType=VARCHAR}, #{item.consigneeCounty,jdbcType=VARCHAR}, #{item.consigneeAddress,jdbcType=VARCHAR}, 
@@ -71,7 +112,7 @@
 	</foreach>
   </insert>
   <insert id="insert" parameterType="com.honest.sdms.order.entity.OrderExpress">
-    insert into order_express (header_id, express_company, express_company_code,
+    insert into order_express (header_id, express_company, express_company_id,
       express_no, express_status, net_name, 
       consignee_realname, consignee_telphone, consignee_province, 
       consignee_city, consignee_county, consignee_address, 
@@ -79,7 +120,7 @@
       express_result_last, express_result, express_create_time, 
       express_update_time, created_by, created_date, 
       last_updated_by, last_updated_date, organization_id)
-    values (#{headerId,jdbcType=VARCHAR}, #{expressCompany,jdbcType=VARCHAR}, #{expressCompanyCode,jdbcType=VARCHAR}, 
+    values (#{headerId,jdbcType=VARCHAR}, #{expressCompany,jdbcType=VARCHAR}, #{expressCompanyId,jdbcType=BIGINT}, 
       #{expressNo,jdbcType=VARCHAR}, #{expressStatus,jdbcType=VARCHAR}, #{netName,jdbcType=VARCHAR}, 
       #{consigneeRealname,jdbcType=VARCHAR}, #{consigneeTelphone,jdbcType=VARCHAR}, #{consigneeProvince,jdbcType=VARCHAR}, 
       #{consigneeCity,jdbcType=VARCHAR}, #{consigneeCounty,jdbcType=VARCHAR}, #{consigneeAddress,jdbcType=VARCHAR}, 
@@ -94,7 +135,7 @@
     update order_express
     set header_id = #{headerId,jdbcType=VARCHAR},
       express_company = #{expressCompany,jdbcType=VARCHAR},
-      express_company_code = #{expressCompanyCode,jdbcType=VARCHAR},
+      express_company_id = #{expressCompanyId,jdbcType=BIGINT},
       express_no = #{expressNo,jdbcType=VARCHAR},
       express_status = #{expressStatus,jdbcType=VARCHAR},
       net_name = #{netName,jdbcType=VARCHAR},

@@ -25,6 +25,7 @@ import com.honest.sdms.system.entity.DownloadRecords;
 import com.honest.sdms.system.entity.ErrorDataLog;
 import com.honest.sdms.system.entity.ItemSpecific;
 import com.honest.sdms.tools.ODDGenerator;
+import com.honest.sdms.tools.ObjectUtil;
 import com.honest.sdms.tools.StringUtil;
 
 /**
@@ -45,7 +46,7 @@ public class OrderModleDataListener extends AnalysisEventListener<Map<Integer, S
 	/**
      * 每隔100条存储数据库，实际使用中可以3000条，然后清理list ，方便内存回收
      */
-    private static final int BATCH_COUNT = 200;//每100条数据保存一次
+    private static final int BATCH_COUNT = 100;//每100条数据保存一次
     private List<OrderHeader> headList;//订单头信息
     private List<OrderDetail> detailList;//订单行信息
     private List<OrderExpress> expressList;//订单物流信息
@@ -74,7 +75,6 @@ public class OrderModleDataListener extends AnalysisEventListener<Map<Integer, S
         Map<String, String> dataMap = convertData(data);  
         //开始保存数据到库
         if(dataMap.size() > 0){
-        	boolean isSucc = true;
         	//订单头信息
         	OrderHeader head = new OrderHeader();
         	//订单明细信息
@@ -135,19 +135,40 @@ public class OrderModleDataListener extends AnalysisEventListener<Map<Integer, S
 				
 				//对导入订单数据进行数据准确性校验及一些自定义规则校验
 				verifyOrderData(head, detail, express);
-				Constants.setOrderLog(head, "订单初始导入");
+				Constants.setOrderOperatorLog(head, "订单初始导入");
+				
+				//说明客户一条订单发多批货，既会产生多条物流信息
+				if(head.getOrderCount() != null && head.getOrderCount() > 1) {
+					for(int i = 1; i < head.getOrderCount().intValue();i++) {
+						OrderHeader subHead = new OrderHeader();
+						OrderDetail subDetail = new OrderDetail();
+			        	OrderExpress subExpress = new OrderExpress();
+			        	ObjectUtil.copyPropertiesIgnoreNull(head, subHead);
+			        	ObjectUtil.copyPropertiesIgnoreNull(detail, subDetail);
+			        	ObjectUtil.copyPropertiesIgnoreNull(express, subExpress);
+			        	//拆分订单，重新给headId及系统订单加后缀
+			        	subHead.setHeaderId(UUID.randomUUID().toString().replace("-", ""));
+			        	subHead.setOrderNo(head.getOrderNo()+"-"+i);
+			        	subDetail.setHeaderId(subHead.getHeaderId());
+			        	subExpress.setHeaderId(subHead.getHeaderId());
+			        	
+			        	matchAddress(subExpress);
+			        	
+			        	headList.add(subHead);
+						detailList.add(subDetail);
+						expressList.add(subExpress);
+					}
+				}
 			}catch(Exception e){
 				errorCount++;
 				LOGGER.error("解析到一条数据异常:{},{}", data, context.readRowHolder().getRowIndex());
 				head.setIsValid(Constants.Status.E);
 				head.setRemarks(data + e.getMessage());
-				isSucc = false;
 			}finally{
+				matchAddress(express);
 				headList.add(head);
-				if(isSucc){
-					detailList.add(detail);
-					expressList.add(express);
-				}
+				detailList.add(detail);
+				expressList.add(express);
 				
 				if (headList.size() >= BATCH_COUNT){
 					try{
@@ -164,6 +185,40 @@ public class OrderModleDataListener extends AnalysisEventListener<Map<Integer, S
 			}
         }
     }
+
+    /**
+     * 收件人地址匹配逻辑
+     * 说明：有些订单文件把“省市区”写到了一起，还有些文件把“省市区详细地址”写到了一起，那么就需要把地址拆分写到对应的后台省、市、区、地址等字段内
+     * 拆分规则要记得，必须是空格拆分
+     * @param subExpress
+     */
+	private void matchAddress(OrderExpress subExpress) {
+		//1、如果省、市为空，区有值，就拆分区的数据到对应省、市字段
+		if(subExpress.getConsigneeProvince() == null 
+				&& subExpress.getConsigneeCity() == null
+				&& subExpress.getConsigneeCounty() != null) {
+			String[] address = subExpress.getConsigneeCounty().split(" ");
+			if(address.length == 3) {
+				subExpress.setConsigneeProvince(address[0]);
+				subExpress.setConsigneeCity(address[1]);
+				subExpress.setConsigneeCounty(address[2]);
+			}
+		}
+		//2、如果详细地址有值，且空格拆分大于3，那么就把拆分值写入省、市、区、详细地址等字段中
+		else if(subExpress.getConsigneeProvince() == null 
+				&& subExpress.getConsigneeCity() == null
+				&& subExpress.getConsigneeCounty() == null
+				&& subExpress.getConsigneeAddress() != null) {
+			String[] address = subExpress.getConsigneeAddress().split(" ");
+			if(address.length > 3) {
+				subExpress.setConsigneeProvince(address[0]);
+				subExpress.setConsigneeCity(address[1]);
+				subExpress.setConsigneeCounty(address[2]);
+				int length = subExpress.getConsigneeProvince().length() + subExpress.getConsigneeCity().length() + subExpress.getConsigneeCounty().length() + 3;
+				subExpress.setConsigneeAddress(subExpress.getConsigneeAddress().substring(length));
+			}
+		}
+	}
 
     /**
      * 解析动作最后结束入口

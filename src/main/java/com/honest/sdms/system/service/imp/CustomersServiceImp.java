@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import com.honest.sdms.Constants;
@@ -46,6 +47,11 @@ public class CustomersServiceImp extends BaseServiceImp<Customers, Long> impleme
 	public List<Customers> getCustomerList(String customerName) {
 		return customersMapper.getCustomerList(customerName, Constants.getCurrentSysUser().getOrganizationId());
 	}
+	
+	@Override
+	public List<CustomerArchives> getDistinctCustomerSpecificCode() {
+		return customerArchivesMapper.getDistinctCustomerSpecificCode(Constants.getCurrentOrganizationId());
+	}
 
 	@Override
 	public List<CustomerArchives> getCustomerArchivesByCustomerId(Long customerId) {
@@ -68,20 +74,24 @@ public class CustomersServiceImp extends BaseServiceImp<Customers, Long> impleme
 	@Override
 	public void saveCustomerArchives(List<CustomerArchives> customerArchives) throws HSException {
 		if(customerArchives != null && customerArchives.size() > 0){
-			for(CustomerArchives ca : customerArchives) {
-				Long id = ca.getId();
-				if(id != null){
-					ca.setLastUpdatedBy(Constants.getCurrentSysUser().getLoginName());
-					ca.setLastUpdatedDate(new DateTimeUtil().toTimestamp());
-					customerArchivesMapper.updateByPrimaryKey(ca);
-				}else{
-					ca.setOrganizationId(Constants.getCurrentOrganizationId());
-					ca.setCreatedBy(Constants.getCurrentSysUser().getLoginName());
-					ca.setLastUpdatedBy(ca.getCreatedBy());
-					ca.setCreatedDate(new DateTimeUtil().toTimestamp());
-					ca.setLastUpdatedDate(new DateTimeUtil().toTimestamp());
-					customerArchivesMapper.insert(ca);
+			try{
+				for(CustomerArchives ca : customerArchives) {
+					Long id = ca.getId();
+					if(id != null){
+						ca.setLastUpdatedBy(Constants.getCurrentSysUser().getLoginName());
+						ca.setLastUpdatedDate(new DateTimeUtil().toTimestamp());
+						customerArchivesMapper.updateByPrimaryKey(ca);
+					}else{
+						ca.setOrganizationId(Constants.getCurrentOrganizationId());
+						ca.setCreatedBy(Constants.getCurrentSysUser().getLoginName());
+						ca.setLastUpdatedBy(ca.getCreatedBy());
+						ca.setCreatedDate(new DateTimeUtil().toTimestamp());
+						ca.setLastUpdatedDate(new DateTimeUtil().toTimestamp());
+						customerArchivesMapper.insert(ca);
+					}
 				}
+			}catch(DuplicateKeyException e){
+				throw new HSException("档案信息重复，请检查!");
 			}
 		}
 	}

@@ -8,10 +8,9 @@ public class OrderDetail extends BaseVO{
 
 	private Long detailId;
     private String headerId;
-    private String productName;
     private Long itemId;
     private String item;
-    private String warehouse;
+    private Long warehouseId;
     private Double weight;
     private Long pieceNum;
     private String description;
@@ -33,14 +32,6 @@ public class OrderDetail extends BaseVO{
         this.headerId = headerId;
     }
 
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName == null ? null : productName.trim();
-    }
-
     public Long getItemId() {
         return itemId;
     }
@@ -57,15 +48,15 @@ public class OrderDetail extends BaseVO{
         this.item = item == null ? null : item.trim();
     }
 
-    public String getWarehouse() {
-        return warehouse;
-    }
+    public Long getWarehouseId() {
+		return warehouseId;
+	}
 
-    public void setWarehouse(String warehouse) {
-        this.warehouse = warehouse == null ? null : warehouse.trim();
-    }
+	public void setWarehouseId(Long warehouseId) {
+		this.warehouseId = warehouseId;
+	}
 
-    public Double getWeight() {
+	public Double getWeight() {
         return weight;
     }
 

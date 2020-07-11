@@ -21,9 +21,19 @@ public interface IOrderHeaderService extends IBaseService<OrderHeader, String>{
 	 */
 	abstract APIResponse<String> saveOrdersFromFiles(List<DownloadRecords> records);
 	
+	abstract List<OrderHeader> getOrderHeadsByHeaderIds(String[] headerIds);
+	
 	abstract void saveOrderInfos(List<OrderHeader> orderHeaders, List<OrderDetail> orderDetails, List<OrderExpress> orderExpress)throws HSException;
 	
 	abstract ItemSpecific selectItemSpecificById(Long id);
 	
 	abstract void saveErrorLog(ErrorDataLog errorLog);
+	
+	abstract String updateMatchOrdersByCustomerId(Long customerId)throws HSException;
+	
+	abstract void updateOrderHeaders(List<OrderHeader> orderHeaders)throws HSException;
+	
+	abstract void updateOrderDetails(List<OrderDetail> orderDetails)throws HSException;
+	
+	abstract String updateReviewOrders(OrderHeader record)throws HSException;
 }

@@ -28,7 +28,7 @@ public class ControllerExceptionHandle {
     @ExceptionHandler(value = HSException.class)
     public APIResponse<String> messageCenterExceptionHandler(HSException ex) {
 		StringUtil.writeStackTraceToLog(logger, ex);
-		return new APIResponse<String>(ERROR,"业务操作异常,"+ex.getMessage());
+		return new APIResponse<String>(ERROR,"业务操作异常："+ex.getMessage());
     }
 	
 	@ExceptionHandler(Exception.class)

@@ -20,4 +20,6 @@ public interface ICustomersService extends IBaseService<Customers, Long>{
 	
 	abstract List<JSONObject> getCustomerOrderFieldList();
 	
+	abstract List<CustomerArchives> getDistinctCustomerSpecificCode();
+	
 }
