@@ -4,13 +4,15 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.annotation.JSONField;
 
 /**
- * 订单交互实体
+ * 此实体类用于封装向快递/快运公司下发订单并获取快递单号。
+ * 支持服务:预约取件、保价、代收货款、子母件、短信等
+ * RequestType = 1007
  * @author beisi
  * R 必填(Required)。
  * O 可选(Optional)
  * C 一定条件下可选(Conditional
  */
-public class OrderEntity {
+public class OrderOnline {
 
 	@JSONField(name="Callback")
 	private String callback;//O 用户自定义回传字段
@@ -703,7 +705,7 @@ public class OrderEntity {
 	}
 
 	public static void main(String[] args){
-		OrderEntity entity = new OrderEntity();
+		OrderOnline entity = new OrderOnline();
 		entity.setOrderCode("012657018199");
 		entity.setShipperCode("SF");
 		Sender sender = entity.new Sender();
@@ -712,7 +714,10 @@ public class OrderEntity {
 		entity.setSender(sender);
 		
 		JSONObject json = (JSONObject)JSONObject.toJSON(entity);
+		System.out.println(JSONObject.toJSONString(entity));
 		System.out.println(json);
+		OrderOnline y = JSONObject.parseObject(JSONObject.toJSONString(entity), OrderOnline.class);
+		System.out.println("*****"+y.getSender().getName());
 	}
 	
 	

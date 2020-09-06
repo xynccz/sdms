@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.honest.sdms.order.dao.ExpressCustomerParameterMapper">
+  <resultMap id="BaseResultMap" type="com.honest.sdms.order.entity.ExpressCustomerParameter">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="express_company_id" jdbcType="BIGINT" property="expressCompanyId" />
+    <result column="is_need_customer_no" jdbcType="CHAR" property="isNeedCustomerNo" />
+    <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
+    <result column="customer_pwd" jdbcType="VARCHAR" property="customerPwd" />
+    <result column="month_code" jdbcType="VARCHAR" property="monthCode" />
+    <result column="send_site" jdbcType="VARCHAR" property="sendSite" />
+    <result column="send_staff" jdbcType="VARCHAR" property="sendStaff" />
+    <result column="is_valid" jdbcType="VARCHAR" property="isValid" />
+    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+    <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+    <result column="last_updated_by" jdbcType="VARCHAR" property="lastUpdatedBy" />
+    <result column="last_updated_date" jdbcType="TIMESTAMP" property="lastUpdatedDate" />
+    <result column="organization_id" jdbcType="BIGINT" property="organizationId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, express_company_id, is_need_customer_no, customer_name, customer_pwd, month_code, send_site, send_staff, is_valid,
+    created_by, created_date, last_updated_by, last_updated_date, organization_id
+  </sql>
+  <sql id="Base_Where">
+	<trim prefix="WHERE" prefixOverrides="AND |OR ">
+	  <if test="customerName != null and customerName != '' ">
+        and UPPER(customer_name) like UPPER(CONCAT('%',#{customerName,jdbcType=VARCHAR},'%')) 
+      </if>
+      <if test="isValid != null and isValid != '' ">
+        and is_valid = #{isValid,jdbcType=VARCHAR}
+      </if>
+      <if test="expressCompanyId != null">
+        and express_company_id = #{expressCompanyId,jdbcType=BIGINT}
+      </if>
+      <if test="organizationId != null">
+        and organization_id = #{organizationId,jdbcType=BIGINT}
+      </if>
+	</trim>
+  </sql>
+  <select id="findByCond" parameterType="com.honest.sdms.order.entity.ExpressCustomerParameter" resultMap="BaseResultMap">
+  	select <include refid="Base_Column_List" />,
+  	(select ds.dict_data_name from sys_dict_datas ds where express_company_id = ds.id and organization_id=ds.organization_id ) as expressCompanyName
+		from express_customer_parameter
+	<include refid="Base_Where"/>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />,
+    (select ds.dict_data_name from sys_dict_datas ds where express_company_id = ds.id and organization_id=ds.organization_id ) as expressCompanyName
+    from express_customer_parameter
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from express_customer_parameter
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.honest.sdms.order.entity.ExpressCustomerParameter">
+    insert into express_customer_parameter (id, express_company_id, is_need_customer_no, customer_name, 
+      customer_pwd, month_code, send_site, 
+      send_staff, is_valid,created_by, created_date, 
+      last_updated_by, last_updated_date, organization_id
+      )
+    values (#{id,jdbcType=BIGINT},#{expressCompanyId,jdbcType=BIGINT}, #{isNeedCustomerNo,jdbcType=CHAR}, #{customerName,jdbcType=VARCHAR}, 
+      #{customerPwd,jdbcType=VARCHAR}, #{monthCode,jdbcType=VARCHAR}, #{sendSite,jdbcType=VARCHAR}, 
+      #{sendStaff,jdbcType=VARCHAR},#{isValid,jdbcType=VARCHAR}, #{createdBy,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP}, 
+      #{lastUpdatedBy,jdbcType=VARCHAR}, #{lastUpdatedDate,jdbcType=TIMESTAMP}, #{organizationId,jdbcType=BIGINT}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.honest.sdms.order.entity.ExpressCustomerParameter">
+    update express_customer_parameter
+    set is_need_customer_no = #{isNeedCustomerNo,jdbcType=CHAR},
+      customer_name = #{customerName,jdbcType=VARCHAR},
+      express_company_id = #{expressCompanyId,jdbcType=BIGINT},
+      customer_pwd = #{customerPwd,jdbcType=VARCHAR},
+      month_code = #{monthCode,jdbcType=VARCHAR},
+      send_site = #{sendSite,jdbcType=VARCHAR},
+      send_staff = #{sendStaff,jdbcType=VARCHAR},
+      is_valid = #{isValid,jdbcType=VARCHAR},
+      created_by = #{createdBy,jdbcType=VARCHAR},
+      created_date = #{createdDate,jdbcType=TIMESTAMP},
+      last_updated_by = #{lastUpdatedBy,jdbcType=VARCHAR},
+      last_updated_date = #{lastUpdatedDate,jdbcType=TIMESTAMP},
+      organization_id = #{organizationId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

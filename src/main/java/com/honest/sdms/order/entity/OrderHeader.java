@@ -52,7 +52,10 @@ public class OrderHeader extends BaseVO{
     private String consigneeTelphone;
     private String consigneeAddress;
     
+    private String ShipperCode;//快递公司编码
     private String warehouse;
+    private String expressNo;
+    private String expressStatus;
     private String expressCompany;//这个是客户导入订单指定的快递公司
     private String expressCompanyName;//这个是系统设定的快递公司
     
@@ -60,6 +63,32 @@ public class OrderHeader extends BaseVO{
     private Long expressCompanyId;
     private Long warehouseId;
     
+    
+    
+	public String getShipperCode() {
+		return ShipperCode;
+	}
+
+	public void setShipperCode(String shipperCode) {
+		ShipperCode = shipperCode;
+	}
+
+	public String getExpressNo() {
+		return expressNo;
+	}
+
+	public void setExpressNo(String expressNo) {
+		this.expressNo = expressNo;
+	}
+
+	public String getExpressStatus() {
+		return expressStatus;
+	}
+
+	public void setExpressStatus(String expressStatus) {
+		this.expressStatus = expressStatus;
+	}
+
 	public Long getExpressCompanyId() {
 		return expressCompanyId;
 	}

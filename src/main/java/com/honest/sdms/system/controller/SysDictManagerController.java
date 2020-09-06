@@ -31,7 +31,7 @@ public class SysDictManagerController {
 	public @ResponseBody PageInfo<SysDictType> search(SysDictType cond,int pageNum,int pageSize,String sortName, String sortOrder){
 		PageInfo<SysDictType> pageInfo = sysDictTypeService.findByCondWithPage(cond, sortName, sortOrder, pageNum, pageSize);
 		return pageInfo;
-	} 
+	}
 	
 	@RequestMapping(value="/saveDictDatas",method={RequestMethod.POST})
 	public @ResponseBody APIResponse<String> saveDictDatas(@RequestBody List<SysDictDatas> dictDatas) throws HSException{

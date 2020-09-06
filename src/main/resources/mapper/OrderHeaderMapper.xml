@@ -26,6 +26,8 @@
     <result column="is_canceled" jdbcType="CHAR" property="isCanceled" />
     <result column="order_log" jdbcType="VARCHAR" property="orderLog" />
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="express_no" jdbcType="VARCHAR" property="expressNo" />
+    <result column="express_status" jdbcType="VARCHAR" property="expressStatus" />
     <result column="is_valid" jdbcType="CHAR" property="isValid" />
     <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
     <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
@@ -53,10 +55,10 @@
   <sql id="Base_Where">
 	<trim prefix="WHERE" prefixOverrides="AND |OR ">
       <if test="orderNo != null and orderNo != ''">
-        and p.order_no like UPPER(CONCAT('%',#{orderNo,jdbcType=VARCHAR},'%')) 
+        and UPPER(p.order_no) like UPPER(CONCAT('%',#{orderNo,jdbcType=VARCHAR},'%')) 
       </if>
       <if test="customerOrderNo != null and customerOrderNo != ''">
-        and p.customer_order_no like UPPER(CONCAT('%',#{customerOrderNo,jdbcType=VARCHAR},'%')) 
+        and UPPER(p.customer_order_no) like UPPER(CONCAT('%',#{customerOrderNo,jdbcType=VARCHAR},'%')) 
       </if>
       <if test="customerItemSpecific != null and customerItemSpecific != ''">
         and p.customer_item_specific = #{customerItemSpecific}
@@ -134,6 +136,12 @@
       <if test="consigneeCounty != null and consigneeCounty != ''">
         and s.consignee_county = #{consigneeCounty,jdbcType=VARCHAR}
       </if>
+      <if test="expressCompanyId != null">
+      	and s.express_company_id = #{expressCompanyId}
+      </if>
+      <if test="expressNo != null and expressNo != ''">
+      	and UPPER(s.express_no) like UPPER(CONCAT('%',#{expressNo,jdbcType=VARCHAR},'%'))
+      </if>
 	</trim>
   </sql>
   <select id="findByCond" parameterType="com.honest.sdms.order.entity.OrderHeader" resultMap="BaseResultMap">
@@ -145,6 +153,7 @@
 	(select ds.dict_data_name from sys_dict_datas ds,item_specific ic where p.item_specific_id = ic.id and ds.id = ic.standard_id and p.organization_id=ic.organization_id and ds.organization_id = ic.organization_id and ds.dict_id = 3) as itemStandards,
 	(select ic.specific_code from item_specific ic where p.item_specific_id = ic.id and p.organization_id=ic.organization_id ) as itemSpecificCode,
 	(select ds.dict_data_name from sys_dict_datas ds where d.warehouse_id = ds.id and d.organization_id=ds.organization_id ) as warehouse,
+	(select ds.dict_data_code from sys_dict_datas ds where s.express_company_id = ds.id and s.organization_id=ds.organization_id ) as ShipperCode,
 	(select ds.dict_data_name from sys_dict_datas ds where s.express_company_id = ds.id and s.organization_id=ds.organization_id ) as expressCompanyName,
 	CASE p.order_status
 		when 'UN_REVIEWED' THEN '待审核'

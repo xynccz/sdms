@@ -523,3 +523,20 @@ create table customer_order_field_config(
   UNIQUE KEY U_order_field1 (code_field,code_desc)
 )comment '客户订单导入字段配置合集，来源order_header,order_detail,order_express三张表字段'
 
+create table express_customer_parameter(
+  id bigint primary key AUTO_INCREMENT,
+  express_company_id bigint not null comment '快递公司，关联字典明细表sys_dict_datas主键ID',
+  is_need_customer_no CHAR comment '是否需要电子面单客户号',
+  customer_name varchar(80) comment '客户号',
+  customer_pwd varchar(50) comment '客户秘钥',
+  month_code varchar(50) comment '月结号、付款账号、秘钥串',
+  send_site varchar(50) comment '所属网店ID',
+  send_staff varchar(50) comment '收件快递员',
+  is_valid char NOT NULL COMMENT '是否有效',
+  created_by varchar(64) NOT NULL COMMENT '创建者',
+  created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  last_updated_by varchar(64) NOT NULL COMMENT '更新者',
+  last_updated_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  organization_id bigint not null
+)comment '电子面单客户号对照表，下单的时候用到，相当于各快递公司的账号密码'
+

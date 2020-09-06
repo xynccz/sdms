@@ -289,6 +289,13 @@ public class OrderHeaderServiceImp extends BaseServiceImp<OrderHeader, String> i
 		List<OrderHeader> list = null;
 		List<String> headerIdList = new ArrayList<String>();;
 		try{
+			///当审核通过时对订单的仓库和快递公司进行非空校验
+			if(Constants.Status.Y.equals(record.getIsValidSet())){
+				if(record.getWarehouseId() == null || record.getExpressCompanyId() == null) {
+					throw new HSException("仓库或快递公司不允许为空！");
+				}
+			}
+			
 			String headerId = record.getHeaderIds();
 			//情况1,选中指定订单行进行审核
 			if(!StringUtil.isNullOrEmpty(headerId)){
