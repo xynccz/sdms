@@ -60,6 +60,13 @@ mybatis:
   type-aliases-package: com.honest.sdms.*.entity  # 注意：对应实体类的路径
   ## configuration: log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
+## 快递鸟地址相关路径
+kdniao:
+  bussiness-id: 1574456
+  app-key: d2c0d37d-07e3-4f8e-91a7-b5a1212d2385
+  order-traces-url: http://api.kdniao.com/Ebusiness/EbusinessOrderHandle.aspx
+  order-traces-sub-url: http://testapi.kdniao.com:8081/api/dist
+  order-online-url: http://testapi.kdniao.com:8081/api/Eorderservice
 #pagehelper分页插件
 pagehelper:
     helperDialect: mysql

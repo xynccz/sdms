@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.honest.sdms.order.entity.ExpressCustomerParameter">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="express_company_id" jdbcType="BIGINT" property="expressCompanyId" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="is_need_customer_no" jdbcType="CHAR" property="isNeedCustomerNo" />
     <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
     <result column="customer_pwd" jdbcType="VARCHAR" property="customerPwd" />
@@ -18,7 +19,7 @@
     <result column="organization_id" jdbcType="BIGINT" property="organizationId" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, express_company_id, is_need_customer_no, customer_name, customer_pwd, month_code, send_site, send_staff, is_valid,
+    id, express_company_id, remark, is_need_customer_no, customer_name, customer_pwd, month_code, send_site, send_staff, is_valid,
     created_by, created_date, last_updated_by, last_updated_date, organization_id
   </sql>
   <sql id="Base_Where">
@@ -55,12 +56,12 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.honest.sdms.order.entity.ExpressCustomerParameter">
-    insert into express_customer_parameter (id, express_company_id, is_need_customer_no, customer_name, 
+    insert into express_customer_parameter (id, express_company_id,remark, is_need_customer_no, customer_name, 
       customer_pwd, month_code, send_site, 
       send_staff, is_valid,created_by, created_date, 
       last_updated_by, last_updated_date, organization_id
       )
-    values (#{id,jdbcType=BIGINT},#{expressCompanyId,jdbcType=BIGINT}, #{isNeedCustomerNo,jdbcType=CHAR}, #{customerName,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT},#{expressCompanyId,jdbcType=BIGINT}, #{remark,jdbcType=VARCHAR}, #{isNeedCustomerNo,jdbcType=CHAR}, #{customerName,jdbcType=VARCHAR}, 
       #{customerPwd,jdbcType=VARCHAR}, #{monthCode,jdbcType=VARCHAR}, #{sendSite,jdbcType=VARCHAR}, 
       #{sendStaff,jdbcType=VARCHAR},#{isValid,jdbcType=VARCHAR}, #{createdBy,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP}, 
       #{lastUpdatedBy,jdbcType=VARCHAR}, #{lastUpdatedDate,jdbcType=TIMESTAMP}, #{organizationId,jdbcType=BIGINT}
@@ -71,6 +72,7 @@
     set is_need_customer_no = #{isNeedCustomerNo,jdbcType=CHAR},
       customer_name = #{customerName,jdbcType=VARCHAR},
       express_company_id = #{expressCompanyId,jdbcType=BIGINT},
+      remark = #{remark,jdbcType=VARCHAR},
       customer_pwd = #{customerPwd,jdbcType=VARCHAR},
       month_code = #{monthCode,jdbcType=VARCHAR},
       send_site = #{sendSite,jdbcType=VARCHAR},

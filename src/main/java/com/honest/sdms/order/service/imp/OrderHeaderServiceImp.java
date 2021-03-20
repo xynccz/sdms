@@ -287,12 +287,15 @@ public class OrderHeaderServiceImp extends BaseServiceImp<OrderHeader, String> i
 	@Override
 	public String updateReviewOrders(OrderHeader record) throws HSException {
 		List<OrderHeader> list = null;
-		List<String> headerIdList = new ArrayList<String>();;
+		List<String> headerIdList = new ArrayList<String>();
 		try{
-			///当审核通过时对订单的仓库和快递公司进行非空校验
+			/*
+			 * 当审核通过时对订单的仓库进行非空校验,快递公司可以暂时不用强制填写，可填也可不填
+			 * 仓库管理员可以出库的时候再指定快递公司也可以，
+			 */
 			if(Constants.Status.Y.equals(record.getIsValidSet())){
-				if(record.getWarehouseId() == null || record.getExpressCompanyId() == null) {
-					throw new HSException("仓库或快递公司不允许为空！");
+				if(record.getWarehouseId() == null) {
+					throw new HSException("仓库不允许为空！");
 				}
 			}
 			

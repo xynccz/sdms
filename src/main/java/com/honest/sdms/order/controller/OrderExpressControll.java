@@ -14,7 +14,7 @@ import com.honest.sdms.basedata.ResultStatus;
 import com.honest.sdms.basedata.exceptions.HSException;
 import com.honest.sdms.order.entity.OrderTraces;
 import com.honest.sdms.order.entity.OrderTrancesReturn;
-import com.honest.sdms.order.service.imp.promote.KdniaoApiService;
+import com.honest.sdms.order.service.IKdniaoApiService;
 
 /**
  * 物流相关操作接口
@@ -26,7 +26,7 @@ import com.honest.sdms.order.service.imp.promote.KdniaoApiService;
 public class OrderExpressControll {
 
 	@Autowired
-	private KdniaoApiService kdniaoApiService;
+	private IKdniaoApiService kdniaoApiService;
 	
 	/**
 	 * 查询物流信息

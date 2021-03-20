@@ -23,17 +23,17 @@ import com.terran4j.commons.api2doc.config.EnableApi2Doc;
 public class Application {
 	private static final Logger logger = LoggerFactory.getLogger(Application.class);
 	
-	@Bean
-    public ConfigurableServletWebServerFactory webServerFactory() {
-        TomcatServletWebServerFactory factory = new TomcatServletWebServerFactory();
-        factory.addConnectorCustomizers((TomcatConnectorCustomizer) connector -> connector.setProperty("relaxedQueryChars", "|{}[]\\"));
-        return factory;
-    }
-	
 	public static void main(String[] args) {
 		logger.info("**********start sdms project*************");
-		
 		SpringApplication.run(Application.class, args);
+	}
+	
+	@Bean
+	public ConfigurableServletWebServerFactory webServerFactory() {
+		TomcatServletWebServerFactory factory = new TomcatServletWebServerFactory();
+		//指定允许特殊符号， 如{} 做入参，其他符号按需添加
+		factory.addConnectorCustomizers((TomcatConnectorCustomizer) connector -> connector.setProperty("relaxedQueryChars", "|{}[]"));
+		return factory;
 	}
 
 }

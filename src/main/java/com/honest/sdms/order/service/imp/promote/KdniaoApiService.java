@@ -23,6 +23,7 @@ import com.honest.sdms.basedata.exceptions.HSException;
 import com.honest.sdms.order.entity.OrderOnline;
 import com.honest.sdms.order.entity.OrderTraces;
 import com.honest.sdms.order.entity.OrderTrancesReturn;
+import com.honest.sdms.order.service.IKdniaoApiService;
 import com.honest.sdms.tools.StringUtil;
 
 /**
@@ -30,7 +31,7 @@ import com.honest.sdms.tools.StringUtil;
  * @author beisi
  */
 @Service
-public class KdniaoApiService {
+public class KdniaoApiService implements IKdniaoApiService{
 	private static final Logger logger = LoggerFactory.getLogger(KdniaoApiService.class);
 	@Autowired
 	private SpringCommonConfigs springCommonConfigs;
@@ -45,6 +46,7 @@ public class KdniaoApiService {
 	 * @return
 	 * @throws Exception
 	 */
+	@Override
 	public OrderTrancesReturn getOrderTraces(OrderTraces orderTraces) throws HSException{
 		try{
 			validOrder(orderTraces);
@@ -63,6 +65,7 @@ public class KdniaoApiService {
 	 * @return
 	 * @throws Exception
 	 */
+	@Override
 	public OrderTrancesReturn getOrderTracesUpgrade(OrderTraces orderTraces) throws Exception{
 		validOrder(orderTraces);
 		String result = sendPost(springCommonConfigs.getOrderTracesUrl(), setParams(JSONObject.toJSONString(orderTraces), "8001"));	
@@ -73,6 +76,7 @@ public class KdniaoApiService {
      * 获取电子面单
 	 * @throws Exception 
      */
+	@Override
 	public String orderOnlineByJson(OrderOnline requestData) throws Exception{
 		String result=sendPost(springCommonConfigs.getOrderOnlineUrl(), setParams(JSONObject.toJSONString(requestData), "1007"));	
 		return result;
@@ -82,6 +86,7 @@ public class KdniaoApiService {
      * 物流信息订阅
 	 * @throws Exception 
      */
+	@Override
 	public String orderTracesSubscribe(String requestData) throws Exception{
 		String result=sendPost(springCommonConfigs.getOrderTrancesSubUrl(), setParams(requestData, "1008"));	
 		return result;

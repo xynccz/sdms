@@ -22,7 +22,7 @@
 		</javaTypeResolver>
 		<!-- 生成模型的包名和位置 -->
 		<javaModelGenerator
-			targetPackage="com.honest.sdms.system.entity" targetProject="src/main/java">
+			targetPackage="com.honest.sdms.order.entity" targetProject="src/main/java">
 			<property name="enableSubPackages" value="true" />
 			<property name="trimStrings" value="true" />
 		</javaModelGenerator>
@@ -33,12 +33,12 @@
 		</sqlMapGenerator>
 		<!-- 生成DAO的包名和位置 -->
 		<javaClientGenerator type="XMLMAPPER"
-			targetPackage="com.honest.sdms.system.dao"
+			targetPackage="com.honest.sdms.order.dao"
 			targetProject="src/main/java">
 			<property name="enableSubPackages" value="true" />
 		</javaClientGenerator>
 		<!-- 要生成的表 tableName是数据库中的表名或视图名 domainObjectName是实体类名 -->
-		<table tableName="customer_order_field_config" domainObjectName="CustomerOrderFieldConfig"
+		<table tableName="express_warehouse_relation" domainObjectName="ExpressWarehouseRelation"
 			enableCountByExample="false" enableUpdateByExample="false"
 			enableDeleteByExample="false" enableSelectByExample="false"
 			selectByExampleQueryId="false">

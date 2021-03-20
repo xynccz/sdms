@@ -19,6 +19,9 @@
     id, vendor_id, warehouse, warehouse_address, warehouse_type, express_company_id, is_valid, created_by, 
     created_date, last_updated_by, last_updated_date, organization_id
   </sql>
+  <sql id="Base_Column_List2">
+    v.id, vendor_id, v.warehouse, v.warehouse_address, v.warehouse_type, v.express_company_id, v.is_valid
+  </sql>
   <sql id="Base_Where">
 	<trim prefix="WHERE" prefixOverrides="AND |OR ">
 	  <if test="vendorId != null">
@@ -44,16 +47,21 @@
       </if>
 	</trim>
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="findByCond" parameterType="com.honest.sdms.system.entity.VendorWarehouse" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from vendor_warehouse
-    where vendor_id = #{vendorId,jdbcType=BIGINT} and organization_id = #{organizationId,jdbcType=BIGINT}
+    <include refid="Base_Where"/>
+  </select>
+  <select id="getWareHouseByExpressId" resultMap="BaseResultMap">
+  	SELECT e.vendor_name as vendorName,<include refid="Base_Column_List2" />  FROM vendors e,express_warehouse_relation n, vendor_warehouse v
+		where v.is_valid = 'Y' and e.id = v.vendor_id and n.vendor_warehouse_id = v.id and e.organization_id and v.organization_id and n.organization_id = v.organization_id and n.express_id = #{expressId} and n.organization_id = #{organizationId}
   </select>
   <select id="getVendorWarehouseListByVendorId" resultMap="BaseResultMap">
   select 
     <include refid="Base_Column_List" />
     from vendor_warehouse
+    where vendor_id = #{vendorId,jdbcType=BIGINT} and organization_id = #{organizationId,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from vendor_warehouse

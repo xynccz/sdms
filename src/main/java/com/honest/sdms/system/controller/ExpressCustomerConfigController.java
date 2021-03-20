@@ -13,6 +13,7 @@ import com.honest.sdms.basedata.ResultStatus;
 import com.honest.sdms.basedata.exceptions.HSException;
 import com.honest.sdms.order.entity.ExpressCustomerParameter;
 import com.honest.sdms.order.service.IExpressCustomerParameterService;
+import com.honest.sdms.system.entity.VendorWarehouse;
 
 @RestController
 @RequestMapping("/expressCustomerConfigManager")
@@ -23,6 +24,12 @@ public class ExpressCustomerConfigController {
 	@RequestMapping(value = "/search",method = RequestMethod.POST)
 	public @ResponseBody List<ExpressCustomerParameter> search(ExpressCustomerParameter cond){
 		List<ExpressCustomerParameter> result = expressCustomerParameterService.findByCond(cond);
+		return result;
+	}
+	
+	@RequestMapping(value = "/getWareHouseByExpressId",method = RequestMethod.GET)
+	public @ResponseBody List<VendorWarehouse> getWareHouseByExpressId(Long expressId){
+		List<VendorWarehouse> result = expressCustomerParameterService.getWareHouseByExpressId(expressId);
 		return result;
 	}
 	

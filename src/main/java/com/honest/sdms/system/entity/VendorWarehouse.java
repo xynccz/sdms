@@ -5,13 +5,22 @@ public class VendorWarehouse extends BaseVO{
 
 	private Long id;
     private Long vendorId;
+    private String vendorName;
     private String warehouse;
     private String warehouseAddress;
     private Integer warehouseType;
     private Long expressCompanyId;
     private String isValid;
 
-    public Long getExpressCompanyId() {
+    public String getVendorName() {
+		return vendorName;
+	}
+
+	public void setVendorName(String vendorName) {
+		this.vendorName = vendorName;
+	}
+
+	public Long getExpressCompanyId() {
 		return expressCompanyId;
 	}
 

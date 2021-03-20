@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.honest.sdms.order.dao.ExpressWarehouseRelationMapper">
+  <resultMap id="BaseResultMap" type="com.honest.sdms.order.entity.ExpressWarehouseRelation">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="express_id" jdbcType="BIGINT" property="expressId" />
+    <result column="vendor_warehouse_id" jdbcType="BIGINT" property="vendorWarehouseId" />
+    <result column="is_valid" jdbcType="CHAR" property="isValid" />
+    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+    <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+    <result column="last_updated_by" jdbcType="VARCHAR" property="lastUpdatedBy" />
+    <result column="last_updated_date" jdbcType="TIMESTAMP" property="lastUpdatedDate" />
+    <result column="organization_id" jdbcType="BIGINT" property="organizationId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, express_id, vendor_warehouse_id, is_valid, created_by, created_date, last_updated_by, 
+    last_updated_date, organization_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from express_warehouse_relation
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from express_warehouse_relation
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.honest.sdms.order.entity.ExpressWarehouseRelation">
+    insert into express_warehouse_relation (id, express_id, vendor_warehouse_id, 
+      is_valid, created_by, created_date, 
+      last_updated_by, last_updated_date, organization_id
+      )
+    values (#{id,jdbcType=BIGINT}, #{expressId,jdbcType=BIGINT}, #{vendorWarehouseId,jdbcType=BIGINT}, 
+      #{isValid,jdbcType=CHAR}, #{createdBy,jdbcType=VARCHAR}, #{createdDate,jdbcType=TIMESTAMP}, 
+      #{lastUpdatedBy,jdbcType=VARCHAR}, #{lastUpdatedDate,jdbcType=TIMESTAMP}, #{organizationId,jdbcType=BIGINT}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.honest.sdms.order.entity.ExpressWarehouseRelation">
+    update express_warehouse_relation
+    set express_id = #{expressId,jdbcType=BIGINT},
+      vendor_warehouse_id = #{vendorWarehouseId,jdbcType=BIGINT},
+      is_valid = #{isValid,jdbcType=CHAR},
+      created_by = #{createdBy,jdbcType=VARCHAR},
+      created_date = #{createdDate,jdbcType=TIMESTAMP},
+      last_updated_by = #{lastUpdatedBy,jdbcType=VARCHAR},
+      last_updated_date = #{lastUpdatedDate,jdbcType=TIMESTAMP},
+      organization_id = #{organizationId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -142,6 +142,9 @@
       <if test="expressNo != null and expressNo != ''">
       	and UPPER(s.express_no) like UPPER(CONCAT('%',#{expressNo,jdbcType=VARCHAR},'%'))
       </if>
+      <if test="warehouseId != null">
+      	and d.warehouse_id = #{warehouseId}
+      </if>
 	</trim>
   </sql>
   <select id="findByCond" parameterType="com.honest.sdms.order.entity.OrderHeader" resultMap="BaseResultMap">

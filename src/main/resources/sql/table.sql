@@ -492,7 +492,8 @@ create table vendor_warehouse(
    created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
    last_updated_by varchar(64) NOT NULL COMMENT '更新者',
    last_updated_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
-   organization_id bigint not null
+   organization_id bigint not null,
+   UNIQUE KEY `U1_vendor_warehouse` (`vendor_id`,`warehouse`)
 )comment '供应商仓库配置表'
 
 create table vendor_archives(
@@ -533,6 +534,7 @@ create table express_customer_parameter(
   send_site varchar(50) comment '所属网店ID',
   send_staff varchar(50) comment '收件快递员',
   is_valid char NOT NULL COMMENT '是否有效',
+  remark varchar(300),
   created_by varchar(64) NOT NULL COMMENT '创建者',
   created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   last_updated_by varchar(64) NOT NULL COMMENT '更新者',
@@ -540,3 +542,14 @@ create table express_customer_parameter(
   organization_id bigint not null
 )comment '电子面单客户号对照表，下单的时候用到，相当于各快递公司的账号密码'
 
+create table express_warehouse_relation(
+  id bigint primary key AUTO_INCREMENT,
+  express_id bigint comment '快递客单号，关联express_customer_parameter表主键ID',
+  vendor_warehouse_id bigint comment '供应商与仓库对应关系id，来源vendor_warehouse表主键ID',
+  is_valid char(1) DEFAULT 'Y' NOT NULL COMMENT '状态是否有效',
+  created_by varchar(64) NOT NULL COMMENT '创建者',
+  created_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  last_updated_by varchar(64) NOT NULL COMMENT '更新者',
+  last_updated_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  organization_id bigint not null
+)comment '电子面单与供应商仓库对应关系'

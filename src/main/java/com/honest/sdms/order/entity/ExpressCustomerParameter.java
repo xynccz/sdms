@@ -2,6 +2,11 @@ package com.honest.sdms.order.entity;
 
 import com.honest.sdms.system.entity.BaseVO;
 
+/**
+ * 电子面单配置表
+ * @author beisi
+ *
+ */
 public class ExpressCustomerParameter extends BaseVO{
 	private static final long serialVersionUID = 1L;
 
@@ -14,9 +19,27 @@ public class ExpressCustomerParameter extends BaseVO{
     private String monthCode;
     private String sendSite;
     private String sendStaff;
+    private String warehouses;//对接仓库
     private String isValid;
+    private String remark;
+    
+	public String getWarehouses() {
+		return warehouses;
+	}
 
-    public String getIsValid() {
+	public void setWarehouses(String warehouses) {
+		this.warehouses = warehouses;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+	public String getIsValid() {
 		return isValid;
 	}
 
